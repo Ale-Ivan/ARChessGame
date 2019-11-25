@@ -1,0 +1,79 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - BlackRook1
+  - BlackRook2
+  - BlackKnight1
+  - BlackKnight2
+  - BlackBishop1
+  - BlackBishop2
+  - BlackQueen
+  - BlackKing
+  - BlackPawn1
+  - BlackPawn2
+  - BlackPawn3
+  - BlackPawn4
+  - BlackPawn5
+  - BlackPawn6
+  - BlackPawn7
+  - BlackPawn8
+  - WhiteRook1
+  - WhiteRook2
+  - WhiteKnight1
+  - WhiteKnight2
+  - WhiteBishop1
+  - WhiteBishop2
+  - WhiteQueen
+  - WhiteKing
+  - WhitePawn1
+  - WhitePawn2
+  - WhitePawn3
+  - WhitePawn4
+  - WhitePawn5
+  - WhitePawn6
+  - WhitePawn7
+  - WhitePawn8
+  - BlackBishop
+  - BlackKnight
+  - BlackPawn
+  - BlackRook
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
