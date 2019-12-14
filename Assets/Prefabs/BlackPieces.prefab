@@ -11,10 +11,9 @@ GameObject:
   - component: {fileID: 2091538756094704086}
   - component: {fileID: 8932253779128827619}
   - component: {fileID: 335735779704827555}
-  - component: {fileID: 8789258959314152334}
   - component: {fileID: 9120904632837065719}
   - component: {fileID: 7672412296546156047}
-  - component: {fileID: 16224627134164917}
+  - component: {fileID: 18245846094712743}
   m_Layer: 0
   m_Name: 3Chess Bishop Black (1)
   m_TagString: BlackBishop1
@@ -82,22 +81,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &8789258959314152334
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 87399442615219010}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &9120904632837065719
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -130,11 +113,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 16224627134164917}
+  - {fileID: 18245846094712743}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &16224627134164917
+--- !u!114 &18245846094712743
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -143,9 +126,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 87399442615219010}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &236721698578746706
 GameObject:
   m_ObjectHideFlags: 0
@@ -159,8 +145,8 @@ GameObject:
   - component: {fileID: 5563554807702273402}
   - component: {fileID: 6630529237585641244}
   - component: {fileID: 5137469322898631135}
-  - component: {fileID: 5608667624192467205}
-  - component: {fileID: 7152808843236303896}
+  - component: {fileID: 8428824622863346253}
+  - component: {fileID: 8655101803001692729}
   m_Layer: 0
   m_Name: 10Chess Pawn Black (1)
   m_TagString: BlackPawn7
@@ -236,7 +222,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 236721698578746706}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -260,27 +246,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 7152808843236303896}
+  - {fileID: 8655101803001692729}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &5608667624192467205
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 236721698578746706}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &7152808843236303896
+--- !u!114 &8428824622863346253
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -289,9 +259,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 236721698578746706}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &8655101803001692729
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 236721698578746706}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &361233080713131006
 GameObject:
   m_ObjectHideFlags: 0
@@ -305,8 +290,8 @@ GameObject:
   - component: {fileID: 2343957742067878206}
   - component: {fileID: 4551945014637705856}
   - component: {fileID: 4162066809469857225}
-  - component: {fileID: 5521682056829502653}
-  - component: {fileID: 8870772837420069098}
+  - component: {fileID: 4062132523953868537}
+  - component: {fileID: 2271343680099250465}
   m_Layer: 0
   m_Name: 11Chess Pawn Black (2)
   m_TagString: BlackPawn6
@@ -382,7 +367,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 361233080713131006}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -406,27 +391,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 8870772837420069098}
+  - {fileID: 2271343680099250465}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &5521682056829502653
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 361233080713131006}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &8870772837420069098
+--- !u!114 &4062132523953868537
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -435,9 +404,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 361233080713131006}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &2271343680099250465
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 361233080713131006}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &409127609318064574
 GameObject:
   m_ObjectHideFlags: 0
@@ -451,8 +435,8 @@ GameObject:
   - component: {fileID: 135767455363270804}
   - component: {fileID: 1175575791984697444}
   - component: {fileID: 6630602956760426878}
-  - component: {fileID: 3404856398227990422}
-  - component: {fileID: 5077760843911598844}
+  - component: {fileID: 6228161801324271289}
+  - component: {fileID: 6760645217414119918}
   m_Layer: 0
   m_Name: 9Chess Pawn Black
   m_TagString: BlackPawn8
@@ -528,7 +512,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 409127609318064574}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -552,27 +536,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 5077760843911598844}
+  - {fileID: 6760645217414119918}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &3404856398227990422
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409127609318064574}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &5077760843911598844
+--- !u!114 &6228161801324271289
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -581,9 +549,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 409127609318064574}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6760645217414119918
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 409127609318064574}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &1926855656676119352
 GameObject:
   m_ObjectHideFlags: 0
@@ -595,10 +578,9 @@ GameObject:
   - component: {fileID: 5373158203876290856}
   - component: {fileID: 7369586274173526088}
   - component: {fileID: 7868880397625622904}
-  - component: {fileID: 481814364070639713}
   - component: {fileID: 8094528721078738127}
   - component: {fileID: 5742184699997905000}
-  - component: {fileID: 8237256612442036638}
+  - component: {fileID: 874154953039118735}
   m_Layer: 0
   m_Name: 4Chess King Black
   m_TagString: BlackKing
@@ -666,22 +648,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &481814364070639713
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1926855656676119352}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &8094528721078738127
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -714,11 +680,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 8237256612442036638}
+  - {fileID: 874154953039118735}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &8237256612442036638
+--- !u!114 &874154953039118735
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -727,9 +693,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1926855656676119352}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &2044017993855951902
 GameObject:
   m_ObjectHideFlags: 0
@@ -741,10 +710,9 @@ GameObject:
   - component: {fileID: 746854666424899574}
   - component: {fileID: 4704827416673321272}
   - component: {fileID: 6055674992141885378}
-  - component: {fileID: 4266338060426647875}
   - component: {fileID: 2583273411538440589}
   - component: {fileID: 4021025263444407575}
-  - component: {fileID: 5964201434373575670}
+  - component: {fileID: 5814841067301660094}
   m_Layer: 0
   m_Name: 8Chess Rook Black
   m_TagString: BlackRook2
@@ -812,22 +780,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &4266338060426647875
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2044017993855951902}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &2583273411538440589
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -860,11 +812,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 5964201434373575670}
+  - {fileID: 5814841067301660094}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &5964201434373575670
+--- !u!114 &5814841067301660094
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -873,9 +825,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2044017993855951902}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &2842885853298579349
 GameObject:
   m_ObjectHideFlags: 0
@@ -958,8 +913,7 @@ GameObject:
   - component: {fileID: 3112378008904177271}
   - component: {fileID: 4149137036860739661}
   - component: {fileID: 4422799935969225343}
-  - component: {fileID: 4938609143460086845}
-  - component: {fileID: 3455157075559629008}
+  - component: {fileID: 2243602798231391561}
   m_Layer: 0
   m_Name: 6Chess Bishop Black
   m_TagString: BlackBishop2
@@ -1059,11 +1013,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 4938609143460086845}
+  - {fileID: 2243602798231391561}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4938609143460086845
+--- !u!114 &2243602798231391561
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1072,25 +1026,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 3444013935641171710}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
---- !u!54 &3455157075559629008
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3444013935641171710}
-  serializedVersion: 2
-  m_Mass: 1
-  m_Drag: 0
-  m_AngularDrag: 0.05
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &3640233361996985539
 GameObject:
   m_ObjectHideFlags: 0
@@ -1104,8 +1045,8 @@ GameObject:
   - component: {fileID: 3227575917783313707}
   - component: {fileID: 1925212050701665339}
   - component: {fileID: 1609225246092187393}
-  - component: {fileID: 8334985672121429276}
-  - component: {fileID: 6683833486993111522}
+  - component: {fileID: 1652707862175714355}
+  - component: {fileID: 3277902700651420783}
   m_Layer: 0
   m_Name: 13Chess Pawn Black (4)
   m_TagString: BlackPawn4
@@ -1181,7 +1122,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 3640233361996985539}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -1205,27 +1146,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 6683833486993111522}
+  - {fileID: 3277902700651420783}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &8334985672121429276
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3640233361996985539}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &6683833486993111522
+--- !u!114 &1652707862175714355
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1234,9 +1159,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 3640233361996985539}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3277902700651420783
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3640233361996985539}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &4001234943452596298
 GameObject:
   m_ObjectHideFlags: 0
@@ -1248,10 +1188,9 @@ GameObject:
   - component: {fileID: 3707850939217813672}
   - component: {fileID: 5641802740761340200}
   - component: {fileID: 7778009794328153860}
-  - component: {fileID: 5838244926636806453}
   - component: {fileID: 8119688177736127518}
   - component: {fileID: 5582315000149925129}
-  - component: {fileID: 1659408841181579030}
+  - component: {fileID: 6366273534116353943}
   m_Layer: 0
   m_Name: 5Chess Queen Black
   m_TagString: BlackQueen
@@ -1319,22 +1258,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &5838244926636806453
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4001234943452596298}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &8119688177736127518
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1367,11 +1290,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 1659408841181579030}
+  - {fileID: 6366273534116353943}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1659408841181579030
+--- !u!114 &6366273534116353943
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1380,9 +1303,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4001234943452596298}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &4239037504572530861
 GameObject:
   m_ObjectHideFlags: 0
@@ -1396,8 +1322,8 @@ GameObject:
   - component: {fileID: 8507305384238577847}
   - component: {fileID: 1600187451174289776}
   - component: {fileID: 5730648079496153111}
-  - component: {fileID: 6467067785825839653}
-  - component: {fileID: 6136123702049287548}
+  - component: {fileID: 3858795831936965716}
+  - component: {fileID: 1703931740993607397}
   m_Layer: 0
   m_Name: 12Chess Pawn Black (3)
   m_TagString: BlackPawn5
@@ -1473,7 +1399,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 4239037504572530861}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -1497,27 +1423,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 6136123702049287548}
+  - {fileID: 1703931740993607397}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &6467067785825839653
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4239037504572530861}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &6136123702049287548
+--- !u!114 &3858795831936965716
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1526,9 +1436,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 4239037504572530861}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1703931740993607397
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4239037504572530861}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &4803872648510964644
 GameObject:
   m_ObjectHideFlags: 0
@@ -1540,10 +1465,9 @@ GameObject:
   - component: {fileID: 8049971275649193684}
   - component: {fileID: 1572003943217855356}
   - component: {fileID: 4293010250712742403}
-  - component: {fileID: 8079411487693703189}
   - component: {fileID: 2573778114390594585}
   - component: {fileID: 8094066291723774295}
-  - component: {fileID: 7363288745144235289}
+  - component: {fileID: 3272448258404280511}
   m_Layer: 0
   m_Name: 1Chess Rook Black (1)
   m_TagString: BlackRook1
@@ -1611,22 +1535,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &8079411487693703189
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4803872648510964644}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &2573778114390594585
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1659,11 +1567,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 7363288745144235289}
+  - {fileID: 3272448258404280511}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &7363288745144235289
+--- !u!114 &3272448258404280511
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1672,9 +1580,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4803872648510964644}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &4989920992170169498
 GameObject:
   m_ObjectHideFlags: 0
@@ -1686,10 +1597,9 @@ GameObject:
   - component: {fileID: 3369911650989087456}
   - component: {fileID: 8842477028653032522}
   - component: {fileID: 2234912319610677619}
-  - component: {fileID: 3324723029504401472}
   - component: {fileID: 5843409678104026884}
   - component: {fileID: 5522580173804713244}
-  - component: {fileID: 1294444085868246860}
+  - component: {fileID: 3473791240699766688}
   m_Layer: 0
   m_Name: 2Chess Knight Black (1)
   m_TagString: BlackKnight1
@@ -1757,22 +1667,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &3324723029504401472
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4989920992170169498}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &5843409678104026884
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1805,11 +1699,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 1294444085868246860}
+  - {fileID: 3473791240699766688}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1294444085868246860
+--- !u!114 &3473791240699766688
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1818,9 +1712,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 4989920992170169498}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &5265116658733012830
 GameObject:
   m_ObjectHideFlags: 0
@@ -1832,10 +1729,9 @@ GameObject:
   - component: {fileID: 7352716950228187370}
   - component: {fileID: 7067946093938943933}
   - component: {fileID: 7684011511414390036}
-  - component: {fileID: 6523083331788704664}
   - component: {fileID: 5577293264684836681}
   - component: {fileID: 5076450340297353901}
-  - component: {fileID: 5512152288952857124}
+  - component: {fileID: 651415685512978628}
   m_Layer: 0
   m_Name: 7Chess Knight Black
   m_TagString: BlackKnight2
@@ -1903,22 +1799,6 @@ MeshRenderer:
   m_SortingLayerID: 0
   m_SortingLayer: 0
   m_SortingOrder: 0
---- !u!54 &6523083331788704664
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5265116658733012830}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
 --- !u!136 &5577293264684836681
 CapsuleCollider:
   m_ObjectHideFlags: 0
@@ -1951,11 +1831,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 5512152288952857124}
+  - {fileID: 651415685512978628}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &5512152288952857124
+--- !u!114 &651415685512978628
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -1964,9 +1844,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 5265116658733012830}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &8617957087616617965
 GameObject:
   m_ObjectHideFlags: 0
@@ -1980,8 +1863,8 @@ GameObject:
   - component: {fileID: 3817830961260958516}
   - component: {fileID: 2648359924846606807}
   - component: {fileID: 326227906771232282}
-  - component: {fileID: 2369818383873560201}
-  - component: {fileID: 1997557048135942422}
+  - component: {fileID: 4492835819236171335}
+  - component: {fileID: 1992427301773489020}
   m_Layer: 0
   m_Name: 14Chess Pawn Black (5)
   m_TagString: BlackPawn3
@@ -2057,7 +1940,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8617957087616617965}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -2081,27 +1964,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 1997557048135942422}
+  - {fileID: 1992427301773489020}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &2369818383873560201
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8617957087616617965}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &1997557048135942422
+--- !u!114 &4492835819236171335
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2110,9 +1977,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 8617957087616617965}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &1992427301773489020
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8617957087616617965}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &8839283022617699785
 GameObject:
   m_ObjectHideFlags: 0
@@ -2126,8 +2008,8 @@ GameObject:
   - component: {fileID: 7600424122516431204}
   - component: {fileID: 6798973114479471417}
   - component: {fileID: 6139380595212763164}
-  - component: {fileID: 1636925656320054778}
-  - component: {fileID: 7089543216625755150}
+  - component: {fileID: 9014121195171373736}
+  - component: {fileID: 6655545553192561899}
   m_Layer: 0
   m_Name: 15Chess Pawn Black (6)
   m_TagString: BlackPawn2
@@ -2203,7 +2085,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8839283022617699785}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -2227,27 +2109,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 7089543216625755150}
+  - {fileID: 6655545553192561899}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &1636925656320054778
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8839283022617699785}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &7089543216625755150
+--- !u!114 &9014121195171373736
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2256,9 +2122,24 @@ MonoBehaviour:
   m_GameObject: {fileID: 8839283022617699785}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &6655545553192561899
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8839283022617699785}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0
 --- !u!1 &8964019058542074980
 GameObject:
   m_ObjectHideFlags: 0
@@ -2272,8 +2153,8 @@ GameObject:
   - component: {fileID: 2085013467965501505}
   - component: {fileID: 5985866199970735021}
   - component: {fileID: 5613808106912554622}
-  - component: {fileID: 2514782104994945658}
-  - component: {fileID: 2943634140306100268}
+  - component: {fileID: 1083151945408656966}
+  - component: {fileID: 3116671714306786862}
   m_Layer: 0
   m_Name: 16Chess Pawn Black (7)
   m_TagString: BlackPawn1
@@ -2349,7 +2230,7 @@ CapsuleCollider:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8964019058542074980}
   m_Material: {fileID: 0}
-  m_IsTrigger: 0
+  m_IsTrigger: 1
   m_Enabled: 1
   m_Radius: 0.023577882
   m_Height: 0.029786106
@@ -2373,27 +2254,11 @@ MonoBehaviour:
   Synchronization: 3
   OwnershipTransfer: 0
   ObservedComponents:
-  - {fileID: 2943634140306100268}
+  - {fileID: 3116671714306786862}
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!54 &2514782104994945658
-Rigidbody:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8964019058542074980}
-  serializedVersion: 2
-  m_Mass: 0.0000001
-  m_Drag: 0
-  m_AngularDrag: 0
-  m_UseGravity: 1
-  m_IsKinematic: 0
-  m_Interpolate: 0
-  m_Constraints: 126
-  m_CollisionDetection: 0
---- !u!114 &2943634140306100268
+--- !u!114 &1083151945408656966
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -2402,6 +2267,21 @@ MonoBehaviour:
   m_GameObject: {fileID: 8964019058542074980}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 4501f6f9b770d9d448b19bfeb2a46640, type: 3}
+  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!114 &3116671714306786862
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8964019058542074980}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 627855c7f81362d41938ffe0b1475957, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_SynchronizePosition: 1
+  m_SynchronizeRotation: 0
+  m_SynchronizeScale: 0

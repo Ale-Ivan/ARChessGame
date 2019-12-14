@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000012148006776}
   - component: {fileID: -565466832625639984}
   - component: {fileID: -7616060242722108980}
+  - component: {fileID: 2006866387318367648}
   m_Layer: 0
   m_Name: Chess Pawn White
   m_TagString: Untagged
@@ -27,13 +28,13 @@ Transform:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1000013277376148}
-  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: -0, y: 1, z: 0}
+  m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
+  m_LocalPosition: {x: -0, y: 0, z: 0}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
 --- !u!33 &33000012760542366
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -116,3 +117,17 @@ CapsuleCollider:
   m_Height: 0.029786106
   m_Direction: 1
   m_Center: {x: 0, y: 9.313228e-10, z: 0.0135778785}
+--- !u!114 &2006866387318367648
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013277376148}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b640d3d4dea484d4f843375640a2832d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 5
+  selected: 0

@@ -11,6 +11,9 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     public GameObject[] playerPrefabs;
     public Transform[] spawnPositions;
 
+    public GameObject[] blackPieces;
+    public GameObject[] whitePieces;
+
     public GameObject chessBoardGameObject;
 
     public enum RaiseEventCodes
@@ -37,6 +40,34 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
     #region Photon callback methods
     //This method will be called at other players, when I raise an event => my battleArenaGameObject != their battleArenaGameObject
+    /* void OnEvent(EventData photonEvent)
+     {
+         if (photonEvent.Code == (byte)RaiseEventCodes.PlayerSpawnEventCode)
+         {
+             object[] data = (object[])photonEvent.CustomData;
+             //Vector3 receivedPosition = (Vector3)data[0];
+             //Quaternion receivedRotation = (Quaternion)data[1];
+             int receivedPlayerSelection = (int)data[3];
+
+             GameObject playerGameObject = Instantiate(playerPrefabs[receivedPlayerSelection], spawnPositions[1].position + chessBoardGameObject.transform.position, Quaternion.identity);
+
+             for (int i = 0; i < 8; i++)
+             {
+                 GameObject firstRowPiece = playerGameObject.transform.GetChild(i).gameObject;
+                 ARChessGameManager.AddPiece(firstRowPiece, 7, i);
+                 GameObject secondRowiece = playerGameObject.transform.GetChild(i + 8).gameObject;
+                 ARChessGameManager.AddPiece(secondRowiece, 6, i);
+             }
+
+             //ARChessGameManager.PrintPieces();
+
+             PhotonView _photonView = playerGameObject.GetComponent<PhotonView>();
+             _photonView.ViewID = (int)data[2];
+
+             //Debug.Log(_photonView.ViewID);
+         }
+     }*/
+
     void OnEvent(EventData photonEvent)
     {
         if (photonEvent.Code == (byte)RaiseEventCodes.PlayerSpawnEventCode)
@@ -45,21 +76,95 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             Vector3 receivedPosition = (Vector3)data[0];
             Quaternion receivedRotation = (Quaternion)data[1];
             int receivedPlayerSelection = (int)data[3];
+            int count = (int)data[4];
+            string tag = (string)data[5];
 
-            GameObject playerGameObject = Instantiate(playerPrefabs[receivedPlayerSelection], spawnPositions[1].position + chessBoardGameObject.transform.position, Quaternion.identity);
+            Vector3 instantiatePosition = spawnPositions[1].position + chessBoardGameObject.transform.position;
+            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.6f, 0f, 0f);
 
-            for (int i = 0; i < 8; i++)
+            if (receivedPlayerSelection == 0) //opponent is black
             {
-                GameObject firstRowPiece = playerGameObject.transform.GetChild(i).gameObject;
-                ARChessGameManager.AddPiece(firstRowPiece, 7, i);
-                GameObject secondRowiece = playerGameObject.transform.GetChild(i + 8).gameObject;
-                ARChessGameManager.AddPiece(secondRowiece, 6, i);
+                GameObject playerPiece;
+                if (count < 8)
+                {
+                    if (count == 0 || count == 7) //Rook
+                    {
+                        playerPiece = Instantiate(blackPieces[0], initialPositionFirstRow - count * change, receivedRotation);
+                    }
+                    else if (count == 1 || count == 6) //Knight
+                    {
+                        playerPiece = Instantiate(blackPieces[1], initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
+                    }
+                    else if (count == 2 || count == 5) //Bishop
+                    {
+                        playerPiece = Instantiate(blackPieces[2], initialPositionFirstRow - count * change, receivedRotation);
+                    }
+                    else if (count == 3)//King 
+                    {
+                        playerPiece = Instantiate(blackPieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
+                    }
+                    else //Queen
+                    {
+                        playerPiece = Instantiate(blackPieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
+                    }
+                    
+                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
+                    playerPiecePhotonView.ViewID = (int)data[2];
+                    ARChessGameManager.instance.AddPiece(playerPiece, 7, 7 - count);
+                }
+                else //Pawns
+                {
+                    playerPiece = Instantiate(blackPieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
+                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
+                    playerPiecePhotonView.ViewID = (int)data[2];
+                    ARChessGameManager.instance.AddPiece(playerPiece, 6, 15 - count);
+                }
+                playerPiece.tag = tag;
+                //Debug.Log(playerPiece.tag);
+
             }
+            else //opponent is white
+            {
+                GameObject playerPiece;
+                if (count < 8)
+                {
+                    if (count == 0 || count == 7) //Rook
+                    {
+                        playerPiece = Instantiate(whitePieces[0], initialPositionFirstRow - count * change, receivedRotation);
+                    }
+                    else if (count == 1 || count == 6) //Knight
+                    {
+                        playerPiece = Instantiate(whitePieces[1], initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
+                    }
+                    else if (count == 2 || count == 5) //Bishop
+                    {
+                        playerPiece = Instantiate(whitePieces[2], initialPositionFirstRow - count * change, receivedRotation);
+                    }
+                    else if (count == 3)//King 
+                    {
+                        playerPiece = Instantiate(whitePieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
+                    }
+                    else //Queen
+                    {
+                        playerPiece = Instantiate(whitePieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
+                    }
 
-            ARChessGameManager.PrintPieces();
-
-            PhotonView _photonView = playerGameObject.GetComponent<PhotonView>();
-            _photonView.ViewID = (int)data[2];
+                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
+                    playerPiecePhotonView.ViewID = (int)data[2];
+                    ARChessGameManager.instance.AddPiece(playerPiece, 7, 7 - count);
+                }
+                else //Pawns
+                {
+                    playerPiece = Instantiate(whitePieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
+                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
+                    playerPiecePhotonView.ViewID = (int)data[2];
+                    ARChessGameManager.instance.AddPiece(playerPiece, 6, 15 -count);
+                }
+                playerPiece.tag = tag;
+                //Debug.Log(playerPiece.tag);
+            }   
         }
     }
 
@@ -78,7 +183,8 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 PhotonNetwork.Instantiate(playerPrefabs[(int)playerSelectionNumber].name, instantiatePosition, Quaternion.identity);
             }*/
 
-            SpawnPlayer();
+            //SpawnPlayer();
+            SpawnPieces();
         }
 
 
@@ -88,6 +194,202 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
 
     #region Private methods
+
+    private void SpawnPieces()
+    {
+        object playerSelectionNumber;
+        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out playerSelectionNumber))
+        {
+            Debug.Log("Player Selection number is " + (int)playerSelectionNumber);
+            Vector3 instantiatePosition = spawnPositions[0].position;
+
+            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.6f, 0f, 0f);
+            int[] viewIDs = new int[16];
+
+            int numberOfRooks = 0;
+            int numberOfKnights = 0;
+            int numberOfBishops = 0;
+
+            if ((int)playerSelectionNumber == 0) //black pieces
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    //0 with 7 = Rook
+                    //1 with 6 = Knight
+                    //2 with 5 = Bishop
+                    //3 = King
+                    //4 = Queen
+                    GameObject instantiatedBlackPiece;
+                    if (i == 0 || i == 7) //Rook
+                    {
+                        instantiatedBlackPiece = Instantiate(blackPieces[0], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                        numberOfRooks++;
+                        instantiatedBlackPiece.tag = "BlackRook" + numberOfRooks;
+                    }
+                    else if (i == 1 || i == 6) //Knight
+                    {
+                        instantiatedBlackPiece = Instantiate(blackPieces[1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, -90));
+                        numberOfKnights++;
+                        instantiatedBlackPiece.tag = "BlackKnight" + numberOfKnights;
+                    }
+                    else if (i == 2 || i == 5) //Bishop
+                    {
+                        instantiatedBlackPiece = Instantiate(blackPieces[2], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                        numberOfBishops++;
+                        instantiatedBlackPiece.tag = "BlackBishop" + numberOfBishops;
+                    }
+                    else
+                    {
+                        instantiatedBlackPiece = Instantiate(blackPieces[i], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                        if (i == 3)
+                        {
+                            instantiatedBlackPiece.tag = "BlackKing";
+                        }
+                        else
+                        {
+                            instantiatedBlackPiece.tag = "BlackQueen";
+                        }
+                    }
+
+                    PhotonView piecePhotonView = instantiatedBlackPiece.GetComponent<PhotonView>();
+                    if (PhotonNetwork.AllocateViewID(piecePhotonView))
+                    {
+                        object[] data = new object[]
+                        {
+                            instantiatedBlackPiece.transform.position - chessBoardGameObject.transform.position, instantiatedBlackPiece.transform.rotation, piecePhotonView.ViewID, playerSelectionNumber, i, instantiatedBlackPiece.tag
+                        };
+                        RaiseEvent(data);
+                        viewIDs[i] = piecePhotonView.ViewID;
+                        ARChessGameManager.instance.AddPiece(instantiatedBlackPiece, 0, i);
+                    }
+                    else
+                    {
+                        Debug.Log("Failed to allocate a view ID");
+                        Destroy(instantiatedBlackPiece);
+                    }
+                    //Debug.Log(instantiatedBlackPiece.tag);
+                }
+                for (int i = 8; i < 16; i++)
+                {
+                    GameObject instantiatedBlackPiece = Instantiate(blackPieces[5], initialPositionSecondRow + (i - 8) * change, Quaternion.Euler(-90, 0, 0));
+                    instantiatedBlackPiece.tag = "BlackPawn" + (i - 7);
+                    PhotonView piecePhotonView = instantiatedBlackPiece.GetComponent<PhotonView>();
+                    if (PhotonNetwork.AllocateViewID(piecePhotonView))
+                    {
+                        object[] data = new object[]
+                        {
+                            instantiatedBlackPiece.transform.position - chessBoardGameObject.transform.position, instantiatedBlackPiece.transform.rotation, piecePhotonView.ViewID, playerSelectionNumber, i, instantiatedBlackPiece.tag
+                        };
+                        RaiseEvent(data);
+                        viewIDs[i] = piecePhotonView.ViewID;
+                        ARChessGameManager.instance.AddPiece(instantiatedBlackPiece, 1, i-8);
+                    }
+                    else
+                    {
+                        Debug.Log("Failed to allocate a view ID");
+                        Destroy(instantiatedBlackPiece);
+                    }
+                    //Debug.Log(instantiatedBlackPiece.tag);
+                }
+
+              /*foreach(int viewId in viewIDs)
+                {
+                    Debug.Log(viewId);
+                }*/
+            }
+            else //white pieces
+            {
+                for (int i = 0; i < 8; i++)
+                {
+                    //0 with 7 = Rook
+                    //1 with 6 = Knight
+                    //2 with 5 = Bishop
+                    //3 = Queen
+                    //4 = King
+                    GameObject instantiatedWhitePiece;
+                    if (i == 0 || i == 7) //Rook
+                    {
+                        instantiatedWhitePiece = Instantiate(whitePieces[0], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                        numberOfRooks++;
+                        instantiatedWhitePiece.tag = "WhiteRook" + numberOfRooks;
+                    }
+                    else if (i == 1 || i == 6) //Knight
+                    {
+                        instantiatedWhitePiece = Instantiate(whitePieces[1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, -90));
+                        numberOfKnights++;
+                        instantiatedWhitePiece.tag = "WhiteKnight" + numberOfKnights;
+                    }
+                    else if (i == 2 || i == 5) //Bishop
+                    {
+                        instantiatedWhitePiece = Instantiate(whitePieces[2], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                        numberOfBishops++;
+                        instantiatedWhitePiece.tag = "WhiteBishop" + numberOfBishops;
+                    }
+                    else
+                    {
+                        instantiatedWhitePiece = Instantiate(whitePieces[i], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                        if (i == 3)
+                        {
+                            instantiatedWhitePiece.tag = "WhiteKing";
+                        }
+                        else
+                        {
+                            instantiatedWhitePiece.tag = "WhiteQueen";
+                        }
+                    }
+
+                    PhotonView piecePhotonView = instantiatedWhitePiece.GetComponent<PhotonView>();
+                    if (PhotonNetwork.AllocateViewID(piecePhotonView))
+                    {
+                        object[] data = new object[]
+                        {
+                            instantiatedWhitePiece.transform.position - chessBoardGameObject.transform.position, instantiatedWhitePiece.transform.rotation, piecePhotonView.ViewID, playerSelectionNumber, i, instantiatedWhitePiece.tag
+                        };
+                        RaiseEvent(data);
+                        viewIDs[i] = piecePhotonView.ViewID;
+                        ARChessGameManager.instance.AddPiece(instantiatedWhitePiece, 0, i );
+                    }
+                    //Debug.Log(instantiatedWhitePiece.tag);
+                }
+                for (int i = 8; i < 16; i++)
+                {
+                    GameObject instantiatedWhitePiece = Instantiate(whitePieces[5], initialPositionSecondRow + (i - 8) * change, Quaternion.Euler(-90, 0, 0));
+                    instantiatedWhitePiece.tag = "WhitePawn" + (i - 7);
+                    PhotonView piecePhotonView = instantiatedWhitePiece.GetComponent<PhotonView>();
+
+                    if (PhotonNetwork.AllocateViewID(piecePhotonView))
+                    {
+                        object[] data = new object[]
+                        {
+                            instantiatedWhitePiece.transform.position - chessBoardGameObject.transform.position, instantiatedWhitePiece.transform.rotation, piecePhotonView.ViewID, playerSelectionNumber, i, instantiatedWhitePiece.tag
+                        };
+                        RaiseEvent(data);
+                        viewIDs[i] = piecePhotonView.ViewID;
+                        ARChessGameManager.instance.AddPiece(instantiatedWhitePiece, 1, i - 8);
+                    }
+                    //Debug.Log(instantiatedWhitePiece.tag);
+                }
+            }
+            }
+        }
+    
+
+    private void RaiseEvent(object[] data)
+    {
+        RaiseEventOptions raiseEventOptions = new RaiseEventOptions
+        {
+            Receivers = ReceiverGroup.Others,
+            CachingOption = EventCaching.AddToRoomCache
+        };
+
+        SendOptions sendOptions = new SendOptions
+        {
+            Reliability = true
+        };
+        PhotonNetwork.RaiseEvent((byte)RaiseEventCodes.PlayerSpawnEventCode, data, raiseEventOptions, sendOptions);
+    }
 
     private void SpawnPlayer()
     {
@@ -103,10 +405,11 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
             for (int i = 0; i < 8; i++)
             {
-                GameObject firstRowPiece = playerGameObject.transform.GetChild(i).gameObject;
-                ARChessGameManager.AddPiece(firstRowPiece, 0, i);
+                GameObject firstRowPiece = playerGameObject.transform.GetChild(i).gameObject;  
+                ARChessGameManager.instance.AddPiece(firstRowPiece, 0, i);
+
                 GameObject secondRowiece = playerGameObject.transform.GetChild(i + 8).gameObject;
-                ARChessGameManager.AddPiece(secondRowiece, 1, i);
+                ARChessGameManager.instance.AddPiece(secondRowiece, 1, i);
             }
 
             //ARChessGameManager.PrintPieces();
@@ -134,6 +437,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 //raise events
                 PhotonNetwork.RaiseEvent((byte)RaiseEventCodes.PlayerSpawnEventCode, data, raiseEventOptions, sendOptions);
 
+                //Debug.Log(_photonView.ViewID);
             }
             else
             {

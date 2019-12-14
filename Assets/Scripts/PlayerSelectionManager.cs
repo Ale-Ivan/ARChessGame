@@ -46,8 +46,6 @@ public class PlayerSelectionManager : MonoBehaviour
 
     public void NextPiece()
     {
-        Debug.Log(playerSelectionNumber);
-
         playerSelectionNumber++;
 
         if (playerSelectionNumber >= chessPiecesModels.Length)
@@ -73,9 +71,6 @@ public class PlayerSelectionManager : MonoBehaviour
 
     public void PreviousPiece()
     {
-        Debug.Log(playerSelectionNumber);
-
-
         playerSelectionNumber--;
 
         if (playerSelectionNumber < 0)

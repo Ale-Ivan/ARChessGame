@@ -41,7 +41,8 @@ public class MySynchronizationScript : MonoBehaviour, IPunObservable
     {
         if (!photonView.IsMine)
         {
-            rb.position = Vector3.MoveTowards(rb.position, networkedPosition, distance * (1.0f / PhotonNetwork.SerializationRate));
+            //rb.position = Vector3.MoveTowards(rb.position, networkedPosition, distance * (1.0f / PhotonNetwork.SerializationRate));
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, networkedPosition, distance * (1.0f / PhotonNetwork.SerializationRate));
         }
 
     }
@@ -50,8 +51,10 @@ public class MySynchronizationScript : MonoBehaviour, IPunObservable
     {
         if (stream.IsWriting)
         {
+            //Debug.Log(gameObject.transform.position);
             //send data to the other player
-            stream.SendNext(rb.position - chessBoard.transform.position); 
+            //stream.SendNext(rb.position - chessBoard.transform.position);
+            stream.SendNext(gameObject.transform.position - chessBoard.transform.position);
         }
         else
         {
@@ -59,6 +62,7 @@ public class MySynchronizationScript : MonoBehaviour, IPunObservable
             networkedPosition = (Vector3)stream.ReceiveNext() + chessBoard.transform.position;
         }
 
-        distance = Vector3.Distance(rb.position, networkedPosition);
+        //distance = Vector3.Distance(rb.position, networkedPosition);
+        distance = Vector3.Distance(gameObject.transform.position, networkedPosition);
     }
 }

@@ -34,5 +34,12 @@ MonoBehaviour:
   - DestroySpaceship
   - Fire
   - RespawnSpaceship
+  - DestroyGameObject
+  - GetPositionOnTheBoard
+  - MovePiece
+  - MovePieceForOpponent
+  - SelectPieceForOpponent
+  - DeselectPieceForOpponent
+  - CapturePieceForOpponent
   DisableAutoOpenWizard: 1
   ShowSettings: 1
