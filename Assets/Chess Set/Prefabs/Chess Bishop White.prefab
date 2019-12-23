@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000011962316772}
   - component: {fileID: 4061046748789125975}
   - component: {fileID: -3690814359713648645}
+  - component: {fileID: 2040980703200138391}
   m_Layer: 0
   m_Name: Chess Bishop White
   m_TagString: Untagged
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1000014291839912}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 15, y: 15, z: 15}
+  m_LocalScale: {x: 7.5, y: 7.5, z: 7.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -116,3 +117,17 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
+--- !u!114 &2040980703200138391
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000014291839912}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3cd14408ad9e06844946cd0c6fb4e8cc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 2
+  selected: 0

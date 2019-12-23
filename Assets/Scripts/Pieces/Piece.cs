@@ -1,5 +1,4 @@
 ﻿using Photon.Pun;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,7 +10,7 @@ public abstract class Piece : MonoBehaviour
     public bool selected;
     protected PhotonView piecePhotonView;
 
-    public abstract List<Vector2Int> MoveLocations(Vector2Int gridPoint);
+    public abstract List<Vector2Int> MoveLocations(Vector2Int piecePosition);
 
     public void OnMouseDown()
     {
@@ -37,5 +36,5 @@ public abstract class Piece : MonoBehaviour
     public abstract PhotonView GetPhotonView();
 
 
-    
+
 }

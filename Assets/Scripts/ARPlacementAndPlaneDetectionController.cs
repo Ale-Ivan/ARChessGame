@@ -35,7 +35,7 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
         adjustButton.SetActive(false);
         searchForBattleButton.SetActive(false);
 
-        informUiPanelText.text = "Move phone to detect planes and place the battle arena.";
+        informUiPanelText.text = "Move phone to detect planes and place the chess board.";
     }
 
     // Update is called once per frame
@@ -57,7 +57,7 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
         adjustButton.SetActive(true);
         searchForBattleButton.SetActive(true);
 
-        informUiPanelText.text = "Great! You placed the Battle Arena. Now search for games.";
+        informUiPanelText.text = "Great! You placed the Chess Board. Now search for games.";
     }
 
     public void EnableARPlacementAndPlaneDetection()
@@ -73,7 +73,7 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
         adjustButton.SetActive(false);
         searchForBattleButton.SetActive(false);
 
-        informUiPanelText.text = "Move phone to detect planes and place the battle arena.";
+        informUiPanelText.text = "Move phone to detect planes and place the chess board.";
     }
 
     private void SetAllPlanesActiveOrDeactive(bool value)

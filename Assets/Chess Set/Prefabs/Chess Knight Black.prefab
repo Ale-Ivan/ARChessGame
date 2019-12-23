@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000013765616354}
   - component: {fileID: 1582403437616740175}
   - component: {fileID: -1591446734372371868}
+  - component: {fileID: -6716094518326441165}
   m_Layer: 0
   m_Name: Chess Knight Black
   m_TagString: BlackKnight
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1000010201698906}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 15, y: 15, z: 15}
+  m_LocalScale: {x: 7.5, y: 7.5, z: 7.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -116,3 +117,17 @@ CapsuleCollider:
   m_Height: 0.038559113
   m_Direction: 1
   m_Center: {x: -0.0012083389, y: -4.675578e-16, z: 0.032901462}
+--- !u!114 &-6716094518326441165
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000010201698906}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 541e5d6edf16ce649947b33c164772b0, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 3
+  selected: 0

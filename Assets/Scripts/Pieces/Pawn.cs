@@ -5,9 +5,12 @@ using UnityEngine;
 
 public class Pawn : Piece
 {
+    private GameObject chessBoard;
+
     private void Awake()
     {
         piecePhotonView = GetComponent<PhotonView>();
+        chessBoard = GameObject.FindGameObjectWithTag("ChessBoard");
     }
 
     void Start()
@@ -24,20 +27,23 @@ public class Pawn : Piece
     {
         List<Vector2Int> locations = new List<Vector2Int>();
 
-        Vector2Int forwardOne = new Vector2Int(piecePosition.x + 1, piecePosition.y); //move one square
-        if (ARChessGameManager.instance.CheckIfPositionIsFree(piecePosition.x + 1, piecePosition.y))
+        if (piecePosition.x != 7)
         {
-            Debug.Log("one");
-            locations.Add(forwardOne);
-        }
-
-        if (piecePosition.x == 1)
-        {
-            Vector2Int forwardTwo = new Vector2Int(piecePosition.x + 2, piecePosition.y); //move two squares
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(piecePosition.x + 2, piecePosition.y))
+            Vector2Int forwardOne = new Vector2Int(piecePosition.x + 1, piecePosition.y); //move one square
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(piecePosition.x + 1, piecePosition.y))
             {
-                Debug.Log("two");
-                locations.Add(forwardTwo);
+                //Debug.Log("one");
+                locations.Add(forwardOne);
+
+                if (piecePosition.x == 1)
+                {
+                    Vector2Int forwardTwo = new Vector2Int(piecePosition.x + 2, piecePosition.y); //move two squares
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(piecePosition.x + 2, piecePosition.y))
+                    {
+                        //Debug.Log("two");
+                        locations.Add(forwardTwo);
+                    }
+                }
             }
         }
 
@@ -46,7 +52,7 @@ public class Pawn : Piece
             Vector2Int diagonalRight = new Vector2Int(piecePosition.x + 1, piecePosition.y + 1); //attack
             if (ARChessGameManager.instance.CheckIfPositionIsFree(piecePosition.x + 1, piecePosition.y + 1) == false)
             {
-                Debug.Log("right");
+                //Debug.Log("right");
                 locations.Add(diagonalRight);
             }
         }
@@ -55,7 +61,7 @@ public class Pawn : Piece
             Vector2Int diagonalLeft = new Vector2Int(piecePosition.x + 1, piecePosition.y - 1); //attack
             if (ARChessGameManager.instance.CheckIfPositionIsFree(piecePosition.x + 1, piecePosition.y - 1) == false)
             {
-                Debug.Log("left");
+                //Debug.Log("left");
                 locations.Add(diagonalLeft);
             }
         }
@@ -74,7 +80,7 @@ public class Pawn : Piece
         Vector2Int oppositePosition = new Vector2Int(7 - x, 7 - y);
         Vector3 targetPosition = Geometry.PointFromGrid(oppositePosition);
 
-        ARChessGameManager.instance.MovePiece(myPiece, targetPosition);
+        ARChessGameManager.instance.MovePiece(myPiece, targetPosition + chessBoard.transform.position);
         ARChessGameManager.pieces[oppositePosition.x, oppositePosition.y] = myPiece; //the pawn may have moved one square or two squares
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
         //ARChessGameManager.PrintPieces();
@@ -89,7 +95,7 @@ public class Pawn : Piece
         Vector2Int pos = new Vector2Int(7 - x, 7 - y);
         ARChessGameManager.instance.CapturePieceAt(pos);
         Vector3 targetPosition = Geometry.PointFromGrid(pos);
-        ARChessGameManager.instance.MovePiece(myPiece, targetPosition);
+        ARChessGameManager.instance.MovePiece(myPiece, targetPosition + chessBoard.transform.position);
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
     }

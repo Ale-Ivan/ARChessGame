@@ -27,6 +27,11 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public GameObject tileHighlightPrefab;
     private List<GameObject> tileHighlights;
 
+    public GameObject chessBoard;
+
+    private bool isPieceSelected;
+    private Piece selectedPiece;
+
     void Awake()
     {
         instance = this;
@@ -38,12 +43,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         pieces = new GameObject[8, 8];
         uI_InformPanelGameObject.SetActive(true);
         tileHighlights = new List<GameObject>();
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
+        isPieceSelected = false;
+        selectedPiece = null;
     }
 
     #region UI callback methods
@@ -130,12 +131,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public void AddPiece(GameObject piece, int row, int col)
     {
-        //PhotonView objectPhotonView = piece.GetComponent<PhotonView>();
-        //PhotonNetwork.AllocateSceneViewID(objectPhotonView);
-        //Debug.Log(objectPhotonView.ViewID);
-
-        pieces[row, col] = piece;
-
+       pieces[row, col] = piece;
     }
 
     public static void PrintPieces()
@@ -231,9 +227,17 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public void SelectPiece(Piece myPiece)
     {
-        MeshRenderer renderers = myPiece.GetComponent<MeshRenderer>();
-        renderers.material = selectedMaterial;
+        if (isPieceSelected)
+        {
+            DeselectPiece(selectedPiece);
+        } 
+        MeshRenderer renderer = myPiece.GetComponent<MeshRenderer>();
+        renderer.material = selectedMaterial;
         myPiece.selected = true;
+
+        selectedPiece = myPiece;
+        isPieceSelected = true;
+
         ShowPossibleMoves(myPiece);
         MoveSelector.instance.EnterState(myPiece);
        
@@ -249,31 +253,51 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             renderers.material = defaultMaterialWhite;
         }
+        
         foreach(GameObject highlight in tileHighlights)
         {
             highlight.SetActive(false);
         }
-        //tileHighlights = new List<GameObject>();
+        tileHighlights = new List<GameObject>();
         myPiece.selected = false;
+
+        selectedPiece = null;
+        isPieceSelected = false;
     }
 
     private void ShowPossibleMoves(Piece myPiece)
     {
         Vector2Int currentPosition = GetRowAndColumn(myPiece.gameObject.tag);
         List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
-        foreach(Vector2Int possibleMove in possibleMoves)
+        if (possibleMoves.Count > 0)
         {
-            Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
-            GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition, Quaternion.identity);
-            tileHighlights.Add(tileHighlight);
-            if (CheckIfPositionIsFree(possibleMove.x, possibleMove.y) == false) //check if position is empty
+            foreach (Vector2Int possibleMove in possibleMoves)
             {
-                GameObject objectOverHighlight = GetPieceAtPosition(possibleMove.x, possibleMove.y);
-                MeshRenderer renderers = objectOverHighlight.GetComponent<MeshRenderer>();
-                renderers.material = selectedMaterial;
+                
+                if (CheckIfPositionIsFree(possibleMove.x, possibleMove.y) == false) //check if position is empty
+                {
+                    GameObject objectOverHighlight = GetPieceAtPosition(possibleMove.x, possibleMove.y);
+                    if ((myPiece.gameObject.tag.StartsWith("White") && objectOverHighlight.tag.StartsWith("Black")) || (myPiece.gameObject.tag.StartsWith("Black") && objectOverHighlight.tag.StartsWith("White")))
+                    {
+                        MeshRenderer renderers = objectOverHighlight.GetComponent<MeshRenderer>();
+                        renderers.material = selectedMaterial;
+                        Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
+                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity);
+                        tileHighlight.tag = "Highlight";
+                        tileHighlights.Add(tileHighlight);
+                    }
+                }
+                else
+                {
+                    Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
+                    GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity);
+                    tileHighlight.tag = "Highlight";
+                    tileHighlights.Add(tileHighlight);
+                }
+                
+
             }
-            
-        }
+        }       
     }
 
     public void CapturePieceAt(Vector2Int gridPoint)

@@ -79,11 +79,11 @@
     <Compile Include="Assets\Photon\PhotonUnityNetworking\Code\Editor\Views\PhotonTransformViewClassicEditor.cs" />
     <Compile Include="Assets\Photon\PhotonUnityNetworking\Code\Editor\Views\PhotonTransformViewEditor.cs" />
     <None Include="Assets\Photon\PhotonUnityNetworking\Code\Editor\PhotonUnityNetworking.Editor.asmdef" />
-    <Reference Include="UnityEditor.UI">
-      <HintPath>C:/Users/Andrei/Unity/ARChessGame/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
-    </Reference>
     <Reference Include="UnityEngine.UI">
       <HintPath>C:/Users/Andrei/Unity/ARChessGame/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+    </Reference>
+    <Reference Include="UnityEditor.UI">
+      <HintPath>C:/Users/Andrei/Unity/ARChessGame/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.TestRunner">
       <HintPath>C:/Users/Andrei/Unity/ARChessGame/Library/ScriptAssemblies/UnityEditor.TestRunner.dll</HintPath>

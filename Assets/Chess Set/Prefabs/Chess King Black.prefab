@@ -13,6 +13,7 @@ GameObject:
   - component: {fileID: 23000012459057614}
   - component: {fileID: -4543023536506639641}
   - component: {fileID: 89919201699321535}
+  - component: {fileID: 7192690165625883861}
   m_Layer: 0
   m_Name: Chess King Black
   m_TagString: BlackKing
@@ -29,7 +30,7 @@ Transform:
   m_GameObject: {fileID: 1000013427829390}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
   m_LocalPosition: {x: -0, y: 0, z: 0}
-  m_LocalScale: {x: 15, y: 15, z: 15}
+  m_LocalScale: {x: 7.5, y: 7.5, z: 7.5}
   m_Children: []
   m_Father: {fileID: 0}
   m_RootOrder: 0
@@ -116,3 +117,17 @@ CapsuleCollider:
   m_Height: 0.029786106
   m_Direction: 1
   m_Center: {x: 0, y: 9.3132235e-10, z: 0.03241314}
+--- !u!114 &7192690165625883861
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1000013427829390}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 4ed8600c61c74a4438f0e9c6e03006ed, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  type: 0
+  selected: 0
