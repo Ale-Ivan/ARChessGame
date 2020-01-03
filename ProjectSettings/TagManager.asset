@@ -4,16 +4,47 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - BlackQueen
+  - Undefined
+  - ChessBoard
+  - BlackRook
+  - WhitePawn1
+  - BlackBishop
+  - BlackKnight
   - BlackKing
   - WhiteQueen
   - WhiteKing
-  - BlackBishop
-  - BlackKnight
-  - BlackPawn
-  - BlackRook
-  - Highlight
-  - ChessBoard
+  - WhitePawn2
+  - WhitePawn6
+  - WhitePawn4
+  - WhiteKnight2
+  - WhiteRook2
+  - WhiteBishop2
+  - WhiteKnight1
+  - WhitePawn5
+  - WhiteRook1
+  - WhitePawn3
+  - WhitePawn7
+  - WhitePawn8
+  - WhiteBishop1
+  - BlackBishop1
+  - BlackPawn7
+  - BlackPawn6
+  - BlackPawn8
+  - BlackRook2
+  - BlackBishop2
+  - BlackPawn4
+  - BlackQueen
+  - BlackPawn5
+  - BlackRook1
+  - BlackKnight1
+  - BlackKnight2
+  - BlackPawn3
+  - BlackPawn2
+  - BlackPawn1
+  - BlackQueen2
+  - BlackQueen3
+  - WhiteQueen2
+  - WhiteQueen3
   layers:
   - Default
   - TransparentFX

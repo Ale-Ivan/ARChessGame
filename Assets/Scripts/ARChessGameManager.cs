@@ -26,11 +26,22 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public GameObject tileHighlightPrefab;
     private List<GameObject> tileHighlights;
+    private List<GameObject> highlightedObjects;
 
     public GameObject chessBoard;
 
     private bool isPieceSelected;
     private Piece selectedPiece;
+
+    private static int numberOfBlackQueens;
+    private static int numberOfWhiteQueens;
+
+    public string currentPlayer;
+    public string otherPlayer;
+
+    public List<GameObject> movedPieces;
+
+    public int specialMove;
 
     void Awake()
     {
@@ -42,9 +53,22 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     {
         pieces = new GameObject[8, 8];
         uI_InformPanelGameObject.SetActive(true);
+
         tileHighlights = new List<GameObject>();
+        highlightedObjects = new List<GameObject>();
+
+        movedPieces = new List<GameObject>();
+
         isPieceSelected = false;
         selectedPiece = null;
+
+        numberOfBlackQueens = 1;
+        numberOfWhiteQueens = 1;
+
+        currentPlayer = "White";
+        otherPlayer = "Black";
+
+        specialMove = 0;
     }
 
     #region UI callback methods
@@ -75,7 +99,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
-        Debug.Log(message);
+        //Debug.Log(message);
         uI_InformText.text = message;
         CreateAndJoinRoom();
     }
@@ -95,12 +119,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
         }
 
-        Debug.Log("joined " + PhotonNetwork.CurrentRoom.Name);
+        //Debug.Log("joined " + PhotonNetwork.CurrentRoom.Name);
     }
 
     public override void OnPlayerEnteredRoom(Player newPlayer)
     {
-        Debug.Log(newPlayer.NickName + " joined " + PhotonNetwork.CurrentRoom.Name + " Player count " + PhotonNetwork.CurrentRoom.PlayerCount);
+        //Debug.Log(newPlayer.NickName + " joined " + PhotonNetwork.CurrentRoom.Name + " Player count " + PhotonNetwork.CurrentRoom.PlayerCount);
         uI_InformText.text = newPlayer.NickName + " joined " + PhotonNetwork.CurrentRoom.Name + " Player count " + PhotonNetwork.CurrentRoom.PlayerCount;
         StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
     }
@@ -131,7 +155,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public void AddPiece(GameObject piece, int row, int col)
     {
-       pieces[row, col] = piece;
+        pieces[row, col] = piece;
     }
 
     public static void PrintPieces()
@@ -204,6 +228,11 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         return objectCoordinates;
     }
 
+    private void AddToMovedPieces(GameObject piece)
+    {
+        movedPieces.Add(piece);
+    }
+
     public GameObject GetPieceAtPosition(int x, int y)
     {
         return pieces[x, y];
@@ -211,6 +240,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void MovePiece(GameObject piece, Vector3 finalPosition)
     {
         StartCoroutine(MoveObject(piece, piece.transform.position, finalPosition));
+        AddToMovedPieces(piece);
     }
 
     public IEnumerator MoveObject(GameObject piece, Vector3 initial, Vector3 final)
@@ -223,6 +253,33 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             piece.transform.position = Vector3.Lerp(initial, final, currentMovementTime / totalMovementTime);
             yield return null;
         }
+    }
+
+    public void ChangePlayer()
+    {
+        string tempPlayer = currentPlayer;
+        currentPlayer = otherPlayer;
+        otherPlayer = tempPlayer;
+    }
+
+    public static void IncrementNumberOfBlackQueens()
+    {
+        numberOfBlackQueens++;
+    }
+
+    public static int GetNumberOfBlackQueens()
+    {
+        return numberOfBlackQueens;
+    }
+
+    public static void IncrementNumberOfWhiteQueens()
+    {
+        numberOfWhiteQueens++;
+    }
+
+    public static int GetNumberOfWhiteQueens()
+    {
+        return numberOfWhiteQueens;
     }
 
     public void SelectPiece(Piece myPiece)
@@ -258,7 +315,23 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             highlight.SetActive(false);
         }
+
+        foreach(GameObject highlightedObject in highlightedObjects)
+        {
+            MeshRenderer renderer = highlightedObject.GetComponent<MeshRenderer>();
+            if (highlightedObject.gameObject.tag.StartsWith("Black"))
+            {
+                renderer.material = defaultMaterialBlack;
+            }
+            else
+            {
+                renderer.material = defaultMaterialWhite;
+            }
+        }
+        
         tileHighlights = new List<GameObject>();
+        highlightedObjects = new List<GameObject>();
+
         myPiece.selected = false;
 
         selectedPiece = null;
@@ -268,44 +341,138 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     private void ShowPossibleMoves(Piece myPiece)
     {
         Vector2Int currentPosition = GetRowAndColumn(myPiece.gameObject.tag);
+        //Debug.Log(currentPosition);
         List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
         if (possibleMoves.Count > 0)
         {
             foreach (Vector2Int possibleMove in possibleMoves)
-            {
-                
-                if (CheckIfPositionIsFree(possibleMove.x, possibleMove.y) == false) //check if position is empty
+            {                
+                if (CheckIfPositionIsFree(possibleMove.x, possibleMove.y) == false) //check if position is non-empty
                 {
                     GameObject objectOverHighlight = GetPieceAtPosition(possibleMove.x, possibleMove.y);
                     if ((myPiece.gameObject.tag.StartsWith("White") && objectOverHighlight.tag.StartsWith("Black")) || (myPiece.gameObject.tag.StartsWith("Black") && objectOverHighlight.tag.StartsWith("White")))
                     {
                         MeshRenderer renderers = objectOverHighlight.GetComponent<MeshRenderer>();
                         renderers.material = selectedMaterial;
+
+                        highlightedObjects.Add(objectOverHighlight);
+
                         Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
-                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity);
+                        //Debug.Log(tileHighlightPosition);
+                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity); // + chessBoard.transform.position
                         tileHighlight.tag = "Highlight";
                         tileHighlights.Add(tileHighlight);
                     }
                 }
                 else
-                {
+                { 
                     Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
+                    //Debug.Log(tileHighlightPosition);
                     GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity);
                     tileHighlight.tag = "Highlight";
                     tileHighlights.Add(tileHighlight);
                 }
-                
-
             }
-        }       
+        }
+
+        if (myPiece.gameObject.tag.Equals("BlackKing"))
+        {
+            if (!movedPieces.Contains(myPiece.gameObject)) //the king is not moved
+            {
+                //check in the left of the currentPosition
+                //x - row, y - column
+                if (CheckIfPositionIsFree(currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(currentPosition.x, currentPosition.y - 2))
+                {
+                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 3);
+                    if (otherPiece.tag.Equals("BlackRook1") && !movedPieces.Contains(otherPiece))
+                    {
+                        Vector2Int grid = new Vector2Int();
+                        grid.Set(currentPosition.x, currentPosition.y - 2);
+                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+
+                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                        tileHighlight.tag = "Highlight";
+                        tileHighlights.Add(tileHighlight);
+
+                        specialMove = 1;
+                    }
+                }
+
+                //check in the right of the currentPosition
+                if (CheckIfPositionIsFree(currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(currentPosition.x, currentPosition.y + 2) && CheckIfPositionIsFree(currentPosition.x, currentPosition.y + 3))
+                {
+                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 4);
+                    if (otherPiece.tag.Equals("BlackRook2") && !movedPieces.Contains(otherPiece))
+                    {
+                        Vector2Int grid = new Vector2Int();
+                        grid.Set(currentPosition.x, currentPosition.y + 2);
+                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+
+                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                        tileHighlight.tag = "Highlight";
+                        tileHighlights.Add(tileHighlight);
+
+                        specialMove = 2;
+                    }
+                }
+            }
+        }
+
+        if (myPiece.gameObject.tag.Equals("WhiteKing"))
+        {
+            if (!movedPieces.Contains(myPiece.gameObject)) //the king is not moved
+            {
+                //check in the left of the currentPosition
+                if (CheckIfPositionIsFree(currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(currentPosition.x, currentPosition.y - 2) && CheckIfPositionIsFree(currentPosition.x, currentPosition.y - 3))
+                {
+                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 4);
+                    if (otherPiece.tag.Equals("WhiteRook1") && !movedPieces.Contains(otherPiece))
+                    {
+                        Vector2Int grid = new Vector2Int();
+                        grid.Set(currentPosition.x, currentPosition.y - 2);
+                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+
+                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                        tileHighlight.tag = "Highlight";
+                        tileHighlights.Add(tileHighlight);
+
+                        specialMove = 1;
+                    }
+                }
+
+                //check in the right of the currentPosition
+                if (CheckIfPositionIsFree(currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(currentPosition.x, currentPosition.y + 2))
+                {
+                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 3);
+                    if (otherPiece.tag.Equals("WhiteRook2") && !movedPieces.Contains(otherPiece))
+                    {
+                        Vector2Int grid = new Vector2Int();
+                        grid.Set(currentPosition.x, currentPosition.y + 2);
+                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+
+                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                        tileHighlight.tag = "Highlight";
+                        tileHighlights.Add(tileHighlight);
+
+                        specialMove = 2;
+                    }
+                }
+            }
+        }
     }
 
     public void CapturePieceAt(Vector2Int gridPoint)
     {
         GameObject capturedPiece = GetPieceAtPosition(gridPoint.x, gridPoint.y);
-        if (capturedPiece.tag.Contains("King")) //Game over
+        if (capturedPiece.tag.Equals("BlackKing")) //Game over
         {
-
+            uI_InformText.text = "Game Over! White player wins!";
+            uI_InformPanelGameObject.SetActive(true);
+        }
+        else if (capturedPiece.tag.Equals("WhiteKing")) //Game over
+        {
+            uI_InformText.text = "Game Over! Black player wins!";
+            uI_InformPanelGameObject.SetActive(true);
         }
         //pieces[gridPoint.x, gridPoint.y] = null;
         Destroy(capturedPiece);

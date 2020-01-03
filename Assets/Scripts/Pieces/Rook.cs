@@ -119,4 +119,10 @@ public class Rook : Piece
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
     }
+
+    [PunRPC]
+    private void SwitchPlayer()
+    {
+        ARChessGameManager.instance.ChangePlayer();
+    }
 }

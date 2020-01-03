@@ -86,4 +86,41 @@ public class Knight : Piece
 
         return locations;
     }
+
+    [PunRPC]
+    private void MovePieceForOpponent(string tag, int x, int y)
+    {
+        GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        //Debug.Log(coordinates);
+
+        Vector3 initialPosition = myPiece.transform.position;
+        Vector2Int oppositePosition = new Vector2Int(7 - x, 7 - y);
+        Vector3 targetPosition = Geometry.PointFromGrid(oppositePosition);
+
+        ARChessGameManager.instance.MovePiece(myPiece, targetPosition + chessBoard.transform.position);
+        ARChessGameManager.pieces[oppositePosition.x, oppositePosition.y] = myPiece; //the pawn may have moved one square or two squares
+        ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
+        //ARChessGameManager.PrintPieces();
+    }
+
+    [PunRPC]
+    private void CapturePieceForOpponent(string tag, int x, int y)
+    {
+        GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+
+        Vector2Int pos = new Vector2Int(7 - x, 7 - y);
+        ARChessGameManager.instance.CapturePieceAt(pos);
+        Vector3 targetPosition = Geometry.PointFromGrid(pos);
+        ARChessGameManager.instance.MovePiece(myPiece, targetPosition + chessBoard.transform.position);
+        ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
+        ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
+    }
+
+    [PunRPC]
+    private void SwitchPlayer()
+    {
+        ARChessGameManager.instance.ChangePlayer();
+    }
 }

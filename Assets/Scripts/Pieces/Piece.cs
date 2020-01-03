@@ -16,14 +16,20 @@ public abstract class Piece : MonoBehaviour
     {
         if (piecePhotonView.IsMine)
         {
-            if (!selected)
+            //check if it is my turn to move
+            if ((this.gameObject.tag.StartsWith("White") && ARChessGameManager.instance.currentPlayer.Equals("White")) || (this.gameObject.tag.StartsWith("Black") && ARChessGameManager.instance.currentPlayer.Equals("Black")))
             {
-                ARChessGameManager.instance.SelectPiece(this);
+                if (!selected)
+                {
+                    ARChessGameManager.instance.SelectPiece(this);
+                }
+                else
+                {
+                    ARChessGameManager.instance.DeselectPiece(this);
+                }
             }
-            else
-            {
-                ARChessGameManager.instance.DeselectPiece(this);
-            }
+
+            
         }
         
     }
@@ -34,7 +40,5 @@ public abstract class Piece : MonoBehaviour
     }
 
     public abstract PhotonView GetPhotonView();
-
-
 
 }

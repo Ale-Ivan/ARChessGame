@@ -41,5 +41,7 @@ MonoBehaviour:
   - SelectPieceForOpponent
   - DeselectPieceForOpponent
   - CapturePieceForOpponent
+  - SwitchPlayer
+  - TransformPawnInQueen
   DisableAutoOpenWizard: 1
   ShowSettings: 1

@@ -99,4 +99,22 @@ public class Pawn : Piece
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
     }
+
+    [PunRPC]
+    private void SwitchPlayer()
+    {
+        ARChessGameManager.instance.ChangePlayer();
+    }
+
+    [PunRPC]
+    private void TransformPawnInQueen(string tag, string newTag)
+    {
+        GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
+        Mesh meshInstance = Instantiate(MoveSelector.instance.queenMesh);
+        myPiece.GetComponent<MeshFilter>().sharedMesh = meshInstance;
+        Destroy(myPiece.GetComponent<Pawn>());
+        myPiece.gameObject.AddComponent<Queen>();
+
+        myPiece.tag = newTag;
+    }
 }
