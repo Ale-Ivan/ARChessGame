@@ -54,6 +54,7 @@ public class Pawn : Piece
             {
                 //Debug.Log("right");
                 locations.Add(diagonalRight);
+
             }
         }
         if (piecePosition.y != 0 && piecePosition.x != 7)
@@ -63,10 +64,30 @@ public class Pawn : Piece
             {
                 //Debug.Log("left");
                 locations.Add(diagonalLeft);
+
             }
         }
             
         return locations;
+    }
+
+    public override void GetAttackLocations(Vector2Int currentPosition)
+    {
+        if (currentPosition.x != 0 && currentPosition.y != 7) //diagonal left in mirror
+        {
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(currentPosition.x - 1, currentPosition.y + 1) == false)
+            {
+                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y + 1);
+            }
+        }
+
+        if (currentPosition.x != 0 && currentPosition.y != 0) //diagonal right in mirror
+        {
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(currentPosition.x - 1, currentPosition.y - 1) == false)
+            {
+                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y - 1);
+            }
+        }
     }
 
     [PunRPC]
@@ -84,6 +105,10 @@ public class Pawn : Piece
         ARChessGameManager.pieces[oppositePosition.x, oppositePosition.y] = myPiece; //the pawn may have moved one square or two squares
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
         //ARChessGameManager.PrintPieces();
+
+        ARChessGameManager.instance.RefreshAttackedSquares();
+
+        ARChessGameManager.instance.VerifyForCheck();
     }
 
     [PunRPC]
@@ -98,6 +123,10 @@ public class Pawn : Piece
         ARChessGameManager.instance.MovePiece(myPiece, targetPosition + chessBoard.transform.position);
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
+
+        ARChessGameManager.instance.RefreshAttackedSquares();
+
+        ARChessGameManager.instance.VerifyForCheck();
     }
 
     [PunRPC]
@@ -117,4 +146,6 @@ public class Pawn : Piece
 
         myPiece.tag = newTag;
     }
+
+    
 }

@@ -12,6 +12,8 @@ public abstract class Piece : MonoBehaviour
 
     public abstract List<Vector2Int> MoveLocations(Vector2Int piecePosition);
 
+    public abstract void GetAttackLocations(Vector2Int currentPosition);
+
     public void OnMouseDown()
     {
         if (piecePhotonView.IsMine)

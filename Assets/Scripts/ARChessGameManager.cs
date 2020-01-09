@@ -19,6 +19,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public GameObject searchForGamesButtonGameObject;
     public GameObject adjustButton;
     public GameObject raycastCenterImage;
+    public GameObject gameOverPanel;
 
     public Material selectedMaterial;
     public Material defaultMaterialBlack;
@@ -26,7 +27,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public GameObject tileHighlightPrefab;
     private List<GameObject> tileHighlights;
-    private List<GameObject> highlightedObjects;
+    public List<GameObject> highlightedObjects;
 
     public GameObject chessBoard;
 
@@ -43,6 +44,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public int specialMove;
 
+    private ulong attackedSquares; //store the squares that are attacked by the opponent's pieces; 2 hex digits/row;
+
+    private Vector2Int kingPosition;
+
+    private GameObject checkColorOfTheLocalPlayer_GameObject;
+
     void Awake()
     {
         instance = this;
@@ -53,6 +60,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     {
         pieces = new GameObject[8, 8];
         uI_InformPanelGameObject.SetActive(true);
+        gameOverPanel.SetActive(false);
 
         tileHighlights = new List<GameObject>();
         highlightedObjects = new List<GameObject>();
@@ -69,6 +77,10 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         otherPlayer = "Black";
 
         specialMove = 0;
+
+        attackedSquares = 0x0000000000000000;
+
+        kingPosition = new Vector2Int();
     }
 
     #region UI callback methods
@@ -153,9 +165,93 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         _gameObject.SetActive(false);
     }
 
+    public void SetAttackSquare(int row, int column)
+    {
+        int square = 63 - (row * 8 + column);
+        attackedSquares |= (1UL << square);
+    }
+
+    public bool VerifyForCheck()
+    {
+        Vector2Int myKingPosition;
+        Vector2Int opponentKingPosition;
+
+        if (checkColorOfTheLocalPlayer_GameObject.tag.StartsWith("White"))
+        {
+            myKingPosition = GetRowAndColumn("WhiteKing");
+            opponentKingPosition = GetRowAndColumn("BlackKing");
+        }
+        else
+        {
+            myKingPosition = GetRowAndColumn("BlackKing");
+            opponentKingPosition = GetRowAndColumn("WhiteKing");
+        }
+
+        kingPosition = myKingPosition;
+
+        int myKingSquare = 63 - (myKingPosition.x * 8 + myKingPosition.y);
+        if ((attackedSquares & (1UL << myKingSquare)) == 0) //the bit is not set to 1
+        {
+            return false;
+        }
+        else //I am in check
+        {
+            Check();
+            return true;
+        }
+    }
+
+    public void RefreshAttackedSquares()
+    {
+        attackedSquares = 0x0000000000000000;
+
+        if (checkColorOfTheLocalPlayer_GameObject.tag.StartsWith("Black")) //local player is black
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (pieces[i,j] != null)
+                    {
+                        if (pieces[i,j].tag.StartsWith("White")) //the opponent is white
+                        {
+                            Vector2Int currentPosition = new Vector2Int(i, j);
+
+                            Piece piece = pieces[i, j].GetComponent<Piece>();
+                            piece.GetAttackLocations(currentPosition);
+                        }
+                    }
+                }
+            }
+        }
+        else if (checkColorOfTheLocalPlayer_GameObject.tag.StartsWith("White")) //local player is white
+        {
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (pieces[i, j] != null)
+                    {
+                        if (pieces[i, j].tag.StartsWith("Black")) //the opponent is black
+                        {
+                            Vector2Int currentPosition = new Vector2Int(i, j);
+
+                            Piece piece = pieces[i, j].GetComponent<Piece>();
+                            piece.GetAttackLocations(currentPosition);
+                        }
+                    }
+                }
+            }
+        }
+    }
+
     public void AddPiece(GameObject piece, int row, int col)
     {
         pieces[row, col] = piece;
+        if (row == 0 && col == 0)
+        {
+            checkColorOfTheLocalPlayer_GameObject = piece;
+        }
     }
 
     public static void PrintPieces()
@@ -287,7 +383,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         if (isPieceSelected)
         {
             DeselectPiece(selectedPiece);
-        } 
+        }
+
         MeshRenderer renderer = myPiece.GetComponent<MeshRenderer>();
         renderer.material = selectedMaterial;
         myPiece.selected = true;
@@ -296,9 +393,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         isPieceSelected = true;
 
         ShowPossibleMoves(myPiece);
-        MoveSelector.instance.EnterState(myPiece);
-       
+        MoveSelector.instance.EnterState(myPiece);    
     }
+
     public void DeselectPiece(Piece myPiece)
     {
         MeshRenderer renderers = myPiece.GetComponent<MeshRenderer>();
@@ -341,12 +438,14 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     private void ShowPossibleMoves(Piece myPiece)
     {
         Vector2Int currentPosition = GetRowAndColumn(myPiece.gameObject.tag);
+
         //Debug.Log(currentPosition);
         List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
         if (possibleMoves.Count > 0)
         {
             foreach (Vector2Int possibleMove in possibleMoves)
-            {                
+            {
+
                 if (CheckIfPositionIsFree(possibleMove.x, possibleMove.y) == false) //check if position is non-empty
                 {
                     GameObject objectOverHighlight = GetPieceAtPosition(possibleMove.x, possibleMove.y);
@@ -468,19 +567,54 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             uI_InformText.text = "Game Over! White player wins!";
             uI_InformPanelGameObject.SetActive(true);
+
+            gameOverPanel.SetActive(true);
+            EndGame();
         }
         else if (capturedPiece.tag.Equals("WhiteKing")) //Game over
         {
             uI_InformText.text = "Game Over! Black player wins!";
             uI_InformPanelGameObject.SetActive(true);
+
+            gameOverPanel.SetActive(true);
+            EndGame();
         }
         //pieces[gridPoint.x, gridPoint.y] = null;
-        Destroy(capturedPiece);
+        
+        if (capturedPiece != null)
+        {
+            Destroy(capturedPiece);
+        }
+        
         //capturedPiece.SetActive(false);
-
-
     }
 
+    private void EndGame()
+    {
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (pieces[i, j] != null)
+                {
+                    pieces[i, j].SetActive(false);
+                }
+            }
+        }
+    }
+
+    private void Check()
+    {
+        uI_InformText.text = "You are in CHECK! Save your King!";
+        uI_InformPanelGameObject.SetActive(true);
+
+        StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
+    }
+
+    public void OnGameOverButtonClicked()
+    {
+        SceneLoader.Instance.LoadScene("Scene_Lobby");
+    }
 
     #endregion
 }

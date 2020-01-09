@@ -40,6 +40,7 @@ public class Bishop : Piece
                 {
                     Vector2Int diagonalRightUp = new Vector2Int(piecePosition.x + i, piecePosition.y + i);
                     locations.Add(diagonalRightUp);
+
                     if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightUp.x, diagonalRightUp.y) == false)
                     {
                         continueRightUp = false;
@@ -53,6 +54,7 @@ public class Bishop : Piece
                 {
                     Vector2Int diagonalLeftUp = new Vector2Int(piecePosition.x + i, piecePosition.y - i);
                     locations.Add(diagonalLeftUp);
+
                     if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftUp.x, diagonalLeftUp.y) == false)
                     {
                         continueLeftUp = false;
@@ -66,6 +68,7 @@ public class Bishop : Piece
                 {
                     Vector2Int diagonalRightDown = new Vector2Int(piecePosition.x - i, piecePosition.y + i);
                     locations.Add(diagonalRightDown);
+
                     if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightDown.x, diagonalRightDown.y) == false)
                     {
                         continueRightDown = false;
@@ -79,6 +82,7 @@ public class Bishop : Piece
                 {
                     Vector2Int diagonalLeftDown = new Vector2Int(piecePosition.x - i, piecePosition.y - i);
                     locations.Add(diagonalLeftDown);
+
                     if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftDown.x, diagonalLeftDown.y) == false)
                     {
                         continueLeftDown = false;
@@ -88,6 +92,77 @@ public class Bishop : Piece
         }
 
         return locations;
+    }
+
+    public override void GetAttackLocations(Vector2Int currentPosition)
+    {
+        bool continueRightUp = true;
+        bool continueRightDown = true;
+        bool continueLeftUp = true;
+        bool continueLeftDown = true;
+
+        for (int i = 1; i < 8; i++) //all movements are in mirror
+        {         
+            if (continueRightUp) //leftDown in mirror
+            {
+                if (currentPosition.x - i >= 0 && currentPosition.y - i >= 0)
+                {
+                    Vector2Int diagonalRightUp = new Vector2Int(currentPosition.x - i, currentPosition.y - i);
+
+                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x - i, currentPosition.y - i);
+
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightUp.x, diagonalRightUp.y) == false)
+                    {
+                        continueRightUp = false;
+                    }
+                }
+            }
+
+            if (continueLeftUp) //rightDown in mirror
+            {
+                if (currentPosition.x - i >= 0 && currentPosition.y + i < 8)
+                {
+                    Vector2Int diagonalLeftUp = new Vector2Int(currentPosition.x - i, currentPosition.y + i);
+
+                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x - i, currentPosition.y + i);
+
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftUp.x, diagonalLeftUp.y) == false)
+                    {
+                        continueLeftUp = false;
+                    }
+                }
+            }
+
+            if (continueRightDown) //leftUp in mirror
+            {
+                if (currentPosition.x + i < 8 && currentPosition.y - i >= 0)
+                {
+                    Vector2Int diagonalRightDown = new Vector2Int(currentPosition.x + i, currentPosition.y - i);
+
+                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x + i, currentPosition.y - i);
+
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightDown.x, diagonalRightDown.y) == false)
+                    {
+                        continueRightDown = false;
+                    }
+                }
+            }
+
+            if (continueLeftDown) //rightUp in mirror
+            {
+                if (currentPosition.x + i < 8 && currentPosition.y + i < 8)
+                {
+                    Vector2Int diagonalLeftDown = new Vector2Int(currentPosition.x + i, currentPosition.y + i);
+
+                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x + i, currentPosition.y + i);
+
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftDown.x, diagonalLeftDown.y) == false)
+                    {
+                        continueLeftDown = false;
+                    }
+                }
+            }
+        }
     }
 
     [PunRPC]
@@ -105,6 +180,10 @@ public class Bishop : Piece
         ARChessGameManager.pieces[oppositePosition.x, oppositePosition.y] = myPiece; //the pawn may have moved one square or two squares
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
         //ARChessGameManager.PrintPieces();
+
+        ARChessGameManager.instance.RefreshAttackedSquares();
+
+        ARChessGameManager.instance.VerifyForCheck();
     }
 
     [PunRPC]
@@ -119,6 +198,10 @@ public class Bishop : Piece
         ARChessGameManager.instance.MovePiece(myPiece, targetPosition + chessBoard.transform.position);
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
+
+        ARChessGameManager.instance.RefreshAttackedSquares();
+
+        ARChessGameManager.instance.VerifyForCheck();
     }
 
     [PunRPC]
@@ -126,4 +209,6 @@ public class Bishop : Piece
     {
         ARChessGameManager.instance.ChangePlayer();
     }
+
+    
 }

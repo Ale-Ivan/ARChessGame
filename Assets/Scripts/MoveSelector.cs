@@ -47,6 +47,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 1, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 3);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 1);
 
                             Vector2Int specialMove = new Vector2Int();
@@ -73,6 +78,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook1, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 3, rook1);
                             ARChessGameManager.instance.SetPositionToNull(0, 0);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook1", 0, 3);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -97,6 +107,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook2, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 4, rook2);
                             ARChessGameManager.instance.SetPositionToNull(0, 7);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook2", 0, 4);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -115,6 +130,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook2, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 5, rook2);
                             ARChessGameManager.instance.SetPositionToNull(0, 7);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook2", 0, 5);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -133,6 +153,11 @@ public class MoveSelector : MonoBehaviour
                         Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(piece.tag);
                         ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());
                         ARChessGameManager.instance.SetPositionToNull(initialPosition.x, initialPosition.y);
+
+                        //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                        //ARChessGameManager.instance.VerifyForCheck();
+
                         //debugText.text += " " + initialPosition.x + " " + initialPosition.y;
                         piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                         ARChessGameManager.instance.ChangePlayer();
@@ -165,7 +190,7 @@ public class MoveSelector : MonoBehaviour
 
                     ExitState();
                 }
-                else if ((piece.tag.StartsWith("White") && hitObject.tag.StartsWith("Black")) || (piece.tag.StartsWith("Black") && hitObject.tag.StartsWith("White"))) //full location => capture piece
+                else if (ARChessGameManager.instance.highlightedObjects.Contains(hitObject) && ((piece.tag.StartsWith("White") && hitObject.tag.StartsWith("Black")) || (piece.tag.StartsWith("Black") && hitObject.tag.StartsWith("White")))) //full location => capture piece
                 {
                     ARChessGameManager.instance.CapturePieceAt(gridPoint);
                     ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
@@ -175,6 +200,10 @@ public class MoveSelector : MonoBehaviour
                     Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(piece.tag);
                     ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());
                     ARChessGameManager.instance.SetPositionToNull(initialPosition.x, initialPosition.y);
+
+                    //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                    //ARChessGameManager.instance.VerifyForCheck();
 
                     piece.GetPhotonView().RPC("CapturePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                     ARChessGameManager.instance.ChangePlayer();
@@ -216,6 +245,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook1, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 2, rook1);
                             ARChessGameManager.instance.SetPositionToNull(0, 0);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook1", 0, 2);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -234,6 +268,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook1, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 3, rook1);
                             ARChessGameManager.instance.SetPositionToNull(0, 0);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook1", 0, 3);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -250,6 +289,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 5, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 3);
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 5);
 
                             Vector2Int specialMove = new Vector2Int();
@@ -258,6 +298,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook2, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 4, rook2);
                             ARChessGameManager.instance.SetPositionToNull(0, 7);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook2", 0, 4);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -276,6 +321,11 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.MovePiece(rook2, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 5, rook2);
                             ARChessGameManager.instance.SetPositionToNull(0, 7);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
+
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook2", 0, 5);
 
                             ARChessGameManager.instance.ChangePlayer();
@@ -295,6 +345,11 @@ public class MoveSelector : MonoBehaviour
                                 Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(piece.tag);
                                 ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());
                                 ARChessGameManager.instance.SetPositionToNull(initialPosition.x, initialPosition.y);
+
+                                //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                                //ARChessGameManager.instance.VerifyForCheck();
+
                                 piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                                 ARChessGameManager.instance.ChangePlayer();
                                 piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
@@ -326,7 +381,7 @@ public class MoveSelector : MonoBehaviour
 
                             ExitState();
                         }
-                        else if ((piece.tag.StartsWith("White") && hitObject.tag.StartsWith("Black")) || (piece.tag.StartsWith("Black") && hitObject.tag.StartsWith("White"))) //full location => capture piece
+                        else if (ARChessGameManager.instance.highlightedObjects.Contains(hitObject) && ((piece.tag.StartsWith("White") && hitObject.tag.StartsWith("Black")) || (piece.tag.StartsWith("Black") && hitObject.tag.StartsWith("White")))) //full location => capture piece
                         {
                             ARChessGameManager.instance.CapturePieceAt(gridPoint);
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
@@ -336,6 +391,10 @@ public class MoveSelector : MonoBehaviour
                             Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(piece.tag);
                             ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(initialPosition.x, initialPosition.y);
+
+                            //ARChessGameManager.instance.RefreshAttackedSquares();
+
+                            //ARChessGameManager.instance.VerifyForCheck();
 
                             piece.GetPhotonView().RPC("CapturePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                             ARChessGameManager.instance.ChangePlayer();

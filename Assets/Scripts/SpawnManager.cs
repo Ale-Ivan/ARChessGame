@@ -81,12 +81,12 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
             Vector3 instantiatePosition = spawnPositions[1].position; // + chessBoardGameObject.transform.position
 
-            //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
-            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
-            //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
-            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
-            //Vector3 change = new Vector3(0.3f, 0f, 0f);
-            Vector3 change = new Vector3(0.6f, 0f, 0f);
+            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
+            //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
+            //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.3f, 0f, 0f);
+            //Vector3 change = new Vector3(0.6f, 0f, 0f);
 
             if (receivedPlayerSelection == 0) //opponent is black
             {
@@ -207,12 +207,12 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             Debug.Log("Player Selection number is " + (int)playerSelectionNumber);
             Vector3 instantiatePosition = spawnPositions[0].position;
 
-            //Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(1.05f, 0f, 0.15f);
-            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
-            //Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(1.05f, 0f, -0.15f);
-            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
-            //Vector3 change = new Vector3(0.3f, 0f, 0f);
-            Vector3 change = new Vector3(0.6f, 0f, 0f);
+            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(1.05f, 0f, 0.15f);
+            //Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(1.05f, 0f, -0.15f);
+            //Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.3f, 0f, 0f);
+            //Vector3 change = new Vector3(0.6f, 0f, 0f);
             int[] viewIDs = new int[16];
 
             int numberOfRooks = 0;

@@ -1144,7 +1144,7 @@ ScriptsOnlyBuild:
     className: PlayerDetailsController
   - hash:
       serializedVersion: 2
-      Hash: 04e91baf787bea73f2a64c2626f21f67
+      Hash: 908c50c0f66aedf13e07c29f81995b20
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: MoveSelector
@@ -1996,7 +1996,7 @@ ScriptsOnlyBuild:
     className: WorldGenerator
   - hash:
       serializedVersion: 2
-      Hash: dc5d4e9669a62bcdfdc366a0e2dce84d
+      Hash: fd44fe727f8ea199a22b7bdefabdf6db
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ARChessGameManager
