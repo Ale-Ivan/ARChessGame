@@ -135,6 +135,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11472}
     - Class: 114
+      Script: {instanceID: 11498}
+    - Class: 114
       Script: {instanceID: 11526}
     - Class: 114
       Script: {instanceID: 11540}
@@ -404,6 +406,8 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 11208}
     - Class: 114
+      Script: {instanceID: 11498}
+    - Class: 114
       Script: {instanceID: 11540}
     - Class: 114
       Script: {instanceID: 11830}
@@ -598,7 +602,7 @@ ScriptsOnlyBuild:
     className: CullingHandler
   - hash:
       serializedVersion: 2
-      Hash: 41df93525e3ced89d4963684016b94a9
+      Hash: 4d4e2be7231c0e917accfd992f90d317
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: SpawnManager
@@ -1732,7 +1736,7 @@ ScriptsOnlyBuild:
     className: MarkerTrack
   - hash:
       serializedVersion: 2
-      Hash: d189ec92b28fffba75369957d94cecd1
+      Hash: 8846f48f780ddc0ab2f4ba56ec479b4a
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: LobbyManager
@@ -1882,7 +1886,7 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
-      Hash: d06e53673a8bd1a9a96ebf3e323d0b58
+      Hash: efd44bb5755aa41d7adcbc110ef5024c
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerSelectionManager
@@ -1996,7 +2000,7 @@ ScriptsOnlyBuild:
     className: WorldGenerator
   - hash:
       serializedVersion: 2
-      Hash: fd44fe727f8ea199a22b7bdefabdf6db
+      Hash: 7632d57e40c92f6f3f309fe3325a63ad
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ARChessGameManager

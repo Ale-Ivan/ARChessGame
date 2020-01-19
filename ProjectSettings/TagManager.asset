@@ -4,47 +4,72 @@
 TagManager:
   serializedVersion: 2
   tags:
-  - Undefined
-  - ChessBoard
-  - BlackRook
-  - WhitePawn1
-  - BlackBishop
-  - BlackKnight
-  - BlackKing
-  - WhiteQueen
-  - WhiteKing
-  - WhitePawn2
-  - WhitePawn6
-  - WhitePawn4
-  - WhiteKnight2
-  - WhiteRook2
-  - WhiteBishop2
-  - WhiteKnight1
-  - WhitePawn5
-  - WhiteRook1
-  - WhitePawn3
-  - WhitePawn7
-  - WhitePawn8
-  - WhiteBishop1
-  - BlackBishop1
-  - BlackPawn7
-  - BlackPawn6
-  - BlackPawn8
-  - BlackRook2
-  - BlackBishop2
-  - BlackPawn4
-  - BlackQueen
-  - BlackPawn5
   - BlackRook1
+  - BlackRook2
   - BlackKnight1
   - BlackKnight2
-  - BlackPawn3
-  - BlackPawn2
+  - BlackBishop1
+  - BlackBishop2
+  - BlackKing
+  - BlackQueen
   - BlackPawn1
-  - BlackQueen2
-  - BlackQueen3
-  - WhiteQueen2
-  - WhiteQueen3
+  - BlackPawn2
+  - BlackPawn3
+  - BlackPawn4
+  - BlackPawn5
+  - BlackPawn6
+  - BlackPawn7
+  - BlackPawn8
+  - WhiteRook1
+  - WhiteRook2
+  - WhiteKnight1
+  - WhiteKnight2
+  - WhiteBishop1
+  - WhiteBishop2
+  - WhiteKing
+  - WhiteQueen
+  - WhitePawn1
+  - WhitePawn2
+  - WhitePawn3
+  - WhitePawn4
+  - WhitePawn5
+  - WhitePawn6
+  - WhitePawn7
+  - WhitePawn8
+  - BlueRook1
+  - BlueRook2
+  - BlueKnight1
+  - BlueKnight2
+  - BlueBishop1
+  - BlueBishop2
+  - BlueKing
+  - BlueQueen
+  - BluePawn1
+  - BluePawn2
+  - BluePawn3
+  - BluePawn4
+  - BluePawn5
+  - BluePawn6
+  - BluePawn7
+  - BluePawn8
+  - RedRook1
+  - RedRook2
+  - RedKnight1
+  - RedKnight2
+  - RedBishop1
+  - RedBishop2
+  - RedKing
+  - RedQueen
+  - RedPawn1
+  - RedPawn2
+  - RedPawn3
+  - RedPawn4
+  - RedPawn5
+  - RedPawn6
+  - RedPawn7
+  - RedPawn8
+  - ChessBoard
+  - Highlight
   layers:
   - Default
   - TransparentFX

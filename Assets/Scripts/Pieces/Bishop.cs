@@ -182,7 +182,6 @@ public class Bishop : Piece
         //ARChessGameManager.PrintPieces();
 
         ARChessGameManager.instance.RefreshAttackedSquares();
-
         ARChessGameManager.instance.VerifyForCheck();
     }
 
@@ -200,7 +199,6 @@ public class Bishop : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares();
-
         ARChessGameManager.instance.VerifyForCheck();
     }
 

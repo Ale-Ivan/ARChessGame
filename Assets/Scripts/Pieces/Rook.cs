@@ -176,7 +176,6 @@ public class Rook : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares();
-
         ARChessGameManager.instance.VerifyForCheck();
     }
 
@@ -194,7 +193,6 @@ public class Rook : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares();
-
         ARChessGameManager.instance.VerifyForCheck();
     }
 

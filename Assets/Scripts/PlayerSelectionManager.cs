@@ -9,20 +9,42 @@ public class PlayerSelectionManager : MonoBehaviour
 {
     public Transform playerSwitcherTransform;
 
-    public GameObject[] chessPiecesModels;
-
-    public int playerSelectionNumber;
+    private int playerSelectionNumber;
 
     [Header("UI")]
     public TextMeshProUGUI chessPieceType_Text;
     public Button next_Button;
     public Button previous_Button;
+    public GameObject unlock_Button;
+    public InputField roomNameInputField;
 
     public GameObject uI_Selection;
     public GameObject uI_AfterSelection;
+    public GameObject bottomBarForSelection;
 
+    public Material[] possibleMaterialColors;
+
+    public GameObject selectionPiece;
+    private string[] colors = { "Black", "White", "Blue", "Red" };
+
+    public Image lockImage;
+
+    private bool unlockedBlue;
+    private bool unlockedRed;
+
+    public static PlayerSelectionManager instance;
+
+    private string roomName;
+
+    public GameObject uI_ForegroundGameObject;
+    public GameObject uI_RoomNameGameObject;
 
     #region UNITY methods
+    private void Awake()
+    {
+        instance = this;
+    }
+
     // Start is called before the first frame update
     void Start()
     {
@@ -30,8 +52,19 @@ public class PlayerSelectionManager : MonoBehaviour
         uI_Selection.SetActive(true);
         uI_AfterSelection.SetActive(false);
 
-        chessPiecesModels[0].SetActive(true);
-        chessPiecesModels[1].SetActive(false);
+        selectionPiece.SetActive(true);
+
+        bottomBarForSelection.SetActive(true);
+
+        unlock_Button.SetActive(false);
+
+        lockImage.enabled = false;
+
+        unlockedBlue = false;
+        unlockedRed = false;
+
+        uI_RoomNameGameObject.SetActive(false);
+        uI_ForegroundGameObject.SetActive(true);
     }
 
     // Update is called once per frame
@@ -48,7 +81,7 @@ public class PlayerSelectionManager : MonoBehaviour
     {
         playerSelectionNumber++;
 
-        if (playerSelectionNumber >= chessPiecesModels.Length)
+        if (playerSelectionNumber >= possibleMaterialColors.Length)
         {
             playerSelectionNumber = 0;
         }
@@ -56,17 +89,13 @@ public class PlayerSelectionManager : MonoBehaviour
         next_Button.enabled = false;
         previous_Button.enabled = false;
 
+        selectionPiece.GetComponent<MeshRenderer>().material = possibleMaterialColors[playerSelectionNumber];
+        chessPieceType_Text.text = colors[playerSelectionNumber];
 
-        if (playerSelectionNumber == 0)
-        {
-            ShowBlackPiece();
-            chessPieceType_Text.text = "Black";  
-        }
-        else
-        {
-            ShowWhitePiece();
-            chessPieceType_Text.text = "White";
-        }
+        ShowLock();
+
+        next_Button.enabled = true;
+        previous_Button.enabled = true;
     }
 
     public void PreviousPiece()
@@ -75,22 +104,46 @@ public class PlayerSelectionManager : MonoBehaviour
 
         if (playerSelectionNumber < 0)
         {
-            playerSelectionNumber = chessPiecesModels.Length - 1;
+            playerSelectionNumber = possibleMaterialColors.Length - 1;
         }
 
         next_Button.enabled = false;
         previous_Button.enabled = false;
 
-        if (playerSelectionNumber == 0)
+        selectionPiece.GetComponent<MeshRenderer>().material = possibleMaterialColors[playerSelectionNumber];
+        chessPieceType_Text.text = colors[playerSelectionNumber];
+
+        ShowLock();
+
+        next_Button.enabled = true;
+        previous_Button.enabled = true;
+    }
+
+    private void ShowLock()
+    {
+        if ((playerSelectionNumber == 2 && !unlockedBlue) || (playerSelectionNumber == 3 && !unlockedRed))
         {
-            ShowBlackPiece();
-            chessPieceType_Text.text = "Black";
+            lockImage.enabled = true;
+            bottomBarForSelection.SetActive(false);
+            unlock_Button.SetActive(true);
         }
         else
         {
-            ShowWhitePiece();
-            chessPieceType_Text.text = "White";
+            lockImage.enabled = false;
+            bottomBarForSelection.SetActive(true);
+            unlock_Button.SetActive(false);
         }
+    }
+
+    public void OnConfirmButtonClicked()
+    {
+        roomName = roomNameInputField.text;
+        SceneLoader.Instance.LoadScene("Scene_Gameplay");
+    }
+
+    public string GetRoomName()
+    {
+        return this.roomName;
     }
 
     public void OnSelectButtonClicked()
@@ -103,16 +156,32 @@ public class PlayerSelectionManager : MonoBehaviour
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerSelectionProp);
     }
 
+    public void OnUnlockButtonClicked()
+    {
+        if (playerSelectionNumber == 2)
+        {
+            unlockedBlue = true;
+        } 
+        else if (playerSelectionNumber == 3)
+        {
+            unlockedRed = true;
+        }
+
+        unlock_Button.SetActive(false);
+        lockImage.enabled = false;
+        bottomBarForSelection.SetActive(true);
+    }
+
     public void OnReselectButtonClicked()
     {
         uI_Selection.SetActive(true);
         uI_AfterSelection.SetActive(false);
     }
 
-
     public void OnPlayButtonClicked()
     {
-        SceneLoader.Instance.LoadScene("Scene_Gameplay");
+        uI_RoomNameGameObject.SetActive(true);
+        uI_ForegroundGameObject.SetActive(false);
     }
 
     public void OnBackButtonClicked()
@@ -123,23 +192,7 @@ public class PlayerSelectionManager : MonoBehaviour
 
     #region Private methods
 
-    private void ShowBlackPiece()
-    {
-        chessPiecesModels[0].SetActive(true);
-        chessPiecesModels[1].SetActive(false);
-
-        next_Button.enabled = true;
-        previous_Button.enabled = true;
-    }
-
-    private void ShowWhitePiece()
-    {
-        chessPiecesModels[0].SetActive(false);
-        chessPiecesModels[1].SetActive(true);
-
-        next_Button.enabled = true;
-        previous_Button.enabled = true;
-    }
+   
 
     #endregion
 }

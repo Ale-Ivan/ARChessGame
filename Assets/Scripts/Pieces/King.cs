@@ -138,7 +138,6 @@ public class King : Piece
         //ARChessGameManager.PrintPieces();
 
         ARChessGameManager.instance.RefreshAttackedSquares();
-
         ARChessGameManager.instance.VerifyForCheck();
     }
 
@@ -156,7 +155,6 @@ public class King : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares();
-
         ARChessGameManager.instance.VerifyForCheck();
     }
 

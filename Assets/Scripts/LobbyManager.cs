@@ -11,6 +11,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 {
     [Header("Login UI")]
     public InputField playerNameInputField;
+    public InputField roomNameInputField;
     public GameObject UI_LoginGameObject;
 
     [Header("Lobby UI")]
@@ -76,6 +77,7 @@ public class LobbyManager : MonoBehaviourPunCallbacks
 
             if (!PhotonNetwork.IsConnected)
             {
+                PhotonNetwork.JoinLobby();
                 PhotonNetwork.LocalPlayer.NickName = playerName;
                 PhotonNetwork.ConnectUsingSettings();
             }
