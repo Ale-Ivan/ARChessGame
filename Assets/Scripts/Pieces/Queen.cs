@@ -47,7 +47,7 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalRightUp = new Vector2Int(piecePosition.x + i, piecePosition.y + i);
                     locations.Add(diagonalRightUp);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightUp.x, diagonalRightUp.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightUp.x, diagonalRightUp.y) == false)
                     {
                         continueRightUp = false;
                     }
@@ -60,7 +60,7 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalLeftUp = new Vector2Int(piecePosition.x + i, piecePosition.y - i);
                     locations.Add(diagonalLeftUp);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftUp.x, diagonalLeftUp.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftUp.x, diagonalLeftUp.y) == false)
                     {
                         continueLeftUp = false;
                     }
@@ -73,7 +73,7 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalRightDown = new Vector2Int(piecePosition.x - i, piecePosition.y + i);
                     locations.Add(diagonalRightDown);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightDown.x, diagonalRightDown.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightDown.x, diagonalRightDown.y) == false)
                     {
                         continueRightDown = false;
                     }
@@ -86,7 +86,7 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalLeftDown = new Vector2Int(piecePosition.x - i, piecePosition.y - i);
                     locations.Add(diagonalLeftDown);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftDown.x, diagonalLeftDown.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftDown.x, diagonalLeftDown.y) == false)
                     {
                         continueLeftDown = false;
                     }
@@ -99,7 +99,7 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationForward = new Vector2Int(piecePosition.x + i, piecePosition.y); //move forward
                     locations.Add(possibleLocationForward);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationForward.x, possibleLocationForward.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationForward.x, possibleLocationForward.y) == false)
                     {
                         continueForward = false;
                     }
@@ -112,7 +112,7 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationBackward = new Vector2Int(piecePosition.x - i, piecePosition.y); //move backwards
                     locations.Add(possibleLocationBackward);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationBackward.x, possibleLocationBackward.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationBackward.x, possibleLocationBackward.y) == false)
                     {
                         continueBackward = false;
                     }
@@ -125,7 +125,7 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationLeft = new Vector2Int(piecePosition.x, piecePosition.y - i); //move left
                     locations.Add(possibleLocationLeft);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationLeft.x, possibleLocationLeft.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeft.x, possibleLocationLeft.y) == false)
                     {
                         continueLeft = false;
                     }
@@ -138,7 +138,7 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationRight = new Vector2Int(piecePosition.x, piecePosition.y + i); //move right
                     locations.Add(possibleLocationRight);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationRight.x, possibleLocationRight.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRight.x, possibleLocationRight.y) == false)
                     {
                         continueRight = false;
                     }
@@ -152,7 +152,7 @@ public class Queen : Piece
         return locations;
     }
 
-    public override void GetAttackLocations(Vector2Int currentPosition)
+    public override void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition)
     {
         //bishop moves
         bool continueRightUp = true;
@@ -175,9 +175,9 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalRightUp = new Vector2Int(currentPosition.x - i, currentPosition.y - i);
 
-                    ARChessGameManager.instance.SetAttackSquare(diagonalRightUp.x, diagonalRightUp.y);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, diagonalRightUp.x, diagonalRightUp.y);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightUp.x, diagonalRightUp.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, diagonalRightUp.x, diagonalRightUp.y) == false)
                     {
                         continueRightUp = false;
                     }
@@ -190,9 +190,9 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalLeftUp = new Vector2Int(currentPosition.x - i, currentPosition.y + i);
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x - i, currentPosition.y + i);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - i, currentPosition.y + i);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftUp.x, diagonalLeftUp.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, diagonalLeftUp.x, diagonalLeftUp.y) == false)
                     {
                         continueLeftUp = false;
                     }
@@ -205,9 +205,9 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalRightDown = new Vector2Int(currentPosition.x + i, currentPosition.y - i);
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x + i, currentPosition.y - i);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + i, currentPosition.y - i);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalRightDown.x, diagonalRightDown.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, diagonalRightDown.x, diagonalRightDown.y) == false)
                     {
                         continueRightDown = false;
                     }
@@ -220,9 +220,9 @@ public class Queen : Piece
                 {
                     Vector2Int diagonalLeftDown = new Vector2Int(currentPosition.x + i, currentPosition.y + i);
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x + i, currentPosition.y + i);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + i, currentPosition.y + i);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(diagonalLeftDown.x, diagonalLeftDown.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, diagonalLeftDown.x, diagonalLeftDown.y) == false)
                     {
                         continueLeftDown = false;
                     }
@@ -235,9 +235,9 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationForward = new Vector2Int(currentPosition.x - i, currentPosition.y); //move forward
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x - i, currentPosition.y);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - i, currentPosition.y);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationForward.x, possibleLocationForward.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, possibleLocationForward.x, possibleLocationForward.y) == false)
                     {
                         continueForward = false;
                     }
@@ -250,9 +250,9 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationBackward = new Vector2Int(currentPosition.x + i, currentPosition.y); //move backwards
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x + i, currentPosition.y);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + i, currentPosition.y);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationBackward.x, possibleLocationBackward.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, possibleLocationBackward.x, possibleLocationBackward.y) == false)
                     {
                         continueBackward = false;
                     }
@@ -265,9 +265,9 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationLeft = new Vector2Int(currentPosition.x, currentPosition.y + i); //move left
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x, currentPosition.y + i);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x, currentPosition.y + i);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationLeft.x, possibleLocationLeft.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, possibleLocationLeft.x, possibleLocationLeft.y) == false)
                     {
                         continueLeft = false;
                     }
@@ -280,9 +280,9 @@ public class Queen : Piece
                 {
                     Vector2Int possibleLocationRight = new Vector2Int(currentPosition.x, currentPosition.y - i); //move right
 
-                    ARChessGameManager.instance.SetAttackSquare(currentPosition.x, currentPosition.y - i);
+                    ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x, currentPosition.y - i);
 
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(possibleLocationRight.x, possibleLocationRight.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(arrayWithPieces, possibleLocationRight.x, possibleLocationRight.y) == false)
                     {
                         continueRight = false;
                     }
@@ -308,8 +308,8 @@ public class Queen : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
         //ARChessGameManager.PrintPieces();
 
-        ARChessGameManager.instance.RefreshAttackedSquares();
-        ARChessGameManager.instance.VerifyForCheck();
+        ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
+        ARChessGameManager.instance.VerifyForCheck(false);
     }
 
     [PunRPC]
@@ -325,8 +325,8 @@ public class Queen : Piece
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
-        ARChessGameManager.instance.RefreshAttackedSquares();
-        ARChessGameManager.instance.VerifyForCheck();
+        ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
+        ARChessGameManager.instance.VerifyForCheck(false);
     }
 
     [PunRPC]

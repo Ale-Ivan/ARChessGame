@@ -78,46 +78,46 @@ public class King : Piece
         return locations;
     }
 
-    public override void GetAttackLocations(Vector2Int currentPosition)
+    public override void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition)
     {
         if (currentPosition.x != 0) //backward
         {
-            ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y);
+            ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 1, currentPosition.y);
 
             if (currentPosition.y != 0) //diagonalLeftDown
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y - 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 1, currentPosition.y - 1);
             }
 
             if (currentPosition.y != 7) //diagonalRightDown
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y + 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 1, currentPosition.y + 1);
             }
         }
 
         if (currentPosition.x != 7) //forward
         {
-            ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 1, currentPosition.y);
+            ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 1, currentPosition.y);
 
             if (currentPosition.y != 0) //diagonalLeftUp
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 1, currentPosition.y - 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 1, currentPosition.y - 1);
             }
 
             if (currentPosition.y != 7) //diagonalRightUp
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 1, currentPosition.y + 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 1, currentPosition.y + 1);
             }
         }
 
         if (currentPosition.y != 7) //right
         {
-            ARChessGameManager.instance.SetAttackSquare(currentPosition.x, currentPosition.y + 1);
+            ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x, currentPosition.y + 1);
         }
 
         if (currentPosition.y != 0) //left
         {
-            ARChessGameManager.instance.SetAttackSquare(currentPosition.x, currentPosition.y - 1);
+            ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x, currentPosition.y - 1);
         }
     }
 
@@ -137,8 +137,8 @@ public class King : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
         //ARChessGameManager.PrintPieces();
 
-        ARChessGameManager.instance.RefreshAttackedSquares();
-        ARChessGameManager.instance.VerifyForCheck();
+        ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
+        ARChessGameManager.instance.VerifyForCheck(false);
     }
 
     [PunRPC]
@@ -154,8 +154,8 @@ public class King : Piece
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
-        ARChessGameManager.instance.RefreshAttackedSquares();
-        ARChessGameManager.instance.VerifyForCheck();
+        ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
+        ARChessGameManager.instance.VerifyForCheck(false);
     }
 
     [PunRPC]

@@ -70,6 +70,7 @@ TagManager:
   - RedPawn8
   - ChessBoard
   - Highlight
+  - IllegalHighlight
   layers:
   - Default
   - TransparentFX

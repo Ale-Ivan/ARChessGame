@@ -1,6 +1,4 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.UI;
 
 using Photon.Pun;
@@ -10,11 +8,7 @@ using TMPro;
 
 public class SpawnManager : MonoBehaviourPunCallbacks
 {
-    public GameObject[] playerPrefabs;
     public Transform[] spawnPositions;
-
-    public GameObject[] blackPieces;
-    public GameObject[] whitePieces;
 
     public GameObject[] pieces;
 
@@ -22,28 +16,18 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
     public Material[] possibleMaterialColors;
 
-    private string[] possibleColors = { "Black", "White", "Blue", "Red" }; //Black can be replaced by Blue and White by Red
+    private string[] possibleColors = { "Black", "White" };
     private string pieceColor;
 
     public InputField messageInputField;
     public TextMeshProUGUI messageFromOpponent;
 
-    public enum RaiseEventCodes
-    {
-        PlayerSpawnEventCode = 0,
-        PlayerMessageEventCode = 1
-    }
+    public Mesh[] meshTypes;
 
     // Start is called before the first frame update
     void Start()
     {
         PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void OnDestroy()
@@ -52,38 +36,9 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     }
 
     #region Photon callback methods
-    //This method will be called at other players, when I raise an event => my battleArenaGameObject != their battleArenaGameObject
-    /* void OnEvent(EventData photonEvent)
-     {
-         if (photonEvent.Code == (byte)RaiseEventCodes.PlayerSpawnEventCode)
-         {
-             object[] data = (object[])photonEvent.CustomData;
-             //Vector3 receivedPosition = (Vector3)data[0];
-             //Quaternion receivedRotation = (Quaternion)data[1];
-             int receivedPlayerSelection = (int)data[3];
-
-             GameObject playerGameObject = Instantiate(playerPrefabs[receivedPlayerSelection], spawnPositions[1].position + chessBoardGameObject.transform.position, Quaternion.identity);
-
-             for (int i = 0; i < 8; i++)
-             {
-                 GameObject firstRowPiece = playerGameObject.transform.GetChild(i).gameObject;
-                 ARChessGameManager.AddPiece(firstRowPiece, 7, i);
-                 GameObject secondRowiece = playerGameObject.transform.GetChild(i + 8).gameObject;
-                 ARChessGameManager.AddPiece(secondRowiece, 6, i);
-             }
-
-             //ARChessGameManager.PrintPieces();
-
-             PhotonView _photonView = playerGameObject.GetComponent<PhotonView>();
-             _photonView.ViewID = (int)data[2];
-
-             //Debug.Log(_photonView.ViewID);
-         }
-     }*/
-
     void OnEvent(EventData photonEvent)
     {
-        if (photonEvent.Code == (byte)RaiseEventCodes.PlayerSpawnEventCode)
+        /*if (photonEvent.Code == (byte)RaiseEventCodes.PlayerSpawnEventCode)
         {
             object[] data = (object[])photonEvent.CustomData;
             //Vector3 receivedPosition = (Vector3)data[0];
@@ -92,24 +47,16 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             int count = (int)data[4];
             string tag = (string)data[5];
 
-            Material pieceMaterialColor = possibleMaterialColors[receivedPlayerSelection];
-            pieceColor = possibleColors[receivedPlayerSelection];
+            Material pieceMaterialColor = possibleMaterialColors[receivedPlayerSelection % 2];
+            pieceColor = possibleColors[receivedPlayerSelection % 2];
 
             if (pieceColor.Equals("White"))
             {
                 ARChessGameManager.instance.currentPlayer = "White";
             }
-            else if (pieceColor.Equals("Red"))
-            {
-                ARChessGameManager.instance.currentPlayer = "Red";
-            }
             else if (pieceColor.Equals("Black"))
             {
                 ARChessGameManager.instance.otherPlayer = "Black";
-            }
-            else if (pieceColor.Equals("Blue"))
-            {
-                ARChessGameManager.instance.otherPlayer = "Blue";
             }
 
             ARChessGameManager.instance.colorOfOpponent = pieceColor;
@@ -128,23 +75,55 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             {
                 if (count == 0 || count == 7) //Rook
                 {
-                    playerPiece = Instantiate(pieces[0], initialPositionFirstRow - count * change, receivedRotation);
+                    GameObject rook;
+                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                    {
+                        rook = pieces[0];
+                    } 
+                    else
+                    {
+                        rook = pieces[6];
+                    }
+                    playerPiece = Instantiate(rook, initialPositionFirstRow - count * change, receivedRotation);
                 }
                 else if (count == 1 || count == 6) //Knight
                 {
-                    playerPiece = Instantiate(pieces[1], initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
+                    GameObject knight;
+                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                    {
+                        knight = pieces[1];
+                        playerPiece = Instantiate(knight, initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
+                    }
+                    else
+                    {
+                        knight = pieces[7];
+                        playerPiece = Instantiate(knight, initialPositionFirstRow - count * change, Quaternion.Euler(0, 180, 0));
+                    }
                 }
                 else if (count == 2 || count == 5) //Bishop
                 {
-                    playerPiece = Instantiate(pieces[2], initialPositionFirstRow - count * change, receivedRotation);
+                    GameObject bishop;
+                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                    {
+                        bishop = pieces[2];
+                    }
+                    else
+                    {
+                        bishop = pieces[8];
+                    }
+                    playerPiece = Instantiate(bishop, initialPositionFirstRow - count * change, receivedRotation);
                 }
                 else
                 {
-                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 2) //black or blue
+                    if (receivedPlayerSelection == 0) //simple black
                     {
                         playerPiece = Instantiate(pieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
                     }
-                    else
+                    else if (receivedPlayerSelection == 2) //extra black
+                    {
+                        playerPiece = Instantiate(pieces[count + 6], initialPositionFirstRow - (count) * change, receivedRotation);
+                    }
+                    else if (receivedPlayerSelection == 1) //simple white
                     {
                         if (count == 3)
                         {
@@ -153,6 +132,17 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                         else
                         {
                             playerPiece = Instantiate(pieces[count - 1], initialPositionFirstRow - (count) * change, receivedRotation);
+                        }
+                    }
+                    else
+                    {
+                        if (count == 3)
+                        {
+                            playerPiece = Instantiate(pieces[count + 7], initialPositionFirstRow - (count) * change, receivedRotation);
+                        }
+                        else
+                        {
+                            playerPiece = Instantiate(pieces[count + 5], initialPositionFirstRow - (count) * change, receivedRotation);
                         }
                     }
                 }
@@ -165,7 +155,14 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             }
             else //Pawns
             {
-                playerPiece = Instantiate(pieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
+                if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                {
+                    playerPiece = Instantiate(pieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
+                }
+                else
+                {
+                    playerPiece = Instantiate(pieces[11], initialPositionSecondRow - (count - 8) * change, receivedRotation);
+                }
 
                 playerPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
 
@@ -185,113 +182,11 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             //Debug.Log(message);
             messageFromOpponent.text = message;
         }
-    }
- 
-
-    /*void OnEvent(EventData photonEvent)
-    {
-        if (photonEvent.Code == (byte)RaiseEventCodes.PlayerSpawnEventCode)
+        else if (photonEvent.Code == (byte)RaiseEventCodes.PlayerQuitGameCode)
         {
             object[] data = (object[])photonEvent.CustomData;
-            Vector3 receivedPosition = (Vector3)data[0];
-            Quaternion receivedRotation = (Quaternion)data[1];
-            int receivedPlayerSelection = (int)data[3];
-            int count = (int)data[4];
-            string tag = (string)data[5];
-
-            Vector3 instantiatePosition = spawnPositions[1].position; // + chessBoardGameObject.transform.position
-
-            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
-            //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
-            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
-            //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
-            Vector3 change = new Vector3(0.3f, 0f, 0f);
-            //Vector3 change = new Vector3(0.6f, 0f, 0f);
-
-            if (receivedPlayerSelection == 0) //opponent is black
-            {
-                GameObject playerPiece;
-                if (count < 8)
-                {
-                    if (count == 0 || count == 7) //Rook
-                    {
-                        playerPiece = Instantiate(blackPieces[0], initialPositionFirstRow - count * change, receivedRotation);
-                    }
-                    else if (count == 1 || count == 6) //Knight
-                    {
-                        playerPiece = Instantiate(blackPieces[1], initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
-                    }
-                    else if (count == 2 || count == 5) //Bishop
-                    {
-                        playerPiece = Instantiate(blackPieces[2], initialPositionFirstRow - count * change, receivedRotation);
-                    }
-                    else if (count == 3)//King 
-                    {
-                        playerPiece = Instantiate(blackPieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
-                    }
-                    else //Queen
-                    {
-                        playerPiece = Instantiate(blackPieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
-                    }
-                    
-                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
-                    playerPiecePhotonView.ViewID = (int)data[2];
-                    ARChessGameManager.instance.AddPiece(playerPiece, 7, 7 - count); 
-                }
-                else //Pawns
-                {
-                    playerPiece = Instantiate(blackPieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
-                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
-                    playerPiecePhotonView.ViewID = (int)data[2];
-                    ARChessGameManager.instance.AddPiece(playerPiece, 6, 15 - count); 
-                }
-                playerPiece.tag = tag;
-                //Debug.Log(playerPiece.tag);
-
-            }
-            else //opponent is white
-            {
-                GameObject playerPiece;
-                if (count < 8)
-                {
-                    if (count == 0 || count == 7) //Rook
-                    {
-                        playerPiece = Instantiate(whitePieces[0], initialPositionFirstRow - count * change, receivedRotation);
-                    }
-                    else if (count == 1 || count == 6) //Knight
-                    {
-                        playerPiece = Instantiate(whitePieces[1], initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
-                    }
-                    else if (count == 2 || count == 5) //Bishop
-                    {
-                        playerPiece = Instantiate(whitePieces[2], initialPositionFirstRow - count * change, receivedRotation);
-                    }
-                    else if (count == 3)//King 
-                    {
-                        playerPiece = Instantiate(whitePieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
-                    }
-                    else //Queen
-                    {
-                        playerPiece = Instantiate(whitePieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
-                    }
-
-
-                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
-                    playerPiecePhotonView.ViewID = (int)data[2];
-                    ARChessGameManager.instance.AddPiece(playerPiece, 7, 7 - count); 
-                }
-                else //Pawns
-                {
-                    playerPiece = Instantiate(whitePieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
-                    PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
-                    playerPiecePhotonView.ViewID = (int)data[2];
-                    ARChessGameManager.instance.AddPiece(playerPiece, 6, 15 -count);
-                }
-                playerPiece.tag = tag;
-                //Debug.Log(playerPiece.tag);
-            }   
-        }
-    }*/
+        }*/
+    }
 
     public override void OnJoinedRoom()
     {
@@ -327,28 +222,21 @@ public class SpawnManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out playerSelectionNumber))
         {
             int selectionNumber = (int)playerSelectionNumber;
-            Debug.Log("Player Selection number is " + selectionNumber);
-            Material pieceMaterialColor = possibleMaterialColors[selectionNumber];
-            pieceColor = possibleColors[selectionNumber];
+            //Debug.Log("Player Selection number is " + selectionNumber);
+
+            Material pieceMaterialColor = possibleMaterialColors[selectionNumber % 2];
+            pieceColor = possibleColors[selectionNumber % 2];
 
             if (pieceColor.Equals("White"))
             {
-                ARChessGameManager.instance.currentPlayer = "White";
-            }
-            else if (pieceColor.Equals("Red"))
-            {
-                ARChessGameManager.instance.currentPlayer = "Red";
+                ARChessGameManager.currentPlayer = "White";
             }
             else if (pieceColor.Equals("Black"))
             {
-                ARChessGameManager.instance.otherPlayer = "Black";
+                ARChessGameManager.otherPlayer = "Black";
             }
-            else if (pieceColor.Equals("Blue"))
-            {
-                ARChessGameManager.instance.otherPlayer = "Blue";
-            }
-
-            ARChessGameManager.instance.colorOfLocalPlayer = pieceColor;
+            
+            ARChessGameManager.colorOfLocalPlayer = pieceColor;
 
             Vector3 instantiatePosition = spawnPositions[0].position;
 
@@ -374,25 +262,46 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 GameObject instantiatedPiece;
                 if (i == 0 || i == 7) //Rook
                 {
-                    instantiatedPiece = Instantiate(pieces[0], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                    if (selectionNumber == 0 || selectionNumber == 1)
+                    {
+                        instantiatedPiece = Instantiate(pieces[0], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                    }
+                    else
+                    {
+                        instantiatedPiece = Instantiate(pieces[6], initialPositionFirstRow + i * change, Quaternion.identity);
+                    }
                     numberOfRooks++;
                     instantiatedPiece.tag = pieceColor + "Rook" + numberOfRooks;
                 }
                 else if (i == 1 || i == 6) //Knight
                 {
-                    instantiatedPiece = Instantiate(pieces[1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, -90));
+                    if (selectionNumber == 0 || selectionNumber == 1)
+                    {
+                        instantiatedPiece = Instantiate(pieces[1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, -90));
+                    }
+                    else
+                    {
+                        instantiatedPiece = Instantiate(pieces[7], initialPositionFirstRow + i * change, Quaternion.identity);
+                    }
                     numberOfKnights++;
                     instantiatedPiece.tag = pieceColor + "Knight" + numberOfKnights;
                 }
                 else if (i == 2 || i == 5) //Bishop
                 {
-                    instantiatedPiece = Instantiate(pieces[2], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                    if (selectionNumber == 0 || selectionNumber == 1)
+                    {
+                        instantiatedPiece = Instantiate(pieces[2], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                    }
+                    else
+                    {
+                        instantiatedPiece = Instantiate(pieces[8], initialPositionFirstRow + i * change, Quaternion.identity);
+                    }
                     numberOfBishops++;
                     instantiatedPiece.tag = pieceColor + "Bishop" + numberOfBishops;
                 }
                 else
                 { 
-                    if (selectionNumber == 0 || selectionNumber == 2) //black or blue
+                    if (selectionNumber == 0) //simple black
                     {
                         instantiatedPiece = Instantiate(pieces[i], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
                         if (i == 3)
@@ -404,19 +313,44 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                             instantiatedPiece.tag = pieceColor + "Queen";
                         }
                     }
-                    else //white or red
+                    else if (selectionNumber == 2) //extra black
+                    {
+                        instantiatedPiece = Instantiate(pieces[i + 6], initialPositionFirstRow + i * change, Quaternion.identity);
+                        if (i == 3)
+                        {
+                            instantiatedPiece.tag = pieceColor + "King";
+                        }
+                        else
+                        {
+                            instantiatedPiece.tag = pieceColor + "Queen";
+                        }
+                    }
+                    else if (selectionNumber == 1) //simple white
                     {
                         if (i == 3)
                         {
-                            instantiatedPiece = Instantiate(pieces[i+1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                            instantiatedPiece = Instantiate(pieces[i + 1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
                             instantiatedPiece.tag = pieceColor + "Queen";
                         }
                         else
                         {
-                            instantiatedPiece = Instantiate(pieces[i-1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
+                            instantiatedPiece = Instantiate(pieces[i - 1], initialPositionFirstRow + i * change, Quaternion.Euler(-90, 0, 0));
                             instantiatedPiece.tag = pieceColor + "King";
                         }
-                    } 
+                    }
+                    else //extra white
+                    {
+                        if (i == 3)
+                        {
+                            instantiatedPiece = Instantiate(pieces[i + 6], initialPositionFirstRow + i * change, Quaternion.identity);
+                            instantiatedPiece.tag = pieceColor + "Queen";
+                        }
+                        else
+                        {
+                            instantiatedPiece = Instantiate(pieces[i + 5], initialPositionFirstRow + i * change, Quaternion.identity);
+                            instantiatedPiece.tag = pieceColor + "King";
+                        }
+                    }
                 }
 
                 instantiatedPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
@@ -440,7 +374,15 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
             for (int i = 8; i < 16; i++)
             {
-                GameObject instantiatedPiece = Instantiate(pieces[5], initialPositionSecondRow + (i - 8) * change, Quaternion.Euler(-90, 0, 0));
+                GameObject instantiatedPiece;
+                if (selectionNumber == 0 || selectionNumber == 1)
+                {
+                   instantiatedPiece = Instantiate(pieces[5], initialPositionSecondRow + (i - 8) * change, Quaternion.Euler(-90, 0, 0));
+                }
+                else
+                {
+                    instantiatedPiece = Instantiate(pieces[11], initialPositionSecondRow + (i - 8) * change, Quaternion.identity);
+                }
                 instantiatedPiece.tag = pieceColor + "Pawn" + (i - 7);
 
                 instantiatedPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
@@ -466,7 +408,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
     }
 
 
-    private void SpawnPieces()
+    /*private void SpawnPieces()
     {
         object playerSelectionNumber;
         if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out playerSelectionNumber))
@@ -570,11 +512,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                     }
                     //Debug.Log(instantiatedBlackPiece.tag);
                 }
-
-              /*foreach(int viewId in viewIDs)
-                {
-                    Debug.Log(viewId);
-                }*/
             }
             else //white pieces
             {
@@ -650,7 +587,7 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 }
             }
             }
-        }
+        }*/
     
 
     private void RaiseEvent(object[] data)
@@ -696,62 +633,5 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
         messageInputField.text = "";
     }
-
-    /*private void SpawnPlayer()
-    {
-        object playerSelectionNumber;
-        if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out playerSelectionNumber))
-        {
-            Debug.Log("Player Selection number is " + (int)playerSelectionNumber);
-
-           // int randomSpawnPoint = Random.Range(0, spawnPositions.Length - 1);
-            Vector3 instantiatePosition = spawnPositions[0].position;
-            
-            GameObject playerGameObject = Instantiate(playerPrefabs[(int)playerSelectionNumber], instantiatePosition, Quaternion.Euler(0, 180, 0));
-
-            for (int i = 0; i < 8; i++)
-            {
-                GameObject firstRowPiece = playerGameObject.transform.GetChild(i).gameObject;  
-                ARChessGameManager.instance.AddPiece(firstRowPiece, 0, i);
-
-                GameObject secondRowiece = playerGameObject.transform.GetChild(i + 8).gameObject;
-                ARChessGameManager.instance.AddPiece(secondRowiece, 1, i);
-            }
-
-            //ARChessGameManager.PrintPieces();
-
-            PhotonView _photonView = playerGameObject.GetComponent<PhotonView>();
-
-            if (PhotonNetwork.AllocateViewID(_photonView))
-            {
-                object[] data = new object[]
-                {
-                    playerGameObject.transform.position - chessBoardGameObject.transform.position, playerGameObject.transform.rotation, _photonView.ViewID, playerSelectionNumber
-                };
-
-                RaiseEventOptions raiseEventOptions = new RaiseEventOptions
-                {
-                    Receivers = ReceiverGroup.Others, 
-                    CachingOption = EventCaching.AddToRoomCache
-                };
-
-                SendOptions sendOptions = new SendOptions
-                {
-                    Reliability = true
-                };
-
-                //raise events
-                PhotonNetwork.RaiseEvent((byte)RaiseEventCodes.PlayerSpawnEventCode, data, raiseEventOptions, sendOptions);
-
-                //Debug.Log(_photonView.ViewID);
-            }
-            else
-            {
-                Debug.Log("Failed to allocate a view ID");
-                Destroy(playerGameObject);
-            }
-        }
-    }*/
-
     #endregion
 }

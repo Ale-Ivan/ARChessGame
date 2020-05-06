@@ -6,7 +6,6 @@ using Photon.Pun;
 
 public class MySynchronizationScript : MonoBehaviour, IPunObservable
 {
-    Rigidbody rb;
     PhotonView photonView;
 
     Vector3 networkedPosition;
@@ -17,24 +16,11 @@ public class MySynchronizationScript : MonoBehaviour, IPunObservable
 
     private void Awake()
     {
-        rb = GetComponent<Rigidbody>();
         photonView = GetComponent<PhotonView>();
 
         networkedPosition = new Vector3();
 
         chessBoard = GameObject.Find("ChessBoard");
-    }
-
-    // Start is called before the first frame update
-    void Start()
-    {
-
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 
     private void FixedUpdate()

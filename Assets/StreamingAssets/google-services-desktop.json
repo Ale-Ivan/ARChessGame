@@ -1,0 +1,40 @@
+{
+  "project_info": {
+    "project_number": "201796573565",
+    "firebase_url": "https://ar-chess-255213.firebaseio.com",
+    "project_id": "ar-chess-255213",
+    "storage_bucket": "ar-chess-255213.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:201796573565:android:71c592432c4e2fa94a5414",
+        "android_client_info": {
+          "package_name": "com.ale.ARChessGame"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "201796573565-ae389c8vvb10tnu3sj9iv069oeg5rlun.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBgeL2uXFpoEkgDxRDWjOjNQJ5WdV2tRBc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "201796573565-ae389c8vvb10tnu3sj9iv069oeg5rlun.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

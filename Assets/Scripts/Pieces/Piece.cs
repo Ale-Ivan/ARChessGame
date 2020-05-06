@@ -12,26 +12,14 @@ public abstract class Piece : MonoBehaviour
 
     public abstract List<Vector2Int> MoveLocations(Vector2Int piecePosition);
 
-    public abstract void GetAttackLocations(Vector2Int currentPosition);
+    public abstract void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition);
 
     public void OnMouseDown()
     {
         if (piecePhotonView.IsMine)
         {
             //check if it is my turn to move
-            /*if ((this.gameObject.tag.StartsWith("White") && ARChessGameManager.instance.currentPlayer.Equals("White")) || (this.gameObject.tag.StartsWith("Black") && ARChessGameManager.instance.currentPlayer.Equals("Black")))
-            {
-                if (!selected)
-                {
-                    ARChessGameManager.instance.SelectPiece(this);
-                }
-                else
-                {
-                    ARChessGameManager.instance.DeselectPiece(this);
-                }
-            }*/
-
-            if (this.gameObject.tag.StartsWith(ARChessGameManager.instance.currentPlayer))
+            if (this.gameObject.tag.StartsWith(ARChessGameManager.currentPlayer))
             {
                 if (!selected)
                 {

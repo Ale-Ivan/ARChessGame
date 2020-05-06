@@ -22,15 +22,16 @@ public class PlayerSelectionManager : MonoBehaviour
     public GameObject uI_AfterSelection;
     public GameObject bottomBarForSelection;
 
-    public Material[] possibleMaterialColors;
+    public GameObject[] pieces;
 
-    public GameObject selectionPiece;
-    private string[] colors = { "Black", "White", "Blue", "Red" };
+    public Mesh[] possibleMeshes;
+    public Material[] possibleColorMaterials;
+    private string[] colors = { "Black", "White" }; //only black and white
 
     public Image lockImage;
 
-    private bool unlockedBlue;
-    private bool unlockedRed;
+    private bool unlockedExtraBlack;
+    private bool unlockedExtraWhite;
 
     public static PlayerSelectionManager instance;
 
@@ -38,6 +39,12 @@ public class PlayerSelectionManager : MonoBehaviour
 
     public GameObject uI_ForegroundGameObject;
     public GameObject uI_RoomNameGameObject;
+
+    public GameObject selectionPiece;
+
+    private float originalXPosition;
+    private float originalYPosition;
+    private float originalZPosition;
 
     #region UNITY methods
     private void Awake()
@@ -52,25 +59,21 @@ public class PlayerSelectionManager : MonoBehaviour
         uI_Selection.SetActive(true);
         uI_AfterSelection.SetActive(false);
 
-        selectionPiece.SetActive(true);
-
         bottomBarForSelection.SetActive(true);
 
         unlock_Button.SetActive(false);
 
         lockImage.enabled = false;
 
-        unlockedBlue = false;
-        unlockedRed = false;
+        unlockedExtraBlack = false;
+        unlockedExtraWhite = false;
 
         uI_RoomNameGameObject.SetActive(false);
         uI_ForegroundGameObject.SetActive(true);
-    }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        originalXPosition = selectionPiece.transform.position.x;
+        originalYPosition = selectionPiece.transform.position.y;
+        originalZPosition = selectionPiece.transform.position.z;
     }
 
     #endregion
@@ -81,7 +84,7 @@ public class PlayerSelectionManager : MonoBehaviour
     {
         playerSelectionNumber++;
 
-        if (playerSelectionNumber >= possibleMaterialColors.Length)
+        if (playerSelectionNumber >= 4)
         {
             playerSelectionNumber = 0;
         }
@@ -89,8 +92,44 @@ public class PlayerSelectionManager : MonoBehaviour
         next_Button.enabled = false;
         previous_Button.enabled = false;
 
-        selectionPiece.GetComponent<MeshRenderer>().material = possibleMaterialColors[playerSelectionNumber];
-        chessPieceType_Text.text = colors[playerSelectionNumber];
+        Material chosenColor;
+        Mesh chosenMesh;
+       
+        if (playerSelectionNumber == 0 || playerSelectionNumber == 2)
+        {
+            chosenColor = possibleColorMaterials[0];
+        } 
+        else
+        {
+            chosenColor = possibleColorMaterials[1];
+        }
+
+        if (playerSelectionNumber == 0 || playerSelectionNumber == 1)
+        {
+            chosenMesh = possibleMeshes[0];
+        } 
+        else
+        {
+            chosenMesh = possibleMeshes[1];
+        }
+
+        if (playerSelectionNumber == 2 || playerSelectionNumber == 3)
+        {
+            selectionPiece.transform.rotation = Quaternion.identity;
+            selectionPiece.transform.position = new Vector3(originalXPosition, originalYPosition - 0.05f, originalZPosition);
+        }
+        else
+        {
+            selectionPiece.transform.rotation = Quaternion.Euler(-90, 0, 0);
+            selectionPiece.transform.position = new Vector3(originalXPosition, originalYPosition, originalZPosition);
+        }
+
+
+        selectionPiece.GetComponent<MeshRenderer>().material = chosenColor;
+        selectionPiece.GetComponent<MeshFilter>().mesh = chosenMesh;
+
+        //black and white only
+        chessPieceType_Text.text = colors[playerSelectionNumber % 2];
 
         ShowLock();
 
@@ -104,24 +143,61 @@ public class PlayerSelectionManager : MonoBehaviour
 
         if (playerSelectionNumber < 0)
         {
-            playerSelectionNumber = possibleMaterialColors.Length - 1;
+            playerSelectionNumber = 3;
         }
 
         next_Button.enabled = false;
         previous_Button.enabled = false;
 
-        selectionPiece.GetComponent<MeshRenderer>().material = possibleMaterialColors[playerSelectionNumber];
-        chessPieceType_Text.text = colors[playerSelectionNumber];
+        Material chosenColor;
+        Mesh chosenMesh;
+
+        if (playerSelectionNumber == 0 || playerSelectionNumber == 2)
+        {
+            chosenColor = possibleColorMaterials[0];
+        }
+        else
+        {
+            chosenColor = possibleColorMaterials[1];
+        }
+
+        if (playerSelectionNumber == 0 || playerSelectionNumber == 1)
+        {
+            chosenMesh = possibleMeshes[0];
+        }
+        else
+        {
+            chosenMesh = possibleMeshes[1];
+        }
+
+        if (playerSelectionNumber == 2 || playerSelectionNumber == 3)
+        {
+            selectionPiece.transform.rotation = Quaternion.identity;
+            selectionPiece.transform.position = new Vector3(originalXPosition, originalYPosition - 0.05f, originalZPosition);
+        }
+        else
+        {
+            selectionPiece.transform.rotation = Quaternion.Euler(-90, 0, 0);
+            selectionPiece.transform.position = new Vector3(originalXPosition, originalYPosition, originalZPosition);
+        }
+
+        selectionPiece.GetComponent<MeshRenderer>().material = chosenColor;
+        selectionPiece.GetComponent<MeshFilter>().mesh = chosenMesh;
+
+
+        //black and white only
+        chessPieceType_Text.text = colors[playerSelectionNumber % 2];
 
         ShowLock();
 
         next_Button.enabled = true;
         previous_Button.enabled = true;
+
     }
 
     private void ShowLock()
     {
-        if ((playerSelectionNumber == 2 && !unlockedBlue) || (playerSelectionNumber == 3 && !unlockedRed))
+        if ((playerSelectionNumber == 2 && !unlockedExtraBlack) || (playerSelectionNumber == 3 && !unlockedExtraWhite))
         {
             lockImage.enabled = true;
             bottomBarForSelection.SetActive(false);
@@ -149,22 +225,18 @@ public class PlayerSelectionManager : MonoBehaviour
     public void OnSelectButtonClicked()
     {
         uI_Selection.SetActive(false);
-        uI_AfterSelection.SetActive(true);
-
-        ExitGames.Client.Photon.Hashtable playerSelectionProp = new ExitGames.Client.Photon.Hashtable {
-            { MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, playerSelectionNumber } };
-        PhotonNetwork.LocalPlayer.SetCustomProperties(playerSelectionProp);
+        uI_AfterSelection.SetActive(true);  
     }
 
     public void OnUnlockButtonClicked()
     {
         if (playerSelectionNumber == 2)
         {
-            unlockedBlue = true;
-        } 
+            unlockedExtraBlack = true;
+        }
         else if (playerSelectionNumber == 3)
         {
-            unlockedRed = true;
+            unlockedExtraWhite = true;
         }
 
         unlock_Button.SetActive(false);
@@ -182,17 +254,15 @@ public class PlayerSelectionManager : MonoBehaviour
     {
         uI_RoomNameGameObject.SetActive(true);
         uI_ForegroundGameObject.SetActive(false);
+
+        ExitGames.Client.Photon.Hashtable playerSelectionProp = new ExitGames.Client.Photon.Hashtable {
+            { MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, playerSelectionNumber } };
+        PhotonNetwork.LocalPlayer.SetCustomProperties(playerSelectionProp);
     }
 
     public void OnBackButtonClicked()
     {
-        SceneLoader.Instance.LoadScene("Scene_Lobby");
+        SceneLoader.Instance.LoadScene("Scene_Start");
     }
-    #endregion
-
-    #region Private methods
-
-   
-
     #endregion
 }

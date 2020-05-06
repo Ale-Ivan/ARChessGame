@@ -87,17 +87,17 @@ public class Knight : Piece
         return locations;
     }
 
-    public override void GetAttackLocations(Vector2Int currentPosition)
+    public override void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition)
     {
         if (currentPosition.y >= 2)
         {
             if (currentPosition.x >= 1)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y - 2);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 1, currentPosition.y - 2);
             }
             if (currentPosition.x <= 6)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 1, currentPosition.y - 2);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 1, currentPosition.y - 2);
             }
         }
 
@@ -105,11 +105,11 @@ public class Knight : Piece
         {
             if (currentPosition.x >= 2)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 2, currentPosition.y - 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 2, currentPosition.y - 1);
             }
             if (currentPosition.x <= 5)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 2, currentPosition.y - 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 2, currentPosition.y - 1);
             }
         }
 
@@ -117,11 +117,11 @@ public class Knight : Piece
         {
             if (currentPosition.x >= 1)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 1, currentPosition.y + 2);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 1, currentPosition.y + 2);
             }
             if (currentPosition.x <= 6)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 1, currentPosition.y + 2);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 1, currentPosition.y + 2);
             }
         }
 
@@ -129,11 +129,11 @@ public class Knight : Piece
         {
             if (currentPosition.x >= 2)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x - 2, currentPosition.y + 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x - 2, currentPosition.y + 1);
             }
             if (currentPosition.x <= 5)
             {
-                ARChessGameManager.instance.SetAttackSquare(currentPosition.x + 2, currentPosition.y + 1);
+                ARChessGameManager.instance.SetAttackSquare(isForTemporaryCheck, currentPosition.x + 2, currentPosition.y + 1);
             }
         }
     }
@@ -154,8 +154,8 @@ public class Knight : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
         //ARChessGameManager.PrintPieces();
 
-        ARChessGameManager.instance.RefreshAttackedSquares();
-        ARChessGameManager.instance.VerifyForCheck();
+        ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
+        ARChessGameManager.instance.VerifyForCheck(false);
     }
 
     [PunRPC]
@@ -171,8 +171,8 @@ public class Knight : Piece
         ARChessGameManager.pieces[pos.x, pos.y] = myPiece;
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
-        ARChessGameManager.instance.RefreshAttackedSquares();
-        ARChessGameManager.instance.VerifyForCheck();
+        ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
+        ARChessGameManager.instance.VerifyForCheck(false);
     }
 
     [PunRPC]
