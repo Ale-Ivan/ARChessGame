@@ -6,6 +6,8 @@ ScriptsOnlyBuild:
     - ARPlacementManager
     - Bishop
     - EventManager
+    - FileManager
+    - GameModesManager
     - King
     - Knight
     - MoveSelector
@@ -70,6 +72,63 @@ ScriptsOnlyBuild:
     - UnityEngine.UI.Slider
     - UnityEngine.UI.Text
   sceneClasses:
+    Assets/Scenes/Scene_GameModes.unity:
+    - Class: 1
+      Script: {instanceID: 0}
+    - Class: 4
+      Script: {instanceID: 0}
+    - Class: 20
+      Script: {instanceID: 0}
+    - Class: 21
+      Script: {instanceID: 0}
+    - Class: 28
+      Script: {instanceID: 0}
+    - Class: 48
+      Script: {instanceID: 0}
+    - Class: 81
+      Script: {instanceID: 0}
+    - Class: 104
+      Script: {instanceID: 0}
+    - Class: 108
+      Script: {instanceID: 0}
+    - Class: 114
+      Script: {instanceID: 9742}
+    - Class: 114
+      Script: {instanceID: 9988}
+    - Class: 114
+      Script: {instanceID: 10038}
+    - Class: 114
+      Script: {instanceID: 10616}
+    - Class: 114
+      Script: {instanceID: 10640}
+    - Class: 114
+      Script: {instanceID: 11224}
+    - Class: 114
+      Script: {instanceID: 11516}
+    - Class: 114
+      Script: {instanceID: 11558}
+    - Class: 114
+      Script: {instanceID: 11854}
+    - Class: 114
+      Script: {instanceID: 11936}
+    - Class: 114
+      Script: {instanceID: 12502}
+    - Class: 114
+      Script: {instanceID: 51348}
+    - Class: 115
+      Script: {instanceID: 0}
+    - Class: 128
+      Script: {instanceID: 0}
+    - Class: 157
+      Script: {instanceID: 0}
+    - Class: 213
+      Script: {instanceID: 0}
+    - Class: 222
+      Script: {instanceID: 0}
+    - Class: 223
+      Script: {instanceID: 0}
+    - Class: 224
+      Script: {instanceID: 0}
     Assets/Scenes/Scene_Gameplay.unity:
     - Class: 1
       Script: {instanceID: 0}
@@ -125,6 +184,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 10616}
     - Class: 114
       Script: {instanceID: 10624}
+    - Class: 114
+      Script: {instanceID: 10640}
     - Class: 114
       Script: {instanceID: 10854}
     - Class: 114
@@ -325,9 +386,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10616}
     - Class: 114
-      Script: {instanceID: 11224}
+      Script: {instanceID: 10640}
     - Class: 114
-      Script: {instanceID: 11516}
+      Script: {instanceID: 11224}
     - Class: 114
       Script: {instanceID: 11558}
     - Class: 114
@@ -467,9 +528,9 @@ ScriptsOnlyBuild:
     - Class: 114
       Script: {instanceID: 10616}
     - Class: 114
-      Script: {instanceID: 10660}
+      Script: {instanceID: 10662}
     - Class: 114
-      Script: {instanceID: 10714}
+      Script: {instanceID: 10716}
     - Class: 114
       Script: {instanceID: 10982}
     - Class: 114
@@ -1043,6 +1104,12 @@ ScriptsOnlyBuild:
     className: ARPlacementManager
   - hash:
       serializedVersion: 2
+      Hash: 71bb6a6b6c8f052f948db64c7dd3ca4f
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: FileManager
+  - hash:
+      serializedVersion: 2
       Hash: 117e94af12d2e42e9e17b73f2602978e
     assemblyName: PhotonUnityNetworking.Demos.dll
     namespaceName: Photon.Pun.Demo.Cockpit.Forms
@@ -1331,7 +1398,7 @@ ScriptsOnlyBuild:
     className: StringInputField
   - hash:
       serializedVersion: 2
-      Hash: ec8cdcdd917fc6e0185a1da71c07f878
+      Hash: eada20319d80cd4e8813464509e3b2fd
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: EventManager
@@ -2027,7 +2094,7 @@ ScriptsOnlyBuild:
     className: Outline
   - hash:
       serializedVersion: 2
-      Hash: 55bc403b612575139321447730ad7096
+      Hash: 1e30d9fed13adf80377597e82eba9ffb
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: PlayerSelectionManager
@@ -2211,6 +2278,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 7f475d571369cf043f7c84275f71bafc
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: GameModesManager
   platform: 13
   scenePathNames:
   - Assets/Scenes/Scene_Start.unity
@@ -2219,4 +2292,5 @@ ScriptsOnlyBuild:
   - Assets/Scenes/Scene_PlayerSelection.unity
   - Assets/Scenes/Scene_PlayWithoutUser.unity
   - Assets/Scenes/Scene_Gameplay.unity
+  - Assets/Scenes/Scene_GameModes.unity
   playerPath: C:/Users/Andrei/Unity/ARChessGame/ARChessGame.apk

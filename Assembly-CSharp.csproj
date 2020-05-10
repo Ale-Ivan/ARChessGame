@@ -79,6 +79,8 @@
     <Compile Include="Assets\Scripts\ARPlacementAndPlaneDetectionController.cs" />
     <Compile Include="Assets\Scripts\ARPlacementManager.cs" />
     <Compile Include="Assets\Scripts\EventManager.cs" />
+    <Compile Include="Assets\Scripts\FileManager.cs" />
+    <Compile Include="Assets\Scripts\GameModesManager.cs" />
     <Compile Include="Assets\Scripts\Geometry.cs" />
     <Compile Include="Assets\Scripts\LobbyManager.cs" />
     <Compile Include="Assets\Scripts\MoveSelector.cs" />
@@ -99,6 +101,7 @@
     <Compile Include="Assets\Scripts\ScaleController.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\SignInPageManager.cs" />
+    <Compile Include="Assets\Scripts\SinglePlayerGameManager.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Spinner.cs" />

@@ -33,25 +33,18 @@ public class EventManager : MonoBehaviour
     public GameObject uI_InformPanelGameObject;
     public TextMeshProUGUI uI_InformText;
 
-    private string path;
-    private JSONObject userJSON;
-    private int numberOfWins;
+    [Header("Game over")]
+    public GameObject gameOverPanel;
 
-    private void Awake()
-    {
-        path = Application.persistentDataPath + "/ARChessGameUserSave.json";
-        if (File.Exists(path))
-        {
-            string jsonString = File.ReadAllText(path);
-            userJSON = (JSONObject)JSON.Parse(jsonString);
-            numberOfWins = userJSON["NumberOfWins"];
-        }
-    }
+    /*private string path;
+    private JSONObject userJSON;*/
+    private int numberOfWins;
 
     // Start is called before the first frame update
     void Start()
     {
         PhotonNetwork.NetworkingClient.EventReceived += OnEvent;
+        numberOfWins = FileManager.instance.ReadIntFromFile("NumberOfWins");
     }
 
     private void OnDestroy()
@@ -71,131 +64,149 @@ public class EventManager : MonoBehaviour
             int count = (int)data[4];
             string tag = (string)data[5];
 
-            Material pieceMaterialColor = possibleMaterialColors[receivedPlayerSelection % 2];
-            pieceColor = possibleColors[receivedPlayerSelection % 2];
-
-            if (pieceColor.Equals("White"))
+            object playerSelectionNumber;
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out playerSelectionNumber))
             {
-                ARChessGameManager.currentPlayer = "White";
-            }
-            else if (pieceColor.Equals("Black"))
-            {
-                ARChessGameManager.otherPlayer = "Black";
-            }
-
-            ARChessGameManager.colorOfOpponent = pieceColor;
-
-            Vector3 instantiatePosition = spawnPositions[1].position;
-
-            //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
-            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
-            //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
-            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
-            //Vector3 change = new Vector3(0.3f, 0f, 0f);
-            Vector3 change = new Vector3(0.6f, 0f, 0f);
-
-            GameObject playerPiece;
-            if (count < 8)
-            {
-                if (count == 0 || count == 7) //Rook
+                if (receivedPlayerSelection == (int)playerSelectionNumber)
                 {
-                    GameObject rook;
-                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
-                    {
-                        rook = pieces[0];
-                    }
-                    else
-                    {
-                        rook = pieces[6];
-                    }
-                    playerPiece = Instantiate(rook, initialPositionFirstRow - count * change, receivedRotation);
-                }
-                else if (count == 1 || count == 6) //Knight
-                {
-                    GameObject knight;
-                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
-                    {
-                        knight = pieces[1];
-                        playerPiece = Instantiate(knight, initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
-                    }
-                    else
-                    {
-                        knight = pieces[7];
-                        playerPiece = Instantiate(knight, initialPositionFirstRow - count * change, Quaternion.Euler(0, 180, 0));
-                    }
-                }
-                else if (count == 2 || count == 5) //Bishop
-                {
-                    GameObject bishop;
-                    if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
-                    {
-                        bishop = pieces[2];
-                    }
-                    else
-                    {
-                        bishop = pieces[8];
-                    }
-                    playerPiece = Instantiate(bishop, initialPositionFirstRow - count * change, receivedRotation);
+                    //inform the players that they cannot play together
+                    uI_InformText.text = "Both players have chosen the same color to play with! You cannot play together";
+                    uI_InformPanelGameObject.SetActive(true);
+
+                    gameOverPanel.SetActive(true);
+                    ARChessGameManager.instance.EndGame();
                 }
                 else
                 {
-                    if (receivedPlayerSelection == 0) //simple black
+                    Material pieceMaterialColor = possibleMaterialColors[receivedPlayerSelection % 2];
+                    pieceColor = possibleColors[receivedPlayerSelection % 2];
+
+                    if (pieceColor.Equals("White"))
                     {
-                        playerPiece = Instantiate(pieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
+                        ARChessGameManager.currentPlayer = "White";
                     }
-                    else if (receivedPlayerSelection == 2) //extra black
+                    else if (pieceColor.Equals("Black"))
                     {
-                        playerPiece = Instantiate(pieces[count + 6], initialPositionFirstRow - (count) * change, receivedRotation);
+                        ARChessGameManager.otherPlayer = "Black";
                     }
-                    else if (receivedPlayerSelection == 1) //simple white
+
+                    ARChessGameManager.colorOfOpponent = pieceColor;
+
+                    Vector3 instantiatePosition = spawnPositions[1].position;
+
+                    //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
+                    Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
+                    //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
+                    Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
+                    //Vector3 change = new Vector3(0.3f, 0f, 0f);
+                    Vector3 change = new Vector3(0.6f, 0f, 0f);
+
+                    GameObject playerPiece;
+                    if (count < 8)
                     {
-                        if (count == 3)
+                        if (count == 0 || count == 7) //Rook
                         {
-                            playerPiece = Instantiate(pieces[count + 1], initialPositionFirstRow - (count) * change, receivedRotation);
+                            GameObject rook;
+                            if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                            {
+                                rook = pieces[0];
+                            }
+                            else
+                            {
+                                rook = pieces[6];
+                            }
+                            playerPiece = Instantiate(rook, initialPositionFirstRow - count * change, receivedRotation);
+                        }
+                        else if (count == 1 || count == 6) //Knight
+                        {
+                            GameObject knight;
+                            if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                            {
+                                knight = pieces[1];
+                                playerPiece = Instantiate(knight, initialPositionFirstRow - count * change, Quaternion.Euler(-90, 0, 90));
+                            }
+                            else
+                            {
+                                knight = pieces[7];
+                                playerPiece = Instantiate(knight, initialPositionFirstRow - count * change, Quaternion.Euler(0, 180, 0));
+                            }
+                        }
+                        else if (count == 2 || count == 5) //Bishop
+                        {
+                            GameObject bishop;
+                            if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
+                            {
+                                bishop = pieces[2];
+                            }
+                            else
+                            {
+                                bishop = pieces[8];
+                            }
+                            playerPiece = Instantiate(bishop, initialPositionFirstRow - count * change, receivedRotation);
                         }
                         else
                         {
-                            playerPiece = Instantiate(pieces[count - 1], initialPositionFirstRow - (count) * change, receivedRotation);
+                            if (receivedPlayerSelection == 0) //simple black
+                            {
+                                playerPiece = Instantiate(pieces[count], initialPositionFirstRow - (count) * change, receivedRotation);
+                            }
+                            else if (receivedPlayerSelection == 2) //extra black
+                            {
+                                playerPiece = Instantiate(pieces[count + 6], initialPositionFirstRow - (count) * change, receivedRotation);
+                            }
+                            else if (receivedPlayerSelection == 1) //simple white
+                            {
+                                if (count == 3)
+                                {
+                                    playerPiece = Instantiate(pieces[count + 1], initialPositionFirstRow - (count) * change, receivedRotation);
+                                }
+                                else
+                                {
+                                    playerPiece = Instantiate(pieces[count - 1], initialPositionFirstRow - (count) * change, receivedRotation);
+                                }
+                            }
+                            else
+                            {
+                                if (count == 3)
+                                {
+                                    playerPiece = Instantiate(pieces[count + 7], initialPositionFirstRow - (count) * change, receivedRotation);
+                                }
+                                else
+                                {
+                                    playerPiece = Instantiate(pieces[count + 5], initialPositionFirstRow - (count) * change, receivedRotation);
+                                }
+                            }
                         }
+
+                        playerPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
+
+                        PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
+                        playerPiecePhotonView.ViewID = (int)data[2];
+                        playerPiece.tag = tag;
+                        ARChessGameManager.instance.AddPiece(playerPiece, 7, 7 - count);
                     }
-                    else
+                    else //Pawns
                     {
-                        if (count == 3)
+                        if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
                         {
-                            playerPiece = Instantiate(pieces[count + 7], initialPositionFirstRow - (count) * change, receivedRotation);
+                            playerPiece = Instantiate(pieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
                         }
                         else
                         {
-                            playerPiece = Instantiate(pieces[count + 5], initialPositionFirstRow - (count) * change, receivedRotation);
+                            playerPiece = Instantiate(pieces[11], initialPositionSecondRow - (count - 8) * change, receivedRotation);
                         }
+
+                        playerPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
+
+                        PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
+                        playerPiecePhotonView.ViewID = (int)data[2];
+                        playerPiece.tag = tag;
+                        ARChessGameManager.instance.AddPiece(playerPiece, 6, 15 - count);
                     }
+                    //playerPiece.tag = tag;
+                    //Debug.Log(playerPiece.tag);
                 }
-
-                playerPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
-
-                PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
-                playerPiecePhotonView.ViewID = (int)data[2];
-                ARChessGameManager.instance.AddPiece(playerPiece, 7, 7 - count);
             }
-            else //Pawns
-            {
-                if (receivedPlayerSelection == 0 || receivedPlayerSelection == 1)
-                {
-                    playerPiece = Instantiate(pieces[5], initialPositionSecondRow - (count - 8) * change, receivedRotation);
-                }
-                else
-                {
-                    playerPiece = Instantiate(pieces[11], initialPositionSecondRow - (count - 8) * change, receivedRotation);
-                }
-
-                playerPiece.GetComponent<MeshRenderer>().material = pieceMaterialColor;
-
-                PhotonView playerPiecePhotonView = playerPiece.GetComponent<PhotonView>();
-                playerPiecePhotonView.ViewID = (int)data[2];
-                ARChessGameManager.instance.AddPiece(playerPiece, 6, 15 - count);
-            }
-            playerPiece.tag = tag;
-            //Debug.Log(playerPiece.tag);
         }
         else if (photonEvent.Code == (byte)RaiseEventCodes.PlayerMessageEventCode)
         {
@@ -208,38 +219,38 @@ public class EventManager : MonoBehaviour
         }
         else if (photonEvent.Code == (byte)RaiseEventCodes.PlayerQuitGameCode)
         {
-            //Debug.Log("quit");
-            if (userJSON != null)
+            //only for singleplayer
+            if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
             {
-                object[] data = (object[])photonEvent.CustomData;
-                userJSON["NumberOfWins"] = numberOfWins + 1;
-                File.WriteAllText(path, userJSON.ToString());   
+                FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfLocalPlayer);
+                FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
             }
+
+            FileManager.instance.ChangePropertyIntValue("NumberOfWins", numberOfWins + 1);
 
             uI_InformText.text = ARChessGameManager.opponentName + " has left the room! You won!";
             uI_InformPanelGameObject.SetActive(true);
 
-            StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 4.0f));
-            SceneLoader.Instance.LoadScene("Scene_Start");
+            gameOverPanel.SetActive(true);
+            ARChessGameManager.instance.EndGame();
+            //SceneLoader.Instance.LoadScene("Scene_Start");
         }
         else if (photonEvent.Code == (byte)RaiseEventCodes.PlayerCheckMate)
         {
-            if (userJSON != null)
+            //only for singleplayer
+            if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
             {
-                userJSON["NumberOfWins"] = numberOfWins + 1;
-                File.WriteAllText(path, userJSON.ToString());
-            }                
+                FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfLocalPlayer);
+                FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
+            }
+                
+            FileManager.instance.ChangePropertyIntValue("NumberOfWins", numberOfWins + 1);
 
-            uI_InformText.text = "CHECKMATE! You won against " + ARChessGameManager.opponentName + "!";
+            uI_InformText.text = "Game Over! You won against " + ARChessGameManager.opponentName;
             uI_InformPanelGameObject.SetActive(true);
-            StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 4.0f));
-            SceneLoader.Instance.LoadScene("Scene_Start");
-        }
-    }
 
-    IEnumerator DeactivateAfterSeconds(GameObject _gameObject, float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        _gameObject.SetActive(false);
+            gameOverPanel.SetActive(true);
+            ARChessGameManager.instance.EndGame();
+        }
     }
 }

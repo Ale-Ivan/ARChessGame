@@ -39,10 +39,16 @@ public class Bishop : Piece
                 if (piecePosition.x + i < 8 && piecePosition.y + i < 8)
                 {
                     Vector2Int diagonalRightUp = new Vector2Int(piecePosition.x + i, piecePosition.y + i);
-                    locations.Add(diagonalRightUp);
-
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightUp.x, diagonalRightUp.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightUp.x, diagonalRightUp.y))
                     {
+                        locations.Add(diagonalRightUp);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalRightUp.x, diagonalRightUp.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(diagonalRightUp);
+                        }
                         continueRightUp = false;
                     }
                 }
@@ -53,10 +59,16 @@ public class Bishop : Piece
                 if (piecePosition.x + i < 8 && piecePosition.y - i >= 0)
                 {
                     Vector2Int diagonalLeftUp = new Vector2Int(piecePosition.x + i, piecePosition.y - i);
-                    locations.Add(diagonalLeftUp);
-
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftUp.x, diagonalLeftUp.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftUp.x, diagonalLeftUp.y))
                     {
+                        locations.Add(diagonalLeftUp);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalLeftUp.x, diagonalLeftUp.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(diagonalLeftUp);
+                        }
                         continueLeftUp = false;
                     }
                 }
@@ -67,10 +79,16 @@ public class Bishop : Piece
                 if (piecePosition.x - i >= 0 && piecePosition.y + i < 8)
                 {
                     Vector2Int diagonalRightDown = new Vector2Int(piecePosition.x - i, piecePosition.y + i);
-                    locations.Add(diagonalRightDown);
-
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightDown.x, diagonalRightDown.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightDown.x, diagonalRightDown.y))
                     {
+                        locations.Add(diagonalRightDown);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalRightDown.x, diagonalRightDown.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(diagonalRightDown);
+                        }
                         continueRightDown = false;
                     }
                 }
@@ -81,10 +99,16 @@ public class Bishop : Piece
                 if (piecePosition.x - i >= 0 && piecePosition.y - i >= 0)
                 {
                     Vector2Int diagonalLeftDown = new Vector2Int(piecePosition.x - i, piecePosition.y - i);
-                    locations.Add(diagonalLeftDown);
-
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftDown.x, diagonalLeftDown.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftDown.x, diagonalLeftDown.y))
                     {
+                        locations.Add(diagonalLeftDown);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalLeftDown.x, diagonalLeftDown.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(diagonalLeftDown);
+                        }
                         continueLeftDown = false;
                     }
                 }
@@ -115,6 +139,7 @@ public class Bishop : Piece
                     {
                         continueRightUp = false;
                     }
+
                 }
             }
 
@@ -169,7 +194,7 @@ public class Bishop : Piece
     private void MovePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
         //Debug.Log(coordinates);
 
         Vector3 initialPosition = myPiece.transform.position;
@@ -182,14 +207,14 @@ public class Bishop : Piece
         //ARChessGameManager.PrintPieces();
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]
     private void CapturePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
 
         Vector2Int pos = new Vector2Int(7 - x, 7 - y);
         ARChessGameManager.instance.CapturePieceAt(pos);
@@ -199,7 +224,7 @@ public class Bishop : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]

@@ -39,9 +39,16 @@ public class Rook : Piece
                 if (piecePosition.x + i < 8)
                 {
                     Vector2Int possibleLocationForward = new Vector2Int(piecePosition.x + i, piecePosition.y); //move forward
-                    locations.Add(possibleLocationForward);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationForward.x, possibleLocationForward.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationForward.x, possibleLocationForward.y))
                     {
+                        locations.Add(possibleLocationForward);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationForward.x, possibleLocationForward.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(possibleLocationForward);
+                        }
                         continueForward = false;
                     }
                 }
@@ -52,9 +59,16 @@ public class Rook : Piece
                 if (piecePosition.x - i >= 0)
                 {
                     Vector2Int possibleLocationBackward = new Vector2Int(piecePosition.x - i, piecePosition.y); //move backwards
-                    locations.Add(possibleLocationBackward);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationBackward.x, possibleLocationBackward.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationBackward.x, possibleLocationBackward.y))
                     {
+                        locations.Add(possibleLocationBackward);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationBackward.x, possibleLocationBackward.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(possibleLocationBackward);
+                        }
                         continueBackward = false;
                     }
                 }
@@ -65,9 +79,16 @@ public class Rook : Piece
                 if (piecePosition.y - i >= 0)
                 {
                     Vector2Int possibleLocationLeft = new Vector2Int(piecePosition.x, piecePosition.y - i); //move left
-                    locations.Add(possibleLocationLeft);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeft.x, possibleLocationLeft.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeft.x, possibleLocationLeft.y))
                     {
+                        locations.Add(possibleLocationLeft);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationLeft.x, possibleLocationLeft.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(possibleLocationLeft);
+                        }
                         continueLeft = false;
                     }
                 }
@@ -78,9 +99,16 @@ public class Rook : Piece
                 if (piecePosition.y + i < 8)
                 {
                     Vector2Int possibleLocationRight = new Vector2Int(piecePosition.x, piecePosition.y + i); //move right
-                    locations.Add(possibleLocationRight);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRight.x, possibleLocationRight.y) == false)
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRight.x, possibleLocationRight.y))
                     {
+                        locations.Add(possibleLocationRight);
+                    }
+                    else
+                    {
+                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationRight.x, possibleLocationRight.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        {
+                            locations.Add(possibleLocationRight);
+                        }
                         continueRight = false;
                     }
                 }
@@ -165,7 +193,7 @@ public class Rook : Piece
     private void MovePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
 
         Vector3 initialPosition = myPiece.transform.position;
         Vector2Int oppositePosition = new Vector2Int(7 - x, 7 - y);
@@ -176,14 +204,14 @@ public class Rook : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]
     private void CapturePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
 
         Vector2Int pos = new Vector2Int(7 - x, 7 - y);
         ARChessGameManager.instance.CapturePieceAt(pos);
@@ -193,7 +221,7 @@ public class Rook : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]

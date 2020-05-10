@@ -3,6 +3,7 @@ using Photon.Pun;
 using Photon.Realtime;
 using SimpleJSON;
 using System.IO;
+using System.Threading.Tasks;
 using UnityEngine;
 
 public class PauseManager : MonoBehaviour
@@ -16,18 +17,11 @@ public class PauseManager : MonoBehaviour
     private int numberOfWins;
     private int numberOfLosses;
 
-    private void Awake()
+    private void Start()
     {
-        path = Application.persistentDataPath + "/ARChessGameUserSave.json";
-        if (File.Exists(path))
-        {
-            string jsonString = File.ReadAllText(path);
-            userJSON = (JSONObject)JSON.Parse(jsonString);
-            userID = userJSON["ID"];
-            username = userJSON["Username"];
-            numberOfWins = userJSON["NumberOfWins"];
-            numberOfLosses = userJSON["NumberOfLosses"];
-        }
+        userID = FileManager.instance.ReadIntFromFile("UserID");
+        username = FileManager.instance.ReadStringFromFile("Username");
+        numberOfLosses = FileManager.instance.ReadIntFromFile("NumberOfLosses");
     }
 
     void Update()
@@ -51,8 +45,14 @@ public class PauseManager : MonoBehaviour
             userID, username
         };
 
-        userJSON["NumberOfLosses"] = numberOfLosses + 1;
-        File.WriteAllText(path, userJSON.ToString());
+        //only if singleplayer
+        if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
+        {
+            FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfLocalPlayer);
+            FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
+        }
+
+        FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
 
         RaiseQuitEvent(data);
 
@@ -60,7 +60,7 @@ public class PauseManager : MonoBehaviour
         {
             PhotonNetwork.LeaveRoom();
         }
-        SceneLoader.Instance.LoadScene("Scene_Start");
+        //SceneLoader.Instance.LoadScene("Scene_Start");
         //PhotonFunctions.DisconnectFromPhoton();
     }
 
@@ -78,5 +78,17 @@ public class PauseManager : MonoBehaviour
         };
 
         PhotonNetwork.RaiseEvent((byte)RaiseEventCodes.PlayerQuitGameCode, data, raiseEventOptions, sendOptions);
+    }
+
+    public void OnPauseButtonClicked()
+    {
+        FileManager.instance.AddNewProperty("ColorOfLocalPlayer", ARChessGameManager.colorOfLocalPlayer);
+        FileManager.instance.AddNewProperty("ColorOfOpponent", ARChessGameManager.colorOfOpponent);
+        FileManager.instance.SaveGameState();
+    }
+
+    public void OnPlayOnButtonClicked()
+    {
+        BackButtonOptions.SetActive(false);
     }
 }

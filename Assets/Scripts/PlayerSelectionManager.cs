@@ -16,7 +16,6 @@ public class PlayerSelectionManager : MonoBehaviour
     public Button next_Button;
     public Button previous_Button;
     public GameObject unlock_Button;
-    public InputField roomNameInputField;
 
     public GameObject uI_Selection;
     public GameObject uI_AfterSelection;
@@ -35,10 +34,7 @@ public class PlayerSelectionManager : MonoBehaviour
 
     public static PlayerSelectionManager instance;
 
-    private string roomName;
-
     public GameObject uI_ForegroundGameObject;
-    public GameObject uI_RoomNameGameObject;
 
     public GameObject selectionPiece;
 
@@ -68,7 +64,6 @@ public class PlayerSelectionManager : MonoBehaviour
         unlockedExtraBlack = false;
         unlockedExtraWhite = false;
 
-        uI_RoomNameGameObject.SetActive(false);
         uI_ForegroundGameObject.SetActive(true);
 
         originalXPosition = selectionPiece.transform.position.x;
@@ -211,15 +206,9 @@ public class PlayerSelectionManager : MonoBehaviour
         }
     }
 
-    public void OnConfirmButtonClicked()
-    {
-        roomName = roomNameInputField.text;
-        SceneLoader.Instance.LoadScene("Scene_Gameplay");
-    }
-
     public string GetRoomName()
     {
-        return this.roomName;
+        return "";
     }
 
     public void OnSelectButtonClicked()
@@ -252,12 +241,13 @@ public class PlayerSelectionManager : MonoBehaviour
 
     public void OnPlayButtonClicked()
     {
-        uI_RoomNameGameObject.SetActive(true);
         uI_ForegroundGameObject.SetActive(false);
 
         ExitGames.Client.Photon.Hashtable playerSelectionProp = new ExitGames.Client.Photon.Hashtable {
             { MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, playerSelectionNumber } };
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerSelectionProp);
+
+        SceneLoader.Instance.LoadScene("Scene_GameModes");
     }
 
     public void OnBackButtonClicked()

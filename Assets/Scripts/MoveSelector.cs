@@ -56,7 +56,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToNull(0, 0);
 
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-                            ARChessGameManager.instance.VerifyForCheck(false);
+                            ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook1", 0, 2);
 
@@ -78,7 +78,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToNull(0, 0);
 
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-                            ARChessGameManager.instance.VerifyForCheck(false);
+                            ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook1", 0, 3);
 
@@ -106,7 +106,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToNull(0, 7);
 
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-                            ARChessGameManager.instance.VerifyForCheck(false);
+                            ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook2", 0, 4);
 
@@ -128,7 +128,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToNull(0, 7);
 
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-                            ARChessGameManager.instance.VerifyForCheck(false);
+                            ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                             piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook2", 0, 5);
 
@@ -142,12 +142,12 @@ public class MoveSelector : MonoBehaviour
                     if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, gridPoint.x, gridPoint.y)) //empty location => can move
                     {  
                         ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
-                        Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(piece.tag);
+                        Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, piece.tag);
                         ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());
                         ARChessGameManager.instance.SetPositionToNull(initialPosition.x, initialPosition.y);
 
                         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-                        ARChessGameManager.instance.VerifyForCheck(false);
+                        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                         //debugText.text += " " + initialPosition.x + " " + initialPosition.y;
                         piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
@@ -188,12 +188,13 @@ public class MoveSelector : MonoBehaviour
                     ARChessGameManager.instance.CapturePieceAt(gridPoint);
                     ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
 
-                    Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(piece.tag);
+                    Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, piece.tag);
+                    
                     ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());
                     ARChessGameManager.instance.SetPositionToNull(initialPosition.x, initialPosition.y);
 
                     ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-                    ARChessGameManager.instance.VerifyForCheck(false);
+                    ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                     piece.GetPhotonView().RPC("CapturePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                     ARChessGameManager.instance.ChangePlayer();

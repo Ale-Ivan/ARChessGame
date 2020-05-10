@@ -30,7 +30,7 @@ public class Pawn : Piece
         if (piecePosition.x != 7)
         {
             Vector2Int forwardOne = new Vector2Int(piecePosition.x + 1, piecePosition.y); //move one square
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, piecePosition.x + 1, piecePosition.y))
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, forwardOne.x, forwardOne.y))
             {
                 //Debug.Log("one");
                 locations.Add(forwardOne);
@@ -38,7 +38,7 @@ public class Pawn : Piece
                 if (piecePosition.x == 1)
                 {
                     Vector2Int forwardTwo = new Vector2Int(piecePosition.x + 2, piecePosition.y); //move two squares
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, piecePosition.x + 2, piecePosition.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, forwardTwo.x, forwardTwo.y))
                     {
                         //Debug.Log("two");
                         locations.Add(forwardTwo);
@@ -50,7 +50,8 @@ public class Pawn : Piece
         if (piecePosition.y != 7 && piecePosition.x != 7)
         {
             Vector2Int diagonalRight = new Vector2Int(piecePosition.x + 1, piecePosition.y + 1); //attack
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, piecePosition.x + 1, piecePosition.y + 1) == false)
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRight.x, diagonalRight.y) == false &&
+                ARChessGameManager.instance.GetPieceAtPosition(diagonalRight.x, diagonalRight.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
             {
                 //Debug.Log("right");
                 locations.Add(diagonalRight);
@@ -60,7 +61,8 @@ public class Pawn : Piece
         if (piecePosition.y != 0 && piecePosition.x != 7)
         {
             Vector2Int diagonalLeft = new Vector2Int(piecePosition.x + 1, piecePosition.y - 1); //attack
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, piecePosition.x + 1, piecePosition.y - 1) == false)
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeft.x, diagonalLeft.y) == false && 
+                ARChessGameManager.instance.GetPieceAtPosition(diagonalLeft.x, diagonalLeft.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
             {
                 //Debug.Log("left");
                 locations.Add(diagonalLeft);
@@ -94,7 +96,7 @@ public class Pawn : Piece
     private void MovePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
         //Debug.Log(coordinates);
 
         Vector3 initialPosition = myPiece.transform.position;
@@ -107,14 +109,14 @@ public class Pawn : Piece
         //ARChessGameManager.PrintPieces();
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]
     private void CapturePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
 
         Vector2Int pos = new Vector2Int(7 - x, 7 - y);
         ARChessGameManager.instance.CapturePieceAt(pos);
@@ -124,7 +126,7 @@ public class Pawn : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]

@@ -33,12 +33,32 @@ public class Knight : Piece
             if (piecePosition.x <= 6)
             {
                 Vector2Int possibleLocationRightUp_OneRow = new Vector2Int(piecePosition.x + 1, piecePosition.y + 2);
-                locations.Add(possibleLocationRightUp_OneRow);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRightUp_OneRow.x, possibleLocationRightUp_OneRow.y))
+                {
+                    locations.Add(possibleLocationRightUp_OneRow);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationRightUp_OneRow.x, possibleLocationRightUp_OneRow.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationRightUp_OneRow);
+                    }
+                }
             }
             if (piecePosition.x >= 1)
             {
                 Vector2Int possibleLocationRightDown_OneRow = new Vector2Int(piecePosition.x - 1, piecePosition.y + 2);
-                locations.Add(possibleLocationRightDown_OneRow);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRightDown_OneRow.x, possibleLocationRightDown_OneRow.y))
+                {
+                    locations.Add(possibleLocationRightDown_OneRow);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationRightDown_OneRow.x, possibleLocationRightDown_OneRow.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationRightDown_OneRow);
+                    }
+                }
             }
         }
 
@@ -47,12 +67,32 @@ public class Knight : Piece
             if (piecePosition.x <= 5)
             {
                 Vector2Int possibleLocationRightUp_TwoRows = new Vector2Int(piecePosition.x + 2, piecePosition.y + 1);
-                locations.Add(possibleLocationRightUp_TwoRows);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRightUp_TwoRows.x, possibleLocationRightUp_TwoRows.y))
+                {
+                    locations.Add(possibleLocationRightUp_TwoRows);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationRightUp_TwoRows.x, possibleLocationRightUp_TwoRows.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationRightUp_TwoRows);
+                    }
+                }
             }
             if (piecePosition.x >= 2)
             {
                 Vector2Int possibleLocationRightDown_TwoRows = new Vector2Int(piecePosition.x - 2, piecePosition.y + 1);
-                locations.Add(possibleLocationRightDown_TwoRows);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRightDown_TwoRows.x, possibleLocationRightDown_TwoRows.y))
+                {
+                    locations.Add(possibleLocationRightDown_TwoRows);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationRightDown_TwoRows.x, possibleLocationRightDown_TwoRows.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationRightDown_TwoRows);
+                    }
+                }
             }
         }
 
@@ -61,12 +101,32 @@ public class Knight : Piece
             if (piecePosition.x <= 6)
             {
                 Vector2Int possibleLocationLeftUp_OneRow = new Vector2Int(piecePosition.x + 1, piecePosition.y - 2);
-                locations.Add(possibleLocationLeftUp_OneRow);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeftUp_OneRow.x, possibleLocationLeftUp_OneRow.y))
+                {
+                    locations.Add(possibleLocationLeftUp_OneRow);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationLeftUp_OneRow.x, possibleLocationLeftUp_OneRow.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationLeftUp_OneRow);
+                    }
+                }
             }
             if (piecePosition.x >= 1)
             {
                 Vector2Int possibleLocationLeftDown_OneRow = new Vector2Int(piecePosition.x - 1, piecePosition.y - 2);
-                locations.Add(possibleLocationLeftDown_OneRow);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeftDown_OneRow.x, possibleLocationLeftDown_OneRow.y))
+                {
+                    locations.Add(possibleLocationLeftDown_OneRow);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationLeftDown_OneRow.x, possibleLocationLeftDown_OneRow.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationLeftDown_OneRow);
+                    }
+                }
             }
         }
         
@@ -75,12 +135,32 @@ public class Knight : Piece
             if (piecePosition.x <= 5)
             {
                 Vector2Int possibleLocationLeftUp_TwoRows = new Vector2Int(piecePosition.x + 2, piecePosition.y - 1);
-                locations.Add(possibleLocationLeftUp_TwoRows);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeftUp_TwoRows.x, possibleLocationLeftUp_TwoRows.y))
+                {
+                    locations.Add(possibleLocationLeftUp_TwoRows);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationLeftUp_TwoRows.x, possibleLocationLeftUp_TwoRows.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationLeftUp_TwoRows);
+                    }
+                }
             }
             if (piecePosition.x >= 2)
             {
                 Vector2Int possibleLocationLeftDown_TwoRows = new Vector2Int(piecePosition.x - 2, piecePosition.y - 1);
-                locations.Add(possibleLocationLeftDown_TwoRows);
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeftDown_TwoRows.x, possibleLocationLeftDown_TwoRows.y))
+                {
+                    locations.Add(possibleLocationLeftDown_TwoRows);
+                }
+                else
+                {
+                    if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationLeftDown_TwoRows.x, possibleLocationLeftDown_TwoRows.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    {
+                        locations.Add(possibleLocationLeftDown_TwoRows);
+                    }
+                }
             }
         }
 
@@ -142,7 +222,7 @@ public class Knight : Piece
     private void MovePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
         //Debug.Log(coordinates);
 
         Vector3 initialPosition = myPiece.transform.position;
@@ -155,14 +235,14 @@ public class Knight : Piece
         //ARChessGameManager.PrintPieces();
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]
     private void CapturePieceForOpponent(string tag, int x, int y)
     {
         GameObject myPiece = ARChessGameManager.instance.FindGameObjectWithTag(tag);
-        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(tag);
+        Vector2Int coordinates = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, tag);
 
         Vector2Int pos = new Vector2Int(7 - x, 7 - y);
         ARChessGameManager.instance.CapturePieceAt(pos);
@@ -172,7 +252,7 @@ public class Knight : Piece
         ARChessGameManager.instance.SetPositionToNull(coordinates.x, coordinates.y);
 
         ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
-        ARChessGameManager.instance.VerifyForCheck(false);
+        ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
     }
 
     [PunRPC]

@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.UI;
 
 using Photon.Pun;
 using Photon.Realtime;
@@ -10,8 +9,6 @@ using TMPro;
 using ExitGames.Client.Photon;
 using System;
 using System.Linq;
-using System.IO;
-using SimpleJSON;
 
 public class ARChessGameManager : MonoBehaviourPunCallbacks
 {
@@ -60,6 +57,10 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     private GameObject[,] tempGamePlan;
     private ulong tempAttackedSquares;
 
+    public static GameMode ChosenGameMode;
+
+    /*private string path;
+    private JSONObject userJSON;*/
     void Awake()
     {
         instance = this;
@@ -92,46 +93,59 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     #region UI callback methods
 
+    public void JoinRoom()
+    {
+        if (ChosenGameMode == GameMode.MultiplayerAtRandom)
+        {
+            JoinRandomRoom();
+        }
+        else if (ChosenGameMode == GameMode.MultiplayerWithFriend)
+        {
+            JoinWantedRoom();
+        }
+    }
+
     public void JoinWantedRoom()
     {
-
         uI_InformText.text = "Searching for available rooms";
 
-        string roomName = PlayerSelectionManager.instance.GetRoomName();
+        string roomName = GameModesManager.Instance.GetRoomName();
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 2;
-        roomOptions.IsVisible = true;
-        roomOptions.IsOpen = true;
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 2,
+            IsVisible = false,
+            IsOpen = true
+        };
 
         PhotonNetwork.JoinOrCreateRoom(roomName, roomOptions, TypedLobby.Default);
 
-        //PhotonNetwork.JoinRandomRoom();
         searchForGamesButtonGameObject.SetActive(false);
         raycastCenterImage.SetActive(false);
     }
 
-    public void OnQuitMatchButtonClicked()
+    public void JoinRandomRoom()
     {
-        if (PhotonNetwork.InRoom)
-        {
-            PhotonNetwork.LeaveRoom();
-        }
-        else
-        {
-            SceneLoader.Instance.LoadScene("Scene_Start");
-        }
+        uI_InformText.text = "Searching for available rooms";
+        PhotonNetwork.JoinRandomRoom();
+        searchForGamesButtonGameObject.SetActive(false);
     }
 
     #endregion
 
     #region Photon callback methods
 
-    public override void OnJoinRoomFailed(short returnCode, string message)
+    /*public override void OnJoinRoomFailed(short returnCode, string message)
     {
-        //Debug.Log(message);
+        Debug.Log("failed");
         uI_InformText.text = message;
-        //CreateAndJoinRoom();
+        CreateAndJoinRoom();
+    }*/
+
+    public override void OnJoinRandomFailed(short returnCode, string message)
+    {
+        uI_InformText.text = message;
+        CreateAndJoinRoom();
     }
 
     public override void OnCreatedRoom()
@@ -146,12 +160,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
-            //uI_InformText.text = "Joined room " + PhotonNetwork.CurrentRoom.Name + ". Waiting for other players...";
+            uI_InformText.text = "Joined room " + PhotonNetwork.CurrentRoom.Name + ". Waiting for other players...";
         }
         else
         {
             opponentName = PhotonNetwork.PlayerListOthers[0].NickName;
-            Debug.Log(opponentName);
+            //Debug.Log(opponentName);
 
             uI_InformText.text = "Joined room " + PhotonNetwork.CurrentRoom.Name;
             StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
@@ -169,7 +183,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 2)
         {
             opponentName = newPlayer.NickName;
-            Debug.Log(opponentName);
+            //Debug.Log(opponentName);
         }
 
         StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
@@ -178,7 +192,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public override void OnLeftRoom()
     {
-        //SceneLoader.Instance.LoadScene("Scene_Lobby");
+        SceneLoader.Instance.LoadScene("Scene_Start");
     }
 
     #endregion
@@ -187,14 +201,15 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     private void CreateAndJoinRoom()
     {
-        string roomName = PlayerSelectionManager.instance.GetRoomName();
-        //string randomRoomName = "Room " + Random.Range(0, 10000);
-        //uI_InformText.text = "Created room " + roomName;
+        string randomRoomName = "Room " + UnityEngine.Random.Range(0, 10000);
+        uI_InformText.text = "Created room " + randomRoomName;
 
-        RoomOptions roomOptions = new RoomOptions();
-        roomOptions.MaxPlayers = 2;
+        RoomOptions roomOptions = new RoomOptions
+        {
+            MaxPlayers = 2
+        };
 
-        PhotonNetwork.CreateRoom(roomName, roomOptions);
+        PhotonNetwork.CreateRoom(randomRoomName, roomOptions);
     }
 
     IEnumerator DeactivateAfterSeconds(GameObject _gameObject, float seconds)
@@ -216,7 +231,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public bool VerifyForCheck(bool isForTemporaryCheck)
+    public bool VerifyForCheck(GameObject[,] wantedPieces, bool isForTemporaryCheck)
     {
         ulong squares;
         if (isForTemporaryCheck)
@@ -227,7 +242,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             squares = attackedSquares;
         }
-        Vector2Int myKingPosition = GetRowAndColumn(colorOfLocalPlayer + "King");
+        
+        Vector2Int myKingPosition = GetRowAndColumn(wantedPieces, colorOfLocalPlayer + "King");
 
         int myKingSquare = 63 - (myKingPosition.x * 8 + myKingPosition.y);
         if ((squares & (1UL << myKingSquare)) == 0) //the bit is not set to 1
@@ -241,18 +257,24 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             {
                 if (IsCheckMate())
                 {
-                    string path = Application.persistentDataPath + "/ARChessGameUserSave.json";
+                    /*string path = Application.persistentDataPath + "/ARChessGameUserSave.json";
                     if (File.Exists(path))
                     {
                         string jsonString = File.ReadAllText(path);
                         JSONObject userJSON = (JSONObject)JSON.Parse(jsonString);
                         int numberOfLosses = userJSON["NumberOfLosses"];
                         userJSON["NumberOfLosses"] = numberOfLosses + 1;
-                        File.WriteAllText(path, userJSON.ToString());
-                    }
+                        File.WriteAllText(path, userJSON.ToString()); //also closes the file after writing
+                    }*/
 
-                    uI_InformText.text = "CHECKMATE! You lost against " + opponentName + "!";
+                    int numberOfLosses = FileManager.instance.ReadIntFromFile("NumberOfLosses");
+                    FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+
+                    uI_InformText.text = "Game Over! Your opponent, " + opponentName + ", wins!";
                     uI_InformPanelGameObject.SetActive(true);
+
+                    gameOverPanel.SetActive(true);
+                    EndGame();
 
                     object[] data = new object[]
                     {
@@ -260,8 +282,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     };
                     RaiseEvent(data);
 
-                    StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 4.0f));
-                    SceneLoader.Instance.LoadScene("Scene_Start");
                 }
                 else
                 {
@@ -297,19 +317,23 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             for (int j = 0; j < 8; j++)
             {
-                if (pieces[i, j].gameObject.tag.StartsWith(colorOfLocalPlayer))
+                if (pieces[i, j] != null)
                 {
-                    Vector2Int currentPosition = GetRowAndColumn(pieces[i, j].gameObject.tag);
-                    Piece myPiece = pieces[i, j].GetComponent<Piece>();
-                    List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
-                    List<bool> legalMoves = GetArrayOfLegalMoves(possibleMoves, myPiece, currentPosition);
-
-                    foreach (bool legalMove in legalMoves)
+                    if (pieces[i, j].gameObject.tag.StartsWith(colorOfLocalPlayer))
                     {
-                        if (legalMove)
+                        Vector2Int currentPosition = GetRowAndColumn(pieces, pieces[i, j].gameObject.tag);
+                        Piece myPiece = pieces[i, j].GetComponent<Piece>();
+                        List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
+                        List<bool> legalMoves = GetArrayOfLegalMoves(possibleMoves, myPiece, currentPosition);
+
+                     
+                        foreach (bool legalMove in legalMoves)
                         {
-                            isCheckMate = false;
-                            break;
+                            if (legalMove)
+                            {
+                                isCheckMate = false;
+                                break;
+                            }
                         }
                     }
                 }
@@ -333,9 +357,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             for (int j = 0; j < 8; j++)
             {
-                if (pieces[i, j] != null)
+                if (wantedPieces[i, j] != null)
                 {
-                    if (pieces[i, j].tag.StartsWith(colorOfOpponent))
+                    if (wantedPieces[i, j].tag.StartsWith(colorOfOpponent))
                     {
                         Vector2Int currentPosition = new Vector2Int(i, j);
 
@@ -352,6 +376,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void AddPiece(GameObject piece, int row, int col)
     {
         pieces[row, col] = piece;
+
+        if (ChosenGameMode == GameMode.SinglePlayer)
+        {
+            string position = row.ToString() + col.ToString();
+            FileManager.instance.AddNewProperty(piece.tag, position);
+        }
     }
 
     public static void PrintPieces()
@@ -384,6 +414,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void SetPositionToObject(int i, int j, GameObject piece)
     {
         pieces[i, j] = piece;
+
+        if (ChosenGameMode == GameMode.SinglePlayer)
+        {
+            string position = i.ToString() + j.ToString();
+            FileManager.instance.ChangePropertyStringValue(piece.tag, position);
+        }
     }
 
     public GameObject FindGameObjectWithTag(string tag)
@@ -404,16 +440,16 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         return null;
     }
 
-    public Vector2Int GetRowAndColumn(string wantedTag)
+    public Vector2Int GetRowAndColumn(GameObject[,] wantedPieces, string wantedTag)
     {
         Vector2Int objectCoordinates = new Vector2Int();
         for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
-                if (pieces[i, j] != null)
+                if (wantedPieces[i, j] != null)
                 {
-                    if (pieces[i, j].CompareTag(wantedTag))
+                    if (wantedPieces[i, j].CompareTag(wantedTag))
                     {
                         objectCoordinates.Set(i, j);
                         break;
@@ -545,6 +581,10 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             Array.Copy(pieces, tempGamePlan, pieces.Length);
 
+            if (tempGamePlan[possibleMove.x, possibleMove.y] != null)
+            {
+                tempGamePlan[possibleMove.x, possibleMove.y] = null;
+            }
             //move piece in each possible location
             tempGamePlan[possibleMove.x, possibleMove.y] = piece.gameObject;
             tempGamePlan[currentPosition.x, currentPosition.y] = null;
@@ -553,7 +593,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             RefreshAttackedSquares(tempGamePlan, true);
 
             //check if moving the piece to that position puts you in check
-            bool legal = !VerifyForCheck(true);
+            bool legal = !VerifyForCheck(tempGamePlan, true);
             legalMoves.Add(legal);
         }
 
@@ -562,7 +602,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     private void ShowPossibleMoves(Piece myPiece)
     {
-        Vector2Int currentPosition = GetRowAndColumn(myPiece.gameObject.tag);
+        Vector2Int currentPosition = GetRowAndColumn(pieces, myPiece.gameObject.tag);
 
         //Debug.Log(currentPosition);
         List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
@@ -579,19 +619,23 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     GameObject objectOverHighlight = GetPieceAtPosition(possibleMove.x, possibleMove.y);
                     //Debug.Log(currentPlayer + " " + otherPlayer);
                     if (!string.IsNullOrEmpty(otherPlayer)) {
-                        if ((myPiece.gameObject.tag.StartsWith(currentPlayer) && objectOverHighlight.tag.StartsWith(otherPlayer)) || (myPiece.gameObject.tag.StartsWith(otherPlayer) && objectOverHighlight.tag.StartsWith(currentPlayer)))
+                        bool isThisMoveLegal = legalMoves.ElementAt(index);
+                        if (isThisMoveLegal)
                         {
-                            MeshRenderer renderers = objectOverHighlight.GetComponent<MeshRenderer>();
-                            renderers.material = selectedMaterial;
+                            if ((myPiece.gameObject.tag.StartsWith(currentPlayer) && objectOverHighlight.tag.StartsWith(otherPlayer)) || (myPiece.gameObject.tag.StartsWith(otherPlayer) && objectOverHighlight.tag.StartsWith(currentPlayer)))
+                            {
+                                MeshRenderer renderers = objectOverHighlight.GetComponent<MeshRenderer>();
+                                renderers.material = selectedMaterial;
 
-                            highlightedObjects.Add(objectOverHighlight);
+                                highlightedObjects.Add(objectOverHighlight);
 
-                            Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
-                            //Debug.Log(tileHighlightPosition);
-                            GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity); // + chessBoard.transform.position
-                            tileHighlight.tag = "Highlight";
-                            tileHighlights.Add(tileHighlight);
-                        }
+                                Vector3 tileHighlightPosition = Geometry.PointFromGrid(possibleMove);
+                                //Debug.Log(tileHighlightPosition);
+                                GameObject tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity); // + chessBoard.transform.position
+                                tileHighlight.tag = "Highlight";
+                                tileHighlights.Add(tileHighlight);
+                            }
+                        } 
                     }
                     //if ((myPiece.gameObject.tag.StartsWith("White") && objectOverHighlight.tag.StartsWith("Black")) || (myPiece.gameObject.tag.StartsWith("Black") && objectOverHighlight.tag.StartsWith("White")))    
                 }
@@ -604,100 +648,107 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     {
                         tileHighlight = Instantiate(tileHighlightPrefab, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity);
                         tileHighlight.tag = "Highlight";
+                        tileHighlights.Add(tileHighlight);
                     }
-                    else
+                    /*else
                     {
                         tileHighlight = Instantiate(tileHighlightIllegal, tileHighlightPosition + chessBoard.transform.position, Quaternion.identity);
                         tileHighlight.tag = "IllegalHighlight";
-                    }
+                    }*/
                     //Debug.Log(tileHighlightPosition);
-                    
-                    tileHighlights.Add(tileHighlight);
                 }
                 index++;
             }
         }
 
+        //castling 
+        //not allowed when the king is in check
         if (myPiece.gameObject.CompareTag("BlackKing"))
         {
-            if (!movedPieces.Contains(myPiece.gameObject)) //the king is not moved
+            if (!VerifyForCheck(pieces, false))
             {
-                //check in the left of the currentPosition
-                //x - row, y - column
-                if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 2))
+                if (!movedPieces.Contains(myPiece.gameObject)) //the king is not moved
                 {
-                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 3);
-                    if (otherPiece.tag.Equals("BlackRook1") && !movedPieces.Contains(otherPiece))
+                    //check in the left of the currentPosition
+                    //x - row, y - column
+                    if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 2))
                     {
-                        Vector2Int grid = new Vector2Int();
-                        grid.Set(currentPosition.x, currentPosition.y - 2);
-                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 3);
+                        if (otherPiece.CompareTag("BlackRook1") && !movedPieces.Contains(otherPiece))
+                        {
+                            Vector2Int grid = new Vector2Int();
+                            grid.Set(currentPosition.x, currentPosition.y - 2);
+                            Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
-                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
-                        tileHighlight.tag = "Highlight";
-                        tileHighlights.Add(tileHighlight);
+                            GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                            tileHighlight.tag = "Highlight";
+                            tileHighlights.Add(tileHighlight);
 
-                        specialMove = 1;
+                            specialMove = 1;
+                        }
+                    }
+
+                    //check in the right of the currentPosition
+                    if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 2) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 3))
+                    {
+                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 4);
+                        if (otherPiece.CompareTag("BlackRook2") && !movedPieces.Contains(otherPiece))
+                        {
+                            Vector2Int grid = new Vector2Int();
+                            grid.Set(currentPosition.x, currentPosition.y + 2);
+                            Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+
+                            GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                            tileHighlight.tag = "Highlight";
+                            tileHighlights.Add(tileHighlight);
+
+                            specialMove = 2;
+                        }
                     }
                 }
-
-                //check in the right of the currentPosition
-                if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 2) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 3))
-                {
-                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 4);
-                    if (otherPiece.tag.Equals("BlackRook2") && !movedPieces.Contains(otherPiece))
-                    {
-                        Vector2Int grid = new Vector2Int();
-                        grid.Set(currentPosition.x, currentPosition.y + 2);
-                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
-
-                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
-                        tileHighlight.tag = "Highlight";
-                        tileHighlights.Add(tileHighlight);
-
-                        specialMove = 2;
-                    }
-                }
-            }
+            }  
         }
 
-        if (myPiece.gameObject.tag.Equals("WhiteKing"))
+        if (myPiece.gameObject.CompareTag("WhiteKing"))
         {
-            if (!movedPieces.Contains(myPiece.gameObject)) //the king is not moved
+            if (!VerifyForCheck(pieces, false))
             {
-                //check in the left of the currentPosition
-                if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 2) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 3))
+                if (!movedPieces.Contains(myPiece.gameObject)) //the king is not moved
                 {
-                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 4);
-                    if (otherPiece.tag.Equals("WhiteRook1") && !movedPieces.Contains(otherPiece))
+                    //check in the left of the currentPosition
+                    if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 2) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 3))
                     {
-                        Vector2Int grid = new Vector2Int();
-                        grid.Set(currentPosition.x, currentPosition.y - 2);
-                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 4);
+                        if (otherPiece.CompareTag("WhiteRook1") && !movedPieces.Contains(otherPiece))
+                        {
+                            Vector2Int grid = new Vector2Int();
+                            grid.Set(currentPosition.x, currentPosition.y - 2);
+                            Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
-                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
-                        tileHighlight.tag = "Highlight";
-                        tileHighlights.Add(tileHighlight);
+                            GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                            tileHighlight.tag = "Highlight";
+                            tileHighlights.Add(tileHighlight);
 
-                        specialMove = 1;
+                            specialMove = 1;
+                        }
                     }
-                }
 
-                //check in the right of the currentPosition
-                if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 2))
-                {
-                    GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 3);
-                    if (otherPiece.tag.Equals("WhiteRook2") && !movedPieces.Contains(otherPiece))
+                    //check in the right of the currentPosition
+                    if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 2))
                     {
-                        Vector2Int grid = new Vector2Int();
-                        grid.Set(currentPosition.x, currentPosition.y + 2);
-                        Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
+                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 3);
+                        if (otherPiece.CompareTag("WhiteRook2") && !movedPieces.Contains(otherPiece))
+                        {
+                            Vector2Int grid = new Vector2Int();
+                            grid.Set(currentPosition.x, currentPosition.y + 2);
+                            Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
-                        GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
-                        tileHighlight.tag = "Highlight";
-                        tileHighlights.Add(tileHighlight);
+                            GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
+                            tileHighlight.tag = "Highlight";
+                            tileHighlights.Add(tileHighlight);
 
-                        specialMove = 2;
+                            specialMove = 2;
+                        }
                     }
                 }
             }
@@ -707,50 +758,20 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void CapturePieceAt(Vector2Int gridPoint)
     {
         GameObject capturedPiece = GetPieceAtPosition(gridPoint.x, gridPoint.y);
-        if (capturedPiece.tag.Equals(currentPlayer + "King"))
-        {
-            uI_InformText.text = "Game Over! " + otherPlayer + " player wins!";
-            uI_InformPanelGameObject.SetActive(true);
 
-            gameOverPanel.SetActive(true);
-            EndGame();
-        }
-        else if (capturedPiece.tag.Equals(otherPlayer + "King"))
+        if (ChosenGameMode == GameMode.SinglePlayer)
         {
-            uI_InformText.text = "Game Over! " + currentPlayer + " player wins!";
-            uI_InformPanelGameObject.SetActive(true);
-
-            gameOverPanel.SetActive(true);
-            EndGame();
+            FileManager.instance.ChangePropertyStringValue(capturedPiece.tag, "X");
         }
 
-        /*if (capturedPiece.tag.Equals("BlackKing")) //Game over
-        {
-            uI_InformText.text = "Game Over! White player wins!";
-            uI_InformPanelGameObject.SetActive(true);
-
-            gameOverPanel.SetActive(true);
-            EndGame();
-        }
-        else if (capturedPiece.tag.Equals("WhiteKing")) //Game over
-        {
-            uI_InformText.text = "Game Over! Black player wins!";
-            uI_InformPanelGameObject.SetActive(true);
-
-            gameOverPanel.SetActive(true);
-            EndGame();
-        }*/
-        //pieces[gridPoint.x, gridPoint.y] = null;
-        
         if (capturedPiece != null)
         {
             Destroy(capturedPiece);
         }
         
-        //capturedPiece.SetActive(false);
     }
 
-    private void EndGame()
+    public void EndGame()
     {
         for (int i = 0; i < 8; i++)
         {
@@ -758,21 +779,13 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             {
                 if (pieces[i, j] != null)
                 {
-                    pieces[i, j].SetActive(false);
+                    Destroy(pieces[i, j]);;
                 }
             }
         }
     }
 
-    private void Check()
-    {
-        uI_InformText.text = "You are in CHECK! Save your King!";
-        uI_InformPanelGameObject.SetActive(true);
-
-        StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
-    }
-
-    public void OnGameOverButtonClicked()
+    public void OnBackToStartButtonClicked()
     {
         SceneLoader.Instance.LoadScene("Scene_Start");
     }
