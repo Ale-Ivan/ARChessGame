@@ -10,13 +10,15 @@ public abstract class Piece : MonoBehaviour
     public bool selected;
     protected PhotonView piecePhotonView;
 
-    public abstract List<Vector2Int> MoveLocations(Vector2Int piecePosition);
+    public abstract List<Vector2Int> MoveLocations(GameObject[,] gamePlan, Vector2Int piecePosition, bool isAI = false);
+
+    public abstract List<Vector2Int> MoveLocationsForAI(GameObject[,] gamePlan, Vector2Int piecePosition);
 
     public abstract void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition);
 
     public void OnMouseDown()
     {
-        if (piecePhotonView.IsMine)
+        if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
         {
             //check if it is my turn to move
             if (this.gameObject.tag.StartsWith(ARChessGameManager.currentPlayer))
@@ -30,8 +32,24 @@ public abstract class Piece : MonoBehaviour
                     ARChessGameManager.instance.DeselectPiece(this);
                 }
             }
-
-
+        }
+        else
+        {
+            if (piecePhotonView.IsMine)
+            {
+                //check if it is my turn to move
+                if (this.gameObject.tag.StartsWith(ARChessGameManager.currentPlayer))
+                {
+                    if (!selected)
+                    {
+                        ARChessGameManager.instance.SelectPiece(this);
+                    }
+                    else
+                    {
+                        ARChessGameManager.instance.DeselectPiece(this);
+                    }
+                }
+            }
         }
         
     }

@@ -23,7 +23,7 @@ public class GameModesManager : Singleton<GameModesManager>
     public void OnSinglePlayerButtonClicked()
     {
         ARChessGameManager.ChosenGameMode = GameMode.SinglePlayer;
-        SceneLoader.Instance.LoadScene("Scene_SinglePlayer");
+        SceneLoader.Instance.LoadScene("Scene_Gameplay");
     }
 
     public void OnPlayAtRandomButtonClicked()

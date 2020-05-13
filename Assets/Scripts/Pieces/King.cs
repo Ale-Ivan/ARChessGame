@@ -11,6 +11,7 @@ public class King : Piece
     {
         piecePhotonView = GetComponent<PhotonView>();
         chessBoard = GameObject.FindGameObjectWithTag("ChessBoard");
+        type = PieceType.King;
     }
 
     void Start()
@@ -23,20 +24,22 @@ public class King : Piece
         return piecePhotonView;
     }
 
-    public override List<Vector2Int> MoveLocations(Vector2Int piecePosition)
+    public override List<Vector2Int> MoveLocations(GameObject[,] gamePlan, Vector2Int piecePosition, bool isAI = false)
     {
+        string otherPlayer = isAI ? ARChessGameManager.colorOfLocalPlayer : ARChessGameManager.colorOfOpponent;
+
         List<Vector2Int> locations = new List<Vector2Int>();
 
         if (piecePosition.x != 7)
         {
             Vector2Int forwardOne = new Vector2Int(piecePosition.x + 1, piecePosition.y);
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, forwardOne.x, forwardOne.y))
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, forwardOne.x, forwardOne.y))
             {
                 locations.Add(forwardOne);
             }
             else
             {
-                if (ARChessGameManager.instance.GetPieceAtPosition(forwardOne.x, forwardOne.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, forwardOne.x, forwardOne.y).tag.StartsWith(otherPlayer))
                 {
                     locations.Add(forwardOne);
                 }
@@ -45,13 +48,13 @@ public class King : Piece
             if (piecePosition.y != 7)
             {
                 Vector2Int diagonalRightUp = new Vector2Int(piecePosition.x + 1, piecePosition.y + 1);
-                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightUp.x, diagonalRightUp.y))
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalRightUp.x, diagonalRightUp.y))
                 {
                     locations.Add(diagonalRightUp);
                 }
                 else
                 {
-                    if (ARChessGameManager.instance.GetPieceAtPosition(diagonalRightUp.x, diagonalRightUp.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalRightUp.x, diagonalRightUp.y).tag.StartsWith(otherPlayer))
                     {
                         locations.Add(diagonalRightUp);
                     }
@@ -61,13 +64,13 @@ public class King : Piece
             if (piecePosition.y != 0)
             {
                 Vector2Int diagonalLeftUp = new Vector2Int(piecePosition.x + 1, piecePosition.y - 1);
-                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftUp.x, diagonalLeftUp.y))
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalLeftUp.x, diagonalLeftUp.y))
                 {
                     locations.Add(diagonalLeftUp);
                 }
                 else
                 {
-                    if (ARChessGameManager.instance.GetPieceAtPosition(diagonalLeftUp.x, diagonalLeftUp.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalLeftUp.x, diagonalLeftUp.y).tag.StartsWith(otherPlayer))
                     {
                         locations.Add(diagonalLeftUp);
                     }
@@ -78,13 +81,13 @@ public class King : Piece
         if (piecePosition.x != 0)
         {
             Vector2Int backwardsOne = new Vector2Int(piecePosition.x - 1, piecePosition.y);
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, backwardsOne.x, backwardsOne.y))
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, backwardsOne.x, backwardsOne.y))
             {
                 locations.Add(backwardsOne);
             }
             else
             {
-                if (ARChessGameManager.instance.GetPieceAtPosition(backwardsOne.x, backwardsOne.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, backwardsOne.x, backwardsOne.y).tag.StartsWith(otherPlayer))
                 {
                     locations.Add(backwardsOne);
                 }
@@ -94,13 +97,13 @@ public class King : Piece
             if (piecePosition.y != 7)
             {
                 Vector2Int diagonalRightDown = new Vector2Int(piecePosition.x - 1, piecePosition.y + 1);
-                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightDown.x, diagonalRightDown.y))
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalRightDown.x, diagonalRightDown.y))
                 {
                     locations.Add(diagonalRightDown);
                 }
                 else
                 {
-                    if (ARChessGameManager.instance.GetPieceAtPosition(diagonalRightDown.x, diagonalRightDown.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalRightDown.x, diagonalRightDown.y).tag.StartsWith(otherPlayer))
                     {
                         locations.Add(diagonalRightDown);
                     }
@@ -110,13 +113,13 @@ public class King : Piece
             if (piecePosition.y != 0)
             {
                 Vector2Int diagonalLeftDown = new Vector2Int(piecePosition.x - 1, piecePosition.y - 1);
-                if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftDown.x, diagonalLeftDown.y))
+                if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalLeftDown.x, diagonalLeftDown.y))
                 {
                     locations.Add(diagonalLeftDown);
                 }
                 else
                 {
-                    if (ARChessGameManager.instance.GetPieceAtPosition(diagonalLeftDown.x, diagonalLeftDown.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                    if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalLeftDown.x, diagonalLeftDown.y).tag.StartsWith(otherPlayer))
                     {
                         locations.Add(diagonalLeftDown);
                     }
@@ -127,13 +130,13 @@ public class King : Piece
         if (piecePosition.y != 0)
         {
             Vector2Int leftOne = new Vector2Int(piecePosition.x, piecePosition.y - 1);
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, leftOne.x, leftOne.y))
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, leftOne.x, leftOne.y))
             {
                 locations.Add(leftOne);
             }
             else
             {
-                if (ARChessGameManager.instance.GetPieceAtPosition(leftOne.x, leftOne.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, leftOne.x, leftOne.y).tag.StartsWith(otherPlayer))
                 {
                     locations.Add(leftOne);
                 }
@@ -143,13 +146,13 @@ public class King : Piece
         if (piecePosition.y != 7)
         {
             Vector2Int rightOne = new Vector2Int(piecePosition.x, piecePosition.y + 1);
-            if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, rightOne.x, rightOne.y))
+            if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, rightOne.x, rightOne.y))
             {
                 locations.Add(rightOne);
             }
             else
             {
-                if (ARChessGameManager.instance.GetPieceAtPosition(rightOne.x, rightOne.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, rightOne.x, rightOne.y).tag.StartsWith(otherPlayer))
                 {
                     locations.Add(rightOne);
                 }
@@ -157,6 +160,11 @@ public class King : Piece
         }
 
         return locations;
+    }
+
+    public override List<Vector2Int> MoveLocationsForAI(GameObject[,] gamePlan, Vector2Int piecePosition)
+    {
+        return MoveLocations(gamePlan, piecePosition, true);
     }
 
     public override void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition)

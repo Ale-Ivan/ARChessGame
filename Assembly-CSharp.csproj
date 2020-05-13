@@ -88,6 +88,7 @@
     <Compile Include="Assets\Scripts\MySynchronizationScript.cs" />
     <Compile Include="Assets\Scripts\PauseManager.cs" />
     <Compile Include="Assets\Scripts\PhotonFunctions.cs" />
+    <Compile Include="Assets\Scripts\PieceMoveEvaluation.cs" />
     <Compile Include="Assets\Scripts\Pieces\Bishop.cs" />
     <Compile Include="Assets\Scripts\Pieces\King.cs" />
     <Compile Include="Assets\Scripts\Pieces\Knight.cs" />
@@ -101,7 +102,7 @@
     <Compile Include="Assets\Scripts\ScaleController.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
     <Compile Include="Assets\Scripts\SignInPageManager.cs" />
-    <Compile Include="Assets\Scripts\SinglePlayerGameManager.cs" />
+    <Compile Include="Assets\Scripts\SinglePlayerManager.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />
     <Compile Include="Assets\Scripts\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Spinner.cs" />

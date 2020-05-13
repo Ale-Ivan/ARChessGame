@@ -11,6 +11,7 @@ public class Bishop : Piece
     {
         piecePhotonView = GetComponent<PhotonView>();
         chessBoard = GameObject.FindGameObjectWithTag("ChessBoard");
+        type = PieceType.Bishop;
     }
 
     void Start()
@@ -23,12 +24,14 @@ public class Bishop : Piece
         return piecePhotonView;
     }
 
-    public override List<Vector2Int> MoveLocations(Vector2Int piecePosition)
+    public override List<Vector2Int> MoveLocations(GameObject[,] gamePlan, Vector2Int piecePosition, bool isAI = false)
     {
         bool continueRightUp = true;
         bool continueRightDown = true;
         bool continueLeftUp = true;
         bool continueLeftDown = true;
+
+        string otherPlayer = isAI ? ARChessGameManager.colorOfLocalPlayer : ARChessGameManager.colorOfOpponent;
 
         List<Vector2Int> locations = new List<Vector2Int>();
 
@@ -39,13 +42,13 @@ public class Bishop : Piece
                 if (piecePosition.x + i < 8 && piecePosition.y + i < 8)
                 {
                     Vector2Int diagonalRightUp = new Vector2Int(piecePosition.x + i, piecePosition.y + i);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightUp.x, diagonalRightUp.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalRightUp.x, diagonalRightUp.y))
                     {
                         locations.Add(diagonalRightUp);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalRightUp.x, diagonalRightUp.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalRightUp.x, diagonalRightUp.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(diagonalRightUp);
                         }
@@ -59,13 +62,13 @@ public class Bishop : Piece
                 if (piecePosition.x + i < 8 && piecePosition.y - i >= 0)
                 {
                     Vector2Int diagonalLeftUp = new Vector2Int(piecePosition.x + i, piecePosition.y - i);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftUp.x, diagonalLeftUp.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalLeftUp.x, diagonalLeftUp.y))
                     {
                         locations.Add(diagonalLeftUp);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalLeftUp.x, diagonalLeftUp.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalLeftUp.x, diagonalLeftUp.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(diagonalLeftUp);
                         }
@@ -79,13 +82,13 @@ public class Bishop : Piece
                 if (piecePosition.x - i >= 0 && piecePosition.y + i < 8)
                 {
                     Vector2Int diagonalRightDown = new Vector2Int(piecePosition.x - i, piecePosition.y + i);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalRightDown.x, diagonalRightDown.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalRightDown.x, diagonalRightDown.y))
                     {
                         locations.Add(diagonalRightDown);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalRightDown.x, diagonalRightDown.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalRightDown.x, diagonalRightDown.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(diagonalRightDown);
                         }
@@ -99,13 +102,13 @@ public class Bishop : Piece
                 if (piecePosition.x - i >= 0 && piecePosition.y - i >= 0)
                 {
                     Vector2Int diagonalLeftDown = new Vector2Int(piecePosition.x - i, piecePosition.y - i);
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, diagonalLeftDown.x, diagonalLeftDown.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, diagonalLeftDown.x, diagonalLeftDown.y))
                     {
                         locations.Add(diagonalLeftDown);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(diagonalLeftDown.x, diagonalLeftDown.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, diagonalLeftDown.x, diagonalLeftDown.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(diagonalLeftDown);
                         }
@@ -118,6 +121,10 @@ public class Bishop : Piece
         return locations;
     }
 
+    public override List<Vector2Int> MoveLocationsForAI(GameObject[,] gamePlan, Vector2Int piecePosition)
+    {
+        return MoveLocations(gamePlan, piecePosition, true); //bishop's moves are the same in the mirror
+    }
     public override void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition)
     {
         bool continueRightUp = true;

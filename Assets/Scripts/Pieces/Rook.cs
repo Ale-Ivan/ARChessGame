@@ -11,6 +11,7 @@ public class Rook : Piece
     {
         piecePhotonView = GetComponent<PhotonView>();
         chessBoard = GameObject.FindGameObjectWithTag("ChessBoard");
+        type = PieceType.Rook;
     }
 
     void Start()
@@ -23,12 +24,14 @@ public class Rook : Piece
         return piecePhotonView;
     }
 
-    public override List<Vector2Int> MoveLocations(Vector2Int piecePosition)
+    public override List<Vector2Int> MoveLocations(GameObject[,] gamePlan, Vector2Int piecePosition, bool isAI = false)
     {
         bool continueLeft = true;
         bool continueRight = true;
         bool continueForward = true;
         bool continueBackward = true;
+
+        string otherPlayer = isAI ? ARChessGameManager.colorOfLocalPlayer : ARChessGameManager.colorOfOpponent;
 
         List<Vector2Int> locations = new List<Vector2Int>();
 
@@ -39,13 +42,13 @@ public class Rook : Piece
                 if (piecePosition.x + i < 8)
                 {
                     Vector2Int possibleLocationForward = new Vector2Int(piecePosition.x + i, piecePosition.y); //move forward
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationForward.x, possibleLocationForward.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, possibleLocationForward.x, possibleLocationForward.y))
                     {
                         locations.Add(possibleLocationForward);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationForward.x, possibleLocationForward.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, possibleLocationForward.x, possibleLocationForward.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(possibleLocationForward);
                         }
@@ -59,13 +62,13 @@ public class Rook : Piece
                 if (piecePosition.x - i >= 0)
                 {
                     Vector2Int possibleLocationBackward = new Vector2Int(piecePosition.x - i, piecePosition.y); //move backwards
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationBackward.x, possibleLocationBackward.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, possibleLocationBackward.x, possibleLocationBackward.y))
                     {
                         locations.Add(possibleLocationBackward);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationBackward.x, possibleLocationBackward.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, possibleLocationBackward.x, possibleLocationBackward.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(possibleLocationBackward);
                         }
@@ -79,13 +82,13 @@ public class Rook : Piece
                 if (piecePosition.y - i >= 0)
                 {
                     Vector2Int possibleLocationLeft = new Vector2Int(piecePosition.x, piecePosition.y - i); //move left
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationLeft.x, possibleLocationLeft.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, possibleLocationLeft.x, possibleLocationLeft.y))
                     {
                         locations.Add(possibleLocationLeft);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationLeft.x, possibleLocationLeft.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, possibleLocationLeft.x, possibleLocationLeft.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(possibleLocationLeft);
                         }
@@ -99,13 +102,13 @@ public class Rook : Piece
                 if (piecePosition.y + i < 8)
                 {
                     Vector2Int possibleLocationRight = new Vector2Int(piecePosition.x, piecePosition.y + i); //move right
-                    if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, possibleLocationRight.x, possibleLocationRight.y))
+                    if (ARChessGameManager.instance.CheckIfPositionIsFree(gamePlan, possibleLocationRight.x, possibleLocationRight.y))
                     {
                         locations.Add(possibleLocationRight);
                     }
                     else
                     {
-                        if (ARChessGameManager.instance.GetPieceAtPosition(possibleLocationRight.x, possibleLocationRight.y).tag.StartsWith(ARChessGameManager.colorOfOpponent))
+                        if (ARChessGameManager.instance.GetPieceAtPosition(gamePlan, possibleLocationRight.x, possibleLocationRight.y).tag.StartsWith(otherPlayer))
                         {
                             locations.Add(possibleLocationRight);
                         }
@@ -116,6 +119,11 @@ public class Rook : Piece
         }
 
         return locations;
+    }
+
+    public override List<Vector2Int> MoveLocationsForAI(GameObject[,] gamePlan, Vector2Int piecePosition)
+    {
+        return MoveLocations(gamePlan, piecePosition, true);
     }
 
     public override void GetAttackLocations(bool isForTemporaryCheck, GameObject[,] arrayWithPieces, Vector2Int currentPosition)

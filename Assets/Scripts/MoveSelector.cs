@@ -38,15 +38,13 @@ public class MoveSelector : MonoBehaviour
                 {
                     if (ARChessGameManager.instance.specialMove == 1) //switch king with rook1
                     {
-                        GameObject rook1 = ARChessGameManager.instance.GetPieceAtPosition(0, 0);
+                        GameObject rook1 = ARChessGameManager.instance.GetPieceAtPosition(ARChessGameManager.pieces, 0, 0);
 
                         if (piece.gameObject.CompareTag("BlackKing"))
                         {
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 1, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 3);
-
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 1);
 
                             Vector2Int specialMove = new Vector2Int();
                             specialMove.Set(0, 2);
@@ -58,17 +56,20 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
                             ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook1", 0, 2);
-
                             ARChessGameManager.instance.ChangePlayer();
-                            piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+
+                            if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                            {
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 1);
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook1", 0, 2);
+                                piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+                            }
                         }
                         else if (piece.gameObject.CompareTag("WhiteKing"))
                         {
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 2, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 4);
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 2);
 
                             Vector2Int specialMove = new Vector2Int();
                             specialMove.Set(0, 2);
@@ -80,23 +81,27 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
                             ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook1", 0, 3);
-
                             ARChessGameManager.instance.ChangePlayer();
-                            piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+
+                            if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                            {
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 2);
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook1", 0, 3);
+                                piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+                            }
+
                         }
                         ARChessGameManager.instance.specialMove = 0;
                     }
                     else if (ARChessGameManager.instance.specialMove == 2) //switch king with rook2
                     {
-                        GameObject rook2 = ARChessGameManager.instance.GetPieceAtPosition(0, 7);
+                        GameObject rook2 = ARChessGameManager.instance.GetPieceAtPosition(ARChessGameManager.pieces, 0, 7);
 
                         if (piece.gameObject.CompareTag("BlackKing"))
                         {
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 5, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 3);
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 5);
 
                             Vector2Int specialMove = new Vector2Int();
                             specialMove.Set(0, 4);
@@ -108,17 +113,20 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
                             ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook2", 0, 4);
-
                             ARChessGameManager.instance.ChangePlayer();
-                            piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+
+                            if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                            {
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 5);
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "BlackRook2", 0, 4);
+                                piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+                            }
                         }
                         else if (piece.gameObject.CompareTag("WhiteKing"))
                         {
                             ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 6, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 4);
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 6);
 
                             Vector2Int specialMove = new Vector2Int();
                             specialMove.Set(0, 5);
@@ -130,10 +138,14 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
                             ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
-                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook2", 0, 5);
-
                             ARChessGameManager.instance.ChangePlayer();
-                            piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+
+                            if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                            {
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, 0, 6);
+                                piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, "WhiteRook2", 0, 5);
+                                piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+                            }
                         }
 
                         ARChessGameManager.instance.specialMove = 0;
@@ -150,9 +162,13 @@ public class MoveSelector : MonoBehaviour
                         ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
                         //debugText.text += " " + initialPosition.x + " " + initialPosition.y;
-                        piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                         ARChessGameManager.instance.ChangePlayer();
-                        piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+
+                        if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                        {
+                            piece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
+                            piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+                        }
                     }
 
                     if (piece.tag.Contains("Pawn") && gridPoint.x == 7) //transform the black pawn into a black queen
@@ -175,8 +191,11 @@ public class MoveSelector : MonoBehaviour
                             piece.tag = "WhiteQueen" + ARChessGameManager.GetNumberOfWhiteQueens(); //new tag
                         }
 
-                        //tell the opponent to also instantiate the queen
-                        piece.GetPhotonView().RPC("TransformPawnInQueen", RpcTarget.OthersBuffered, oldTag, piece.tag);
+                        if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                        {
+                            //tell the opponent to also instantiate the queen
+                            piece.GetPhotonView().RPC("TransformPawnInQueen", RpcTarget.OthersBuffered, oldTag, piece.tag);
+                        }
                     }
 
                     ExitState();
@@ -196,9 +215,14 @@ public class MoveSelector : MonoBehaviour
                     ARChessGameManager.instance.RefreshAttackedSquares(ARChessGameManager.pieces, false);
                     ARChessGameManager.instance.VerifyForCheck(ARChessGameManager.pieces, false);
 
-                    piece.GetPhotonView().RPC("CapturePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
                     ARChessGameManager.instance.ChangePlayer();
-                    piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+
+                    if (ARChessGameManager.ChosenGameMode != GameMode.SinglePlayer)
+                    {
+                        piece.GetPhotonView().RPC("CapturePieceForOpponent", RpcTarget.OthersBuffered, piece.gameObject.tag, gridPoint.x, gridPoint.y);
+                        piece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+                    }
+
                     ExitState();
                 }
             }

@@ -40,26 +40,30 @@ public class PauseManager : MonoBehaviour
 
     public void OnQuitButtonClicked()
     {
-        object[] data = new object[]
-        {
-            userID, username
-        };
-
-        //only if singleplayer
         if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
         {
             FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfLocalPlayer);
             FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
+            FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+            SceneLoader.Instance.LoadScene("Scene_Start");
         }
-
-        FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
-
-        RaiseQuitEvent(data);
-
-        if (PhotonNetwork.InRoom)
+        else
         {
-            PhotonNetwork.LeaveRoom();
+            object[] data = new object[]
+            {
+                userID, username
+            };
+
+            FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+
+            RaiseQuitEvent(data);
+
+            if (PhotonNetwork.InRoom)
+            {
+                PhotonNetwork.LeaveRoom();
+            }
         }
+        
         //SceneLoader.Instance.LoadScene("Scene_Start");
         //PhotonFunctions.DisconnectFromPhoton();
     }

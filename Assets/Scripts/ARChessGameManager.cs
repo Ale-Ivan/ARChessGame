@@ -19,9 +19,11 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public GameObject uI_InformPanelGameObject;
     public TextMeshProUGUI uI_InformText;
     public GameObject searchForGamesButtonGameObject;
+    public GameObject playSingleplayerButtonGameObject;
     public GameObject adjustButton;
     public GameObject raycastCenterImage;
     public GameObject gameOverPanel;
+    public GameObject pauseButtonGameObject;
 
     [Header("Materials")]
     public Material selectedMaterial;
@@ -89,9 +91,27 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
         attackedSquares = 0x0000000000000000;
         tempAttackedSquares = 0x0000000000000000;
+
+        if (ChosenGameMode == GameMode.SinglePlayer) //if is singleplayer, do not create a room
+        {
+            playSingleplayerButtonGameObject.SetActive(true);
+        }
+        else
+        {
+            searchForGamesButtonGameObject.SetActive(true);
+        }
     }
 
     #region UI callback methods
+    public void OnPlayButtonClicked()
+    {
+        adjustButton.SetActive(false);
+        raycastCenterImage.SetActive(false);
+        pauseButtonGameObject.SetActive(true);
+
+        SpawnManager.instance.SpawnSingleplayer();
+
+    }
 
     public void JoinRoom()
     {
@@ -323,7 +343,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     {
                         Vector2Int currentPosition = GetRowAndColumn(pieces, pieces[i, j].gameObject.tag);
                         Piece myPiece = pieces[i, j].GetComponent<Piece>();
-                        List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
+                        List<Vector2Int> possibleMoves = myPiece.MoveLocations(pieces, currentPosition);
                         List<bool> legalMoves = GetArrayOfLegalMoves(possibleMoves, myPiece, currentPosition);
 
                      
@@ -465,9 +485,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         movedPieces.Add(piece);
     }
 
-    public GameObject GetPieceAtPosition(int x, int y)
+    public GameObject GetPieceAtPosition(GameObject[,] gamePlan, int x, int y)
     {
-        return pieces[x, y];
+        return gamePlan[x, y];
     }
     public void MovePiece(GameObject piece, Vector3 finalPosition)
     {
@@ -493,7 +513,21 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         currentPlayer = otherPlayer;
         otherPlayer = tempPlayer;
 
+        StartCoroutine(ChangePlayerWait());
+       
         //Debug.Log(currentPlayer + " " + otherPlayer);
+    }
+
+    public IEnumerator ChangePlayerWait()
+    {
+        yield return new WaitForSeconds(1);
+        if (ChosenGameMode == GameMode.SinglePlayer)
+        {
+            if (currentPlayer == colorOfOpponent)
+            {
+                MovePieceAI();
+            }
+        }
     }
 
     public static void IncrementNumberOfBlackQueens()
@@ -573,6 +607,105 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         isPieceSelected = false;
     }
 
+    public void MovePieceAI()
+    {
+        Tuple<Piece, int, Vector2Int> value;
+        if (colorOfOpponent.Equals("White"))
+        {
+            value = PieceMoveEvaluation.instance.minimax(1, Double.NegativeInfinity, Double.PositiveInfinity, true, pieces);
+        }
+        else
+        {
+            value = PieceMoveEvaluation.instance.minimax(1, Double.NegativeInfinity, Double.PositiveInfinity, false, pieces);
+        }
+
+        // Debug.Log(value.Item2);
+        //Debug.Log(value.Item1.gameObject.tag);
+
+        Piece piece = value.Item1;
+        Vector2Int initialPosition = GetRowAndColumn(pieces, value.Item1.gameObject.tag);
+        Vector2Int finalPosition = value.Item3;
+
+        MovePiece(piece.GetGameObject(), Geometry.PointFromGrid(finalPosition) + chessBoard.transform.position);
+
+        if (!CheckIfPositionIsFree(pieces, finalPosition.x, finalPosition.y))
+        {
+            CapturePieceAt(finalPosition);
+        }
+
+        SetPositionToObject(finalPosition.x, finalPosition.y, piece.GetGameObject());
+        SetPositionToNull(initialPosition.x, initialPosition.y);
+
+        ChangePlayer();
+    }
+
+    public List<Tuple<Piece, Vector2Int, GameObject[,]>> FindAllPossibleMovesForPiecesOfColor(GameObject[,] gamePlan, string color)
+    {
+        List<Tuple<Piece, Vector2Int, GameObject[,]>> allPossibleMoves = new List<Tuple<Piece, Vector2Int, GameObject[,]>>();
+
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (gamePlan[i, j] != null)
+                {
+                    if (gamePlan[i, j].tag.StartsWith(color))
+                    {
+                        //get all possible moves for each piece of certain color
+                        Piece piece = gamePlan[i, j].GetComponent<Piece>();
+                        Vector2Int currentPieceLocation = new Vector2Int(i, j);
+                        List<Vector2Int> pieceMoves;
+                        
+                        if (gamePlan[i, j].tag.StartsWith(colorOfOpponent))
+                        {
+                            pieceMoves = piece.MoveLocationsForAI(gamePlan, currentPieceLocation);
+                        }
+                        else
+                        {
+                            pieceMoves = piece.MoveLocations(gamePlan, currentPieceLocation);
+                        }
+
+                        //get game plan for this possible move
+                        List<Tuple<Piece, Vector2Int, GameObject[,]>> temp = GetAllGamePlansForAllPossibleMoves(pieceMoves, piece, currentPieceLocation);
+                        allPossibleMoves.AddRange(temp);
+                    }
+                }
+            }
+        }
+
+        //Debug.Log(allPossibleMoves.Count);
+        return allPossibleMoves;
+    }
+
+    private List<Tuple<Piece, Vector2Int, GameObject[,]>> GetAllGamePlansForAllPossibleMoves(List<Vector2Int> possibleMoves, Piece piece, Vector2Int currentPosition)
+    {
+        GameObject[,] tempGamePlan;
+        List<Tuple<Piece, Vector2Int, GameObject[,]>> returnList = new List<Tuple<Piece, Vector2Int, GameObject[,]>>();
+
+        foreach (Vector2Int possibleMove in possibleMoves)
+        {
+            tempGamePlan = new GameObject[8, 8];
+            Array.Copy(pieces, tempGamePlan, pieces.Length);
+
+            //move piece in each possible location
+            tempGamePlan[possibleMove.x, possibleMove.y] = piece.gameObject;
+            tempGamePlan[currentPosition.x, currentPosition.y] = null;
+
+            //refresh attacked squares
+            RefreshAttackedSquares(tempGamePlan, true);
+
+            //check if moving the piece to that position puts you in check
+            bool legal = !VerifyForCheck(tempGamePlan, true);
+
+            if (legal)
+            {
+                returnList.Add(new Tuple<Piece, Vector2Int, GameObject[,]>(piece, possibleMove, tempGamePlan));
+            }
+        }
+
+        return returnList;
+    }
+
     private List<bool> GetArrayOfLegalMoves(List<Vector2Int> possibleMoves, Piece piece, Vector2Int currentPosition)
     {
         List<bool> legalMoves = new List<bool>();
@@ -604,8 +737,17 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     {
         Vector2Int currentPosition = GetRowAndColumn(pieces, myPiece.gameObject.tag);
 
+        List<Vector2Int> possibleMoves;
         //Debug.Log(currentPosition);
-        List<Vector2Int> possibleMoves = myPiece.MoveLocations(currentPosition);
+        if (myPiece.gameObject.tag.StartsWith(colorOfLocalPlayer))
+        {
+            possibleMoves = myPiece.MoveLocations(pieces, currentPosition);
+        }
+        else
+        {
+            possibleMoves = myPiece.MoveLocationsForAI(pieces, currentPosition);
+        }
+
         List<bool> legalMoves = GetArrayOfLegalMoves(possibleMoves, myPiece, currentPosition);
 
         int index = 0;
@@ -616,7 +758,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             {
                 if (CheckIfPositionIsFree(pieces, possibleMove.x, possibleMove.y) == false) //check if position is non-empty
                 {
-                    GameObject objectOverHighlight = GetPieceAtPosition(possibleMove.x, possibleMove.y);
+                    GameObject objectOverHighlight = GetPieceAtPosition(pieces, possibleMove.x, possibleMove.y);
                     //Debug.Log(currentPlayer + " " + otherPlayer);
                     if (!string.IsNullOrEmpty(otherPlayer)) {
                         bool isThisMoveLegal = legalMoves.ElementAt(index);
@@ -673,7 +815,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     //x - row, y - column
                     if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 2))
                     {
-                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 3);
+                        GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y - 3);
                         if (otherPiece.CompareTag("BlackRook1") && !movedPieces.Contains(otherPiece))
                         {
                             Vector2Int grid = new Vector2Int();
@@ -691,7 +833,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     //check in the right of the currentPosition
                     if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 2) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 3))
                     {
-                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 4);
+                        GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y + 4);
                         if (otherPiece.CompareTag("BlackRook2") && !movedPieces.Contains(otherPiece))
                         {
                             Vector2Int grid = new Vector2Int();
@@ -718,7 +860,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     //check in the left of the currentPosition
                     if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 2) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y - 3))
                     {
-                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y - 4);
+                        GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y - 4);
                         if (otherPiece.CompareTag("WhiteRook1") && !movedPieces.Contains(otherPiece))
                         {
                             Vector2Int grid = new Vector2Int();
@@ -736,7 +878,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     //check in the right of the currentPosition
                     if (CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 1) && CheckIfPositionIsFree(pieces, currentPosition.x, currentPosition.y + 2))
                     {
-                        GameObject otherPiece = GetPieceAtPosition(currentPosition.x, currentPosition.y + 3);
+                        GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y + 3);
                         if (otherPiece.CompareTag("WhiteRook2") && !movedPieces.Contains(otherPiece))
                         {
                             Vector2Int grid = new Vector2Int();
@@ -757,7 +899,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public void CapturePieceAt(Vector2Int gridPoint)
     {
-        GameObject capturedPiece = GetPieceAtPosition(gridPoint.x, gridPoint.y);
+        GameObject capturedPiece = GetPieceAtPosition(pieces, gridPoint.x, gridPoint.y);
 
         if (ChosenGameMode == GameMode.SinglePlayer)
         {
