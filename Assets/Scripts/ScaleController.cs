@@ -1,16 +1,11 @@
-﻿using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
+﻿using UnityEngine;
 using UnityEngine.XR.ARFoundation;
 using UnityEngine.UI;
 
 public class ScaleController : MonoBehaviour
 {
     ARSessionOrigin m_ARSessionOrigin;
-
     public Slider scaleSlider;
-
     private Vector3 initialScale;
 
     private void Awake()
@@ -19,7 +14,6 @@ public class ScaleController : MonoBehaviour
         initialScale = m_ARSessionOrigin.transform.localScale;
     }
 
-    // Start is called before the first frame update
     void Start()
     {
         scaleSlider.onValueChanged.AddListener(OnSliderVariableChanged);
@@ -31,11 +25,5 @@ public class ScaleController : MonoBehaviour
         {
             m_ARSessionOrigin.transform.localScale = initialScale / value;
         }
-    }
-
-    // Update is called once per frame
-    void Update()
-    {
-
     }
 }

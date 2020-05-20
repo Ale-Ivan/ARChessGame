@@ -1,4 +1,5 @@
 ﻿using SimpleJSON;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.IO;
@@ -23,7 +24,17 @@ public class FileManager : MonoBehaviour
         }
     }
 
+    public bool ExistsFile()
+    {
+        return File.Exists(path);
+    }
+
     public void AddNewProperty(string property, string value)
+    {
+        userJSON.Add(property, value);
+    }
+
+    public void AddNewBoolProperty(string property, bool value)
     {
         userJSON.Add(property, value);
     }
@@ -41,12 +52,45 @@ public class FileManager : MonoBehaviour
 
     public string ReadStringFromFile(string property)
     {
-        return userJSON[property];
+        if (!userJSON.IsNull)
+        {
+            return userJSON[property];
+        }
+        return "";
     }
 
     public int ReadIntFromFile(string property)
     {
-        return userJSON[property];
+        if (!userJSON.IsNull)
+        {
+            return userJSON[property];
+        }
+        return -1;
+    }
+
+    public bool ReadBoolFromFile(string property)
+    {
+        if (!userJSON.IsNull)
+        {
+            return userJSON[property];
+        }
+        return false;
+    }
+
+    public void DeleteEntry(string property)
+    {
+        if (File.Exists(path))
+        {
+            jsonString = File.ReadAllText(path);
+            userJSON = (JSONObject)JSON.Parse(jsonString);
+
+            if (userJSON.HasKey(property))
+            {
+                userJSON.Remove(property);
+            }
+
+            File.WriteAllText(path, userJSON.ToString());
+        }
     }
 
     public void DeleteEntriesThatStartWith(string startString)
@@ -101,5 +145,37 @@ public class FileManager : MonoBehaviour
             File.WriteAllText(path, userJSON.ToString());
         }
 
+    }
+
+    public List<Tuple<string, string>> GetPositionsOfPieces(string color)
+    {
+        List<Tuple<string,string>> piecePositions = new List<Tuple<string, string>>();
+
+        if (File.Exists(path))
+        {
+            jsonString = File.ReadAllText(path);
+            userJSON = (JSONObject)JSON.Parse(jsonString);
+
+            foreach(KeyValuePair<string, JSONNode> node in userJSON)
+            {
+                if (node.Key.StartsWith(color))
+                {
+                    piecePositions.Add(new Tuple<string, string>(node.Key, node.Value));
+                }
+            }
+
+        }
+
+        return piecePositions;
+    }
+
+    public void DeleteEntriesRelatedToLastGame()
+    {
+        DeleteEntriesThatStartWith(ARChessGameManager.colorOfLocalPlayer);
+        DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
+        DeleteEntry("PlayWithoutUser");
+        DeleteEntry("CurrentPlayer");
+        DeleteEntry("OtherPlayer");
+        DeleteEntry("GamePaused");
     }
 }

@@ -38,6 +38,8 @@ public class PlayerSelectionManager : MonoBehaviour
 
     public GameObject selectionPiece;
 
+    public GameObject UnlockText;
+
     private float originalXPosition;
     private float originalYPosition;
     private float originalZPosition;
@@ -192,23 +194,22 @@ public class PlayerSelectionManager : MonoBehaviour
 
     private void ShowLock()
     {
-        if ((playerSelectionNumber == 2 && !unlockedExtraBlack) || (playerSelectionNumber == 3 && !unlockedExtraWhite))
-        {
-            lockImage.enabled = true;
-            bottomBarForSelection.SetActive(false);
-            unlock_Button.SetActive(true);
-        }
-        else
-        {
-            lockImage.enabled = false;
-            bottomBarForSelection.SetActive(true);
-            unlock_Button.SetActive(false);
-        }
-    }
+        int numberOfWins = FileManager.instance.ReadIntFromFile("NumberOfWins");
 
-    public string GetRoomName()
-    {
-        return "";
+        lockImage.enabled = false;
+        bottomBarForSelection.SetActive(true);
+        unlock_Button.SetActive(false);
+        UnlockText.SetActive(false);
+
+        if (numberOfWins < 25)
+        {
+            if ((playerSelectionNumber == 2 && !unlockedExtraBlack) || (playerSelectionNumber == 3 && !unlockedExtraWhite))
+            {
+                lockImage.enabled = true;
+                bottomBarForSelection.SetActive(false);
+                UnlockText.SetActive(true);
+            }
+        } 
     }
 
     public void OnSelectButtonClicked()
@@ -244,7 +245,7 @@ public class PlayerSelectionManager : MonoBehaviour
         uI_ForegroundGameObject.SetActive(false);
 
         ExitGames.Client.Photon.Hashtable playerSelectionProp = new ExitGames.Client.Photon.Hashtable {
-            { MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, playerSelectionNumber } };
+            { MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, playerSelectionNumber }};
         PhotonNetwork.LocalPlayer.SetCustomProperties(playerSelectionProp);
 
         SceneLoader.Instance.LoadScene("Scene_GameModes");

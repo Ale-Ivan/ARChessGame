@@ -24,6 +24,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public GameObject raycastCenterImage;
     public GameObject gameOverPanel;
     public GameObject pauseButtonGameObject;
+    public GameObject startNewGameObject;
 
     [Header("Materials")]
     public Material selectedMaterial;
@@ -73,7 +74,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     {
         pieces = new GameObject[8, 8];
         tempGamePlan = new GameObject[8, 8];
-        uI_InformPanelGameObject.SetActive(true);
         gameOverPanel.SetActive(false);
 
         tileHighlights = new List<GameObject>();
@@ -99,6 +99,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         else
         {
             searchForGamesButtonGameObject.SetActive(true);
+            uI_InformPanelGameObject.SetActive(true);
         }
     }
 
@@ -107,10 +108,45 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     {
         adjustButton.SetActive(false);
         raycastCenterImage.SetActive(false);
-        pauseButtonGameObject.SetActive(true);
+
+        playSingleplayerButtonGameObject.SetActive(false);
+
+        if (FileManager.instance.ExistsFile() && !FileManager.instance.ReadBoolFromFile("PlayWithoutUser"))
+        {
+            pauseButtonGameObject.SetActive(true);
+        }
+
+        if (FileManager.instance.ReadBoolFromFile("GamePaused"))
+        {
+            //do you want to start a new game or continue from where you have left?
+            startNewGameObject.SetActive(true);
+        }
+        else
+        {
+            SpawnManager.instance.SpawnSingleplayer();
+        }
+    }
+
+    public void OnYesButtonClicked()
+    {
+        colorOfLocalPlayer = FileManager.instance.ReadStringFromFile("ColorOfLocalPlayer");
+        colorOfOpponent = FileManager.instance.ReadStringFromFile("ColorOfOpponent");
+
+        currentPlayer = FileManager.instance.ReadStringFromFile("CurrentPlayer");
+        otherPlayer = FileManager.instance.ReadStringFromFile("OtherPlayer");
+
+        startNewGameObject.SetActive(false);
+
+        SpawnManager.instance.SpawnFromFile();
+    }
+
+    public void OnNoButtonClicked()
+    {
+        FileManager.instance.DeleteEntriesRelatedToLastGame();
+
+        startNewGameObject.SetActive(false);
 
         SpawnManager.instance.SpawnSingleplayer();
-
     }
 
     public void JoinRoom()
@@ -251,7 +287,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public bool VerifyForCheck(GameObject[,] wantedPieces, bool isForTemporaryCheck)
+    public bool VerifyForCheck(GameObject[,] wantedPieces, bool isForTemporaryCheck, bool isForAI = false)
     {
         ulong squares;
         if (isForTemporaryCheck)
@@ -263,7 +299,16 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             squares = attackedSquares;
         }
         
-        Vector2Int myKingPosition = GetRowAndColumn(wantedPieces, colorOfLocalPlayer + "King");
+        Vector2Int myKingPosition;
+
+        if (isForAI)
+        {
+            myKingPosition = GetRowAndColumn(wantedPieces, colorOfOpponent + "King");
+        }
+        else
+        {
+            myKingPosition = GetRowAndColumn(wantedPieces, colorOfLocalPlayer + "King");
+        }
 
         int myKingSquare = 63 - (myKingPosition.x * 8 + myKingPosition.y);
         if ((squares & (1UL << myKingSquare)) == 0) //the bit is not set to 1
@@ -609,15 +654,18 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public void MovePieceAI()
     {
-        Tuple<Piece, int, Vector2Int> value;
-        if (colorOfOpponent.Equals("White"))
+        Tuple<Piece, double, Vector2Int> value;
+
+        value = PieceMoveEvaluation.instance.AlphaBetaMax(2, int.MinValue, int.MaxValue, pieces);
+
+        /*if (colorOfOpponent.Equals("White"))
         {
-            value = PieceMoveEvaluation.instance.minimax(1, Double.NegativeInfinity, Double.PositiveInfinity, true, pieces);
+            value = PieceMoveEvaluation.instance.AlphaBetaMax(2, int.MinValue, int.MaxValue, pieces);
         }
         else
         {
-            value = PieceMoveEvaluation.instance.minimax(1, Double.NegativeInfinity, Double.PositiveInfinity, false, pieces);
-        }
+            value = PieceMoveEvaluation.instance.AlphaBetaMin(2, int.MinValue, int.MaxValue, pieces);
+        }*/
 
         // Debug.Log(value.Item2);
         //Debug.Log(value.Item1.gameObject.tag);
@@ -656,7 +704,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                         Vector2Int currentPieceLocation = new Vector2Int(i, j);
                         List<Vector2Int> pieceMoves;
                         
-                        if (gamePlan[i, j].tag.StartsWith(colorOfOpponent))
+                        if (color.Equals(colorOfOpponent))
                         {
                             pieceMoves = piece.MoveLocationsForAI(gamePlan, currentPieceLocation);
                         }
@@ -665,8 +713,13 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                             pieceMoves = piece.MoveLocations(gamePlan, currentPieceLocation);
                         }
 
+                        /*foreach(Vector2Int pieceMove in pieceMoves)
+                        {
+                            Debug.Log(piece.gameObject.tag + " " + pieceMove);
+                        }*/
+
                         //get game plan for this possible move
-                        List<Tuple<Piece, Vector2Int, GameObject[,]>> temp = GetAllGamePlansForAllPossibleMoves(pieceMoves, piece, currentPieceLocation);
+                        List<Tuple<Piece, Vector2Int, GameObject[,]>> temp = GetAllGamePlansForAllPossibleMoves(gamePlan, pieceMoves, piece, currentPieceLocation);
                         allPossibleMoves.AddRange(temp);
                     }
                 }
@@ -677,7 +730,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         return allPossibleMoves;
     }
 
-    private List<Tuple<Piece, Vector2Int, GameObject[,]>> GetAllGamePlansForAllPossibleMoves(List<Vector2Int> possibleMoves, Piece piece, Vector2Int currentPosition)
+    private List<Tuple<Piece, Vector2Int, GameObject[,]>> GetAllGamePlansForAllPossibleMoves(GameObject[,] gamePlan, List<Vector2Int> possibleMoves, Piece piece, Vector2Int currentPosition)
     {
         GameObject[,] tempGamePlan;
         List<Tuple<Piece, Vector2Int, GameObject[,]>> returnList = new List<Tuple<Piece, Vector2Int, GameObject[,]>>();
@@ -685,7 +738,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         foreach (Vector2Int possibleMove in possibleMoves)
         {
             tempGamePlan = new GameObject[8, 8];
-            Array.Copy(pieces, tempGamePlan, pieces.Length);
+            Array.Copy(gamePlan, tempGamePlan, pieces.Length);
 
             //move piece in each possible location
             tempGamePlan[possibleMove.x, possibleMove.y] = piece.gameObject;
@@ -908,6 +961,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
         if (capturedPiece != null)
         {
+            pieces[gridPoint.x, gridPoint.y] = null;
             Destroy(capturedPiece);
         }
         

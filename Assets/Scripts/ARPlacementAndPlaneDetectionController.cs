@@ -18,6 +18,7 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
     public GameObject placeButton;
     public GameObject adjustButton;
     public GameObject searchForBattleButton;
+    public GameObject playButtonSingleplayer;
     public GameObject scaleSlider;
 
     private void Awake()
@@ -34,6 +35,7 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
 
         adjustButton.SetActive(false);
         searchForBattleButton.SetActive(false);
+        playButtonSingleplayer.SetActive(false);
 
         informUiPanelText.text = "Move phone to detect planes and place the chess board.";
     }
@@ -55,7 +57,15 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
         scaleSlider.SetActive(false);
 
         adjustButton.SetActive(true);
-        searchForBattleButton.SetActive(true);
+
+        if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
+        {
+            playButtonSingleplayer.SetActive(true);
+        }
+        else
+        {
+            searchForBattleButton.SetActive(true);
+        }
 
         informUiPanelText.text = "Great! You placed the Chess Board. Now search for games.";
     }
@@ -71,7 +81,14 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
         scaleSlider.SetActive(true);
 
         adjustButton.SetActive(false);
-        searchForBattleButton.SetActive(false);
+        if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
+        {
+            playButtonSingleplayer.SetActive(false);
+        }
+        else
+        {
+            searchForBattleButton.SetActive(false);
+        }
 
         informUiPanelText.text = "Move phone to detect planes and place the chess board.";
     }

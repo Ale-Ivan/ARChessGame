@@ -9,6 +9,7 @@ using UnityEngine;
 public class PauseManager : MonoBehaviour
 {
     public GameObject BackButtonOptions;
+    public GameObject pauseCanvas;
 
     private string path;
     private JSONObject userJSON;
@@ -17,11 +18,15 @@ public class PauseManager : MonoBehaviour
     private int numberOfWins;
     private int numberOfLosses;
 
+    public static bool isGamePaused;
+
     private void Start()
     {
         userID = FileManager.instance.ReadIntFromFile("UserID");
         username = FileManager.instance.ReadStringFromFile("Username");
         numberOfLosses = FileManager.instance.ReadIntFromFile("NumberOfLosses");
+
+        isGamePaused = false;
     }
 
     void Update()
@@ -42,9 +47,12 @@ public class PauseManager : MonoBehaviour
     {
         if (ARChessGameManager.ChosenGameMode == GameMode.SinglePlayer)
         {
-            FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfLocalPlayer);
-            FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
-            FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+            if (FileManager.instance.ExistsFile())
+            {
+                FileManager.instance.DeleteEntriesRelatedToLastGame();
+
+                FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+            }
             SceneLoader.Instance.LoadScene("Scene_Start");
         }
         else
@@ -86,9 +94,29 @@ public class PauseManager : MonoBehaviour
 
     public void OnPauseButtonClicked()
     {
-        FileManager.instance.AddNewProperty("ColorOfLocalPlayer", ARChessGameManager.colorOfLocalPlayer);
-        FileManager.instance.AddNewProperty("ColorOfOpponent", ARChessGameManager.colorOfOpponent);
-        FileManager.instance.SaveGameState();
+        //create a modal for assuring this is what the user wants
+        pauseCanvas.SetActive(true);       
+    }
+
+    public void OnYesPauseButtonClicked()
+    {
+        if (FileManager.instance.ExistsFile())
+        {
+            FileManager.instance.AddNewProperty("ColorOfLocalPlayer", ARChessGameManager.colorOfLocalPlayer);
+            FileManager.instance.AddNewProperty("ColorOfOpponent", ARChessGameManager.colorOfOpponent);
+            FileManager.instance.AddNewBoolProperty("GamePaused", true);
+            FileManager.instance.AddNewProperty("CurrentPlayer", ARChessGameManager.currentPlayer);
+            FileManager.instance.AddNewProperty("OtherPlayer", ARChessGameManager.otherPlayer);
+
+            FileManager.instance.SaveGameState();
+        }
+
+        SceneLoader.Instance.LoadScene("Scene_Start");
+    }
+
+    public void OnNoPauseButtonClicked()
+    {
+        pauseCanvas.SetActive(false);
     }
 
     public void OnPlayOnButtonClicked()

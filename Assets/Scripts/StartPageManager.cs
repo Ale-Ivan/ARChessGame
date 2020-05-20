@@ -185,6 +185,20 @@ public class StartPageManager : MonoBehaviour
 
     public void OnPlayWithoutUserButtonClicked()
     {
-        SceneLoader.Instance.LoadScene("Scene_PlayWithoutUser");
+        string randomUserName = "User" + Random.Range(0, 10000);
+
+        if (File.Exists(path))
+        {
+            userJSON.Add("PlayWithoutUser", true);
+            File.WriteAllText(path, userJSON.ToString());
+        }
+
+        PhotonFunctions.ConnectToPhoton(randomUserName);
+        SceneLoader.Instance.LoadScene("Scene_PlayerSelection");
+    }
+
+    public void OnBackButtonClicked()
+    {
+        Options.SetActive(false);
     }
 }

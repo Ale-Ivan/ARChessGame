@@ -98,9 +98,9 @@
     <Compile Include="Assets\Scripts\Pieces\Queen.cs" />
     <Compile Include="Assets\Scripts\Pieces\Rook.cs" />
     <Compile Include="Assets\Scripts\PlayerSelectionManager.cs" />
-    <Compile Include="Assets\Scripts\PlayWithoutUserManager.cs" />
     <Compile Include="Assets\Scripts\ScaleController.cs" />
     <Compile Include="Assets\Scripts\SceneLoader.cs" />
+    <Compile Include="Assets\Scripts\ScriptExample.cs" />
     <Compile Include="Assets\Scripts\SignInPageManager.cs" />
     <Compile Include="Assets\Scripts\SinglePlayerManager.cs" />
     <Compile Include="Assets\Scripts\Singleton.cs" />

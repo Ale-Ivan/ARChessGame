@@ -18,15 +18,9 @@ EditorBuildSettings:
     path: Assets/Scenes/Scene_PlayerSelection.unity
     guid: fe83ececa5bc56e4695a8eb5967ab048
   - enabled: 1
-    path: Assets/Scenes/Scene_PlayWithoutUser.unity
-    guid: d7f5e9fc7f6360c4aa15df9fa70b059e
-  - enabled: 1
     path: Assets/Scenes/Scene_Gameplay.unity
     guid: 67543f56f60a550428ee67ba58f664d4
   - enabled: 1
     path: Assets/Scenes/Scene_GameModes.unity
     guid: af677cf96df7afe49b97ba6b7b33b70c
-  - enabled: 1
-    path: Assets/Scenes/Scene_SinglePlayer.unity
-    guid: 798d400b1d72e1641b9c527cbd11a381
   m_configObjects: {}
