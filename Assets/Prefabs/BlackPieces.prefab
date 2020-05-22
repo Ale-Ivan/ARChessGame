@@ -145,7 +145,6 @@ GameObject:
   - component: {fileID: 5563554807702273402}
   - component: {fileID: 6630529237585641244}
   - component: {fileID: 5137469322898631135}
-  - component: {fileID: 8428824622863346253}
   - component: {fileID: 8655101803001692729}
   m_Layer: 0
   m_Name: 10Chess Pawn Black (1)
@@ -250,21 +249,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &8428824622863346253
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 236721698578746706}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &8655101803001692729
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -293,7 +277,6 @@ GameObject:
   - component: {fileID: 2343957742067878206}
   - component: {fileID: 4551945014637705856}
   - component: {fileID: 4162066809469857225}
-  - component: {fileID: 4062132523953868537}
   - component: {fileID: 2271343680099250465}
   m_Layer: 0
   m_Name: 11Chess Pawn Black (2)
@@ -398,21 +381,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4062132523953868537
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 361233080713131006}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &2271343680099250465
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -441,7 +409,6 @@ GameObject:
   - component: {fileID: 135767455363270804}
   - component: {fileID: 1175575791984697444}
   - component: {fileID: 6630602956760426878}
-  - component: {fileID: 6228161801324271289}
   - component: {fileID: 6760645217414119918}
   m_Layer: 0
   m_Name: 9Chess Pawn Black
@@ -546,21 +513,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &6228161801324271289
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409127609318064574}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &6760645217414119918
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -884,7 +836,6 @@ Transform:
   - {fileID: 7033351894268777264}
   - {fileID: 5070601947974401143}
   - {fileID: 6542948987331708019}
-  - {fileID: 2957708766336128752}
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
@@ -1055,7 +1006,6 @@ GameObject:
   - component: {fileID: 3227575917783313707}
   - component: {fileID: 1925212050701665339}
   - component: {fileID: 1609225246092187393}
-  - component: {fileID: 1652707862175714355}
   - component: {fileID: 3277902700651420783}
   m_Layer: 0
   m_Name: 13Chess Pawn Black (4)
@@ -1160,21 +1110,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1652707862175714355
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3640233361996985539}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &3277902700651420783
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1335,7 +1270,6 @@ GameObject:
   - component: {fileID: 8507305384238577847}
   - component: {fileID: 1600187451174289776}
   - component: {fileID: 5730648079496153111}
-  - component: {fileID: 3858795831936965716}
   - component: {fileID: 1703931740993607397}
   m_Layer: 0
   m_Name: 12Chess Pawn Black (3)
@@ -1440,21 +1374,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &3858795831936965716
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4239037504572530861}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &1703931740993607397
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1879,7 +1798,6 @@ GameObject:
   - component: {fileID: 3817830961260958516}
   - component: {fileID: 2648359924846606807}
   - component: {fileID: 326227906771232282}
-  - component: {fileID: 4492835819236171335}
   - component: {fileID: 1992427301773489020}
   m_Layer: 0
   m_Name: 14Chess Pawn Black (5)
@@ -1984,21 +1902,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &4492835819236171335
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8617957087616617965}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &1992427301773489020
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2027,7 +1930,6 @@ GameObject:
   - component: {fileID: 7600424122516431204}
   - component: {fileID: 6798973114479471417}
   - component: {fileID: 6139380595212763164}
-  - component: {fileID: 9014121195171373736}
   - component: {fileID: 6655545553192561899}
   m_Layer: 0
   m_Name: 15Chess Pawn Black (6)
@@ -2132,21 +2034,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &9014121195171373736
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8839283022617699785}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &6655545553192561899
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2175,7 +2062,6 @@ GameObject:
   - component: {fileID: 2085013467965501505}
   - component: {fileID: 5985866199970735021}
   - component: {fileID: 5613808106912554622}
-  - component: {fileID: 1083151945408656966}
   - component: {fileID: 3116671714306786862}
   m_Layer: 0
   m_Name: 16Chess Pawn Black (7)
@@ -2192,7 +2078,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 8964019058542074980}
   m_LocalRotation: {x: -0.7071068, y: 0, z: 0, w: 0.7071068}
-  m_LocalPosition: {x: 2.1, y: 0.023, z: -0.745}
+  m_LocalPosition: {x: 2.1, y: 0.023, z: -0.3}
   m_LocalScale: {x: 15, y: 15, z: 15}
   m_Children: []
   m_Father: {fileID: 2784124760897636362}
@@ -2280,21 +2166,6 @@ MonoBehaviour:
   viewIdField: 0
   InstantiationId: 0
   isRuntimeInstantiated: 0
---- !u!114 &1083151945408656966
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 8964019058542074980}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6355368517e5e4f4aa0cc1d120338cfd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  selectedMaterial: {fileID: 0}
-  defaultMaterial: {fileID: 0}
-  tileHighlightPrefab: {fileID: 0}
 --- !u!114 &3116671714306786862
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2310,78 +2181,3 @@ MonoBehaviour:
   m_SynchronizePosition: 1
   m_SynchronizeRotation: 0
   m_SynchronizeScale: 0
---- !u!1001 &2961788036930647854
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 2784124760897636362}
-    m_Modifications:
-    - target: {fileID: 1867195236767680, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_Name
-      value: PawnDark
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: 2.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: -0.1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -1.2
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: 0.000000021855694
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 1
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_RootOrder
-      value: 16
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalScale.x
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalScale.y
-      value: 13
-      objectReference: {fileID: 0}
-    - target: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
-      propertyPath: m_LocalScale.z
-      value: 13
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: b1d95c04dd54e434aa65855a0f77d30f, type: 3}
---- !u!4 &2957708766336128752 stripped
-Transform:
-  m_CorrespondingSourceObject: {fileID: 4933460620124638, guid: b1d95c04dd54e434aa65855a0f77d30f,
-    type: 3}
-  m_PrefabInstance: {fileID: 2961788036930647854}
-  m_PrefabAsset: {fileID: 0}

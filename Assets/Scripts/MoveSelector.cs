@@ -152,7 +152,7 @@ public class MoveSelector : MonoBehaviour
                     }
 
                     if (ARChessGameManager.instance.CheckIfPositionIsFree(ARChessGameManager.pieces, gridPoint.x, gridPoint.y)) //empty location => can move
-                    {  
+                    {
                         ARChessGameManager.instance.MovePiece(piece.GetGameObject(), hitPosition + chessBoard.transform.position);
                         Vector2Int initialPosition = ARChessGameManager.instance.GetRowAndColumn(ARChessGameManager.pieces, piece.tag);
                         ARChessGameManager.instance.SetPositionToObject(gridPoint.x, gridPoint.y, piece.GetGameObject());

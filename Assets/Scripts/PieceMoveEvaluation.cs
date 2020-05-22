@@ -577,4 +577,56 @@ public class PieceMoveEvaluation : MonoBehaviour
         return tag.StartsWith(ARChessGameManager.colorOfOpponent) ? value : -value;
         //Debug.Log(piece.type);
     }
+
+    public int Evaluate(GameObject[,] gameState)
+    {
+        return 0;
+    }
+
+    public List<GameObject[,]> GetAllPossibleMoves(GameObject[,] gameState)
+    {
+        return new List<GameObject[,]>();
+    }
+
+    public int Maxi(int depth, GameObject[,] currentGameState)
+    {
+        if (depth == 0)
+        {
+            return Evaluate(currentGameState);
+        }
+
+        int max = int.MinValue;
+        List<GameObject[,]> possibleMoves = GetAllPossibleMoves(currentGameState);
+
+        foreach (GameObject[,] possibleMove in possibleMoves)
+        {
+            int score = Mini(depth - 1, possibleMove);
+            if (score > max)
+            {
+                max = score;
+            }
+        }
+        return max;
+    }
+
+    public int Mini(int depth, GameObject[,] currentGameState)
+    {
+        if (depth == 0)
+        {
+            return Evaluate(currentGameState);
+        }
+
+        int min = int.MinValue;
+        List<GameObject[,]> possibleMoves = GetAllPossibleMoves(currentGameState);
+
+        foreach (GameObject[,] possibleMove in possibleMoves)
+        {
+            int score = Maxi(depth - 1, possibleMove);
+            if (score < min)
+            {
+                min = score;
+            }
+        }
+        return min;
+    }
 }

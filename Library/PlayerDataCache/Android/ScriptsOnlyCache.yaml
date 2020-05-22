@@ -22,6 +22,7 @@ ScriptsOnlyBuild:
     - SpawnManager
     - Spinner
     - StartPageManager
+    - TimerController
     PhotonUnityNetworking.Demos.dll:
     - Photon.Pun.Demo.Asteroids.Asteroid
     - Photon.Pun.Demo.Asteroids.Bullet
@@ -236,6 +237,8 @@ ScriptsOnlyBuild:
       Script: {instanceID: 12544}
     - Class: 114
       Script: {instanceID: 12556}
+    - Class: 114
+      Script: {instanceID: 18142}
     - Class: 115
       Script: {instanceID: 0}
     - Class: 120
@@ -1535,7 +1538,7 @@ ScriptsOnlyBuild:
     className: PointedAtGameObjectInfo
   - hash:
       serializedVersion: 2
-      Hash: 1f1d0eb403f0bc09c0bf0402aa80ae5b
+      Hash: 710016fc9a545df8aa909a5808515962
     assemblyName: Assembly-CSharp.dll
     namespaceName: 
     className: ARPlacementAndPlaneDetectionController
@@ -2247,6 +2250,12 @@ ScriptsOnlyBuild:
     assemblyName: Unity.Timeline.dll
     namespaceName: UnityEngine.Timeline
     className: PlayableTrack
+  - hash:
+      serializedVersion: 2
+      Hash: 259c0fc85161f964c4045871e36541ac
+    assemblyName: Assembly-CSharp.dll
+    namespaceName: 
+    className: TimerController
   platform: 13
   scenePathNames:
   - Assets/Scenes/Scene_Start.unity

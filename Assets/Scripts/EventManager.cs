@@ -231,6 +231,8 @@ public class EventManager : MonoBehaviour
             uI_InformText.text = ARChessGameManager.opponentName + " has left the room! You won!";
             uI_InformPanelGameObject.SetActive(true);
 
+            TimerController.Instance.HideTimer();
+
             gameOverPanel.SetActive(true);
             ARChessGameManager.instance.EndGame();
             //SceneLoader.Instance.LoadScene("Scene_Start");
@@ -248,6 +250,8 @@ public class EventManager : MonoBehaviour
 
             uI_InformText.text = "Game Over! You won against " + ARChessGameManager.opponentName;
             uI_InformPanelGameObject.SetActive(true);
+
+            TimerController.Instance.HideTimer();
 
             gameOverPanel.SetActive(true);
             ARChessGameManager.instance.EndGame();

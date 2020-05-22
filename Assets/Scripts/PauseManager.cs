@@ -38,6 +38,7 @@ public class PauseManager : MonoBehaviour
             // Check if Back was pressed this frame
             if (Input.GetKeyDown(KeyCode.Escape))
             {
+                TimerController.Instance.HideTimer();
                 BackButtonOptions.SetActive(true);
             }
         }
@@ -95,7 +96,8 @@ public class PauseManager : MonoBehaviour
     public void OnPauseButtonClicked()
     {
         //create a modal for assuring this is what the user wants
-        pauseCanvas.SetActive(true);       
+        pauseCanvas.SetActive(true);
+        TimerController.Instance.stopTimer();
     }
 
     public void OnYesPauseButtonClicked()

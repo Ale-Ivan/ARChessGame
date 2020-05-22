@@ -226,6 +226,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             uI_InformText.text = "Joined room " + PhotonNetwork.CurrentRoom.Name;
             StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
             chatGameObject.SetActive(true);
+
+            TimerController.Instance.DisplayTimer();
+            StartCoroutine(ResetTimerAfterSeconds(0.5f));
         }
 
         //Debug.Log("joined " + PhotonNetwork.CurrentRoom.Name);
@@ -240,6 +243,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             opponentName = newPlayer.NickName;
             //Debug.Log(opponentName);
+
+            TimerController.Instance.DisplayTimer();
+            StartCoroutine(ResetTimerAfterSeconds(0.5f));
         }
 
         StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
@@ -266,6 +272,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         };
 
         PhotonNetwork.CreateRoom(randomRoomName, roomOptions);
+    }
+
+    IEnumerator ResetTimerAfterSeconds(float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        TimerController.Instance.resetTimer(currentPlayer);
     }
 
     IEnumerator DeactivateAfterSeconds(GameObject _gameObject, float seconds)
@@ -337,6 +349,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
                     uI_InformText.text = "Game Over! Your opponent, " + opponentName + ", wins!";
                     uI_InformPanelGameObject.SetActive(true);
+
+                    TimerController.Instance.HideTimer();
 
                     gameOverPanel.SetActive(true);
                     EndGame();
@@ -558,21 +572,24 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         currentPlayer = otherPlayer;
         otherPlayer = tempPlayer;
 
-        StartCoroutine(ChangePlayerWait());
-       
+        StartCoroutine(ResetTimerAfterSeconds(0.5f));
+
+        if (ChosenGameMode == GameMode.SinglePlayer)
+        {
+            StartCoroutine(ChangePlayerWait());
+        }
+
         //Debug.Log(currentPlayer + " " + otherPlayer);
     }
 
     public IEnumerator ChangePlayerWait()
     {
         yield return new WaitForSeconds(1);
-        if (ChosenGameMode == GameMode.SinglePlayer)
+        if (currentPlayer == colorOfOpponent)
         {
-            if (currentPlayer == colorOfOpponent)
-            {
-                MovePieceAI();
-            }
+            MovePieceAI();
         }
+
     }
 
     public static void IncrementNumberOfBlackQueens()
@@ -984,6 +1001,59 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void OnBackToStartButtonClicked()
     {
         SceneLoader.Instance.LoadScene("Scene_Start");
+    }
+
+    public void MakeRandomMove()
+    {
+        Debug.Log("Random");
+
+        List<Tuple<Piece, Vector2Int, List<Vector2Int>>> allPossibleLocations = new List<Tuple<Piece, Vector2Int, List<Vector2Int>>>();
+        //make move and change player
+        for (int i = 0; i < 8; i++)
+        {
+            for (int j = 0; j < 8; j++)
+            {
+                if (pieces[i, j] != null)
+                {
+                    if (pieces[i, j].tag.StartsWith(currentPlayer))
+                    {
+                        //get all possible moves for each piece of certain color
+                        Piece piece = pieces[i, j].GetComponent<Piece>();
+                        Vector2Int currentPieceLocation = new Vector2Int(i, j);
+                        List<Vector2Int> pieceMoves = piece.MoveLocations(pieces, currentPieceLocation);
+
+                        allPossibleLocations.Add(new Tuple<Piece, Vector2Int, List<Vector2Int>>(piece, currentPieceLocation, pieceMoves));
+                    }
+                }
+            }
+        }
+
+        System.Random random = new System.Random();
+        int randomNumber = random.Next(0, allPossibleLocations.Count - 1);
+
+        Tuple<Piece, Vector2Int, List<Vector2Int>> randomPiece = allPossibleLocations.ElementAt(randomNumber);
+
+        int anotherRandomNumber = random.Next(0, randomPiece.Item3.Count - 1);
+        Vector2Int move = randomPiece.Item3.ElementAt(anotherRandomNumber);
+
+        Piece chosenPiece = randomPiece.Item1;
+        Vector2Int initialPosition = randomPiece.Item2;
+        Vector3 finalPosition = new Vector3(-2.1f + move.y * 0.6f, 0, -2.1f + move.x * 0.6f);
+
+        MovePiece(chosenPiece.GetGameObject(), finalPosition);
+        SetPositionToObject(move.x, move.y, chosenPiece.GetGameObject());
+        SetPositionToNull(initialPosition.x, initialPosition.y);
+
+        RefreshAttackedSquares(pieces, false);
+        VerifyForCheck(pieces, false);
+
+        ChangePlayer();
+
+        if (ChosenGameMode != GameMode.SinglePlayer)
+        {
+            chosenPiece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, chosenPiece.gameObject.tag, move.x, move.y);
+            chosenPiece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
+        }
     }
 
     #endregion

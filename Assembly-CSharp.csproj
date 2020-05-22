@@ -107,6 +107,7 @@
     <Compile Include="Assets\Scripts\SpawnManager.cs" />
     <Compile Include="Assets\Scripts\Spinner.cs" />
     <Compile Include="Assets\Scripts\StartPageManager.cs" />
+    <Compile Include="Assets\Scripts\TimerController.cs" />
     <None Include="Assets\TextMesh Pro\Resources\Shaders\TMP_SDF-Surface-Mobile.shader" />
     <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
     <None Include="Assets\Photon\PhotonUnityNetworking\link.xml" />
