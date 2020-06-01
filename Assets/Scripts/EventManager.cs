@@ -14,7 +14,10 @@ public enum RaiseEventCodes
     PlayerSpawnEventCode = 0,
     PlayerMessageEventCode = 1,
     PlayerQuitGameCode = 2,
-    PlayerCheckMate = 3
+    PlayerCheckMate = 3,
+    PlayerRequestedDraw = 4,
+    OpponentAcceptedDraw = 5,
+    OpponentDeniedDraw = 6
 }
 public class EventManager : MonoBehaviour
 {
@@ -36,8 +39,9 @@ public class EventManager : MonoBehaviour
     [Header("Game over")]
     public GameObject gameOverPanel;
 
-    /*private string path;
-    private JSONObject userJSON;*/
+    [Header("Draw")]
+    public GameObject opponentRequestedDrawOptions;
+
     private int numberOfWins;
 
     // Start is called before the first frame update
@@ -64,8 +68,7 @@ public class EventManager : MonoBehaviour
             int count = (int)data[4];
             string tag = (string)data[5];
 
-            object playerSelectionNumber;
-            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out playerSelectionNumber))
+            if (PhotonNetwork.LocalPlayer.CustomProperties.TryGetValue(MultiplayerARChessGame.PLAYER_SELECTION_NUMBER, out object playerSelectionNumber))
             {
                 if (receivedPlayerSelection == (int)playerSelectionNumber)
                 {
@@ -226,12 +229,10 @@ public class EventManager : MonoBehaviour
                 FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
             }
 
-            FileManager.instance.ChangePropertyIntValue("NumberOfWins", numberOfWins + 1);
+            FileManager.instance.ChangeNumericPropertyValue("NumberOfWins", numberOfWins + 1);
 
             uI_InformText.text = ARChessGameManager.opponentName + " has left the room! You won!";
             uI_InformPanelGameObject.SetActive(true);
-
-            TimerController.Instance.HideTimer();
 
             gameOverPanel.SetActive(true);
             ARChessGameManager.instance.EndGame();
@@ -246,15 +247,46 @@ public class EventManager : MonoBehaviour
                 FileManager.instance.DeleteEntriesThatStartWith(ARChessGameManager.colorOfOpponent);
             }
                 
-            FileManager.instance.ChangePropertyIntValue("NumberOfWins", numberOfWins + 1);
+            FileManager.instance.ChangeNumericPropertyValue("NumberOfWins", numberOfWins + 1);
 
             uI_InformText.text = "Game Over! You won against " + ARChessGameManager.opponentName;
             uI_InformPanelGameObject.SetActive(true);
 
-            TimerController.Instance.HideTimer();
+            gameOverPanel.SetActive(true);
+            ARChessGameManager.instance.EndGame();
+        }
+        else if (photonEvent.Code == (byte)RaiseEventCodes.PlayerRequestedDraw)
+        {
+            opponentRequestedDrawOptions.SetActive(true);
+        }
+        else if (photonEvent.Code == (byte)RaiseEventCodes.OpponentAcceptedDraw)
+        {
+            int numberOfLosses = FileManager.instance.ReadIntFromFile("NumberOfWins");
+            FileManager.instance.ChangeNumericPropertyValue("NumberOfWins", numberOfLosses + 0.5);
+            
+            opponentRequestedDrawOptions.SetActive(false);
+
+            uI_InformText.text = "Opponent accepted your draw request!";
+            uI_InformPanelGameObject.SetActive(true);
+
+            StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
 
             gameOverPanel.SetActive(true);
             ARChessGameManager.instance.EndGame();
         }
+        else if (photonEvent.Code == (byte)RaiseEventCodes.OpponentDeniedDraw)
+        {
+            opponentRequestedDrawOptions.SetActive(false);
+
+            uI_InformText.text = "Opponent denied your draw request!";
+            uI_InformPanelGameObject.SetActive(true);
+            StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
+        }
+    }
+
+    IEnumerator DeactivateAfterSeconds(GameObject _gameObject, float seconds)
+    {
+        yield return new WaitForSeconds(seconds);
+        _gameObject.SetActive(false);
     }
 }

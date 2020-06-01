@@ -44,7 +44,7 @@ public class FileManager : MonoBehaviour
         userJSON[property] = value;
     }
 
-    public void ChangePropertyIntValue(string property, int value)
+    public void ChangeNumericPropertyValue(string property, double value)
     {
         userJSON[property] = value;
         File.WriteAllText(path, userJSON.ToString());

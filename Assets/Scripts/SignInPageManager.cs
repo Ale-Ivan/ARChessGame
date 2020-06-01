@@ -44,7 +44,7 @@ public class SignInPageManager : MonoBehaviour
 
     public void OnCreatePlayerButtonClicked()
     {
-        if (string.IsNullOrEmpty(this.PlayerNameInputField.text) || string.IsNullOrEmpty(this.PasswordInputField.text) || string.IsNullOrEmpty(this.ConfirmPasswordInputField.text))
+        if (string.IsNullOrEmpty(PlayerNameInputField.text.Trim()) || string.IsNullOrEmpty(PasswordInputField.text.Trim()) || string.IsNullOrEmpty(ConfirmPasswordInputField.text.Trim()))
         {
             CreateBox.SetActive(false);
             CreateButton.SetActive(false);
@@ -56,11 +56,11 @@ public class SignInPageManager : MonoBehaviour
         var sha256 = new SHA256CryptoServiceProvider();
 
         //password to hash
-        byte[] passwordBytes = Encoding.ASCII.GetBytes(this.PasswordInputField.text);
+        byte[] passwordBytes = Encoding.ASCII.GetBytes(PasswordInputField.text);
         var sha256Password = sha256.ComputeHash(passwordBytes);
 
         //confirm password to hash
-        byte[] confirmPasswordBytes = Encoding.ASCII.GetBytes(this.ConfirmPasswordInputField.text);
+        byte[] confirmPasswordBytes = Encoding.ASCII.GetBytes(ConfirmPasswordInputField.text);
         var sha256ConfirmPassword = sha256.ComputeHash(confirmPasswordBytes);
 
         if (!Convert.ToBase64String(sha256Password).Equals(Convert.ToBase64String(sha256ConfirmPassword)))
@@ -71,31 +71,29 @@ public class SignInPageManager : MonoBehaviour
             ErrorText_Create.text = "Passwords do not match!";
             return;
         }
-        else
-        {
-            JSONObject user = new JSONObject();
-            user.Add("ID", CreateUniqueID());
-            user.Add("Username", this.PlayerNameInputField.text);
-            user.Add("Password", Convert.ToBase64String(sha256Password));
-            user.Add("NumberOfWins", 0);
-            user.Add("NumberOfLosses", 0);
-            user.Add("IsLoggedIn", true);
 
-            string path = Application.persistentDataPath + "/ARChessGameUserSave.json";
-            File.WriteAllText(path, user.ToString());
+        JSONObject user = new JSONObject();
+        user.Add("ID", CreateUniqueID());
+        user.Add("Username", PlayerNameInputField.text);
+        user.Add("Password", Convert.ToBase64String(sha256Password));
+        user.Add("NumberOfWins", 0);
+        user.Add("NumberOfLosses", 0);
+        user.Add("IsLoggedIn", true);
 
-            //Connect to Photon
-            PhotonFunctions.ConnectToPhoton(PlayerNameInputField.text);
+        string path = Application.persistentDataPath + "/ARChessGameUserSave.json";
+        File.WriteAllText(path, user.ToString());
 
-            SceneLoader.Instance.LoadScene("Scene_PlayerSelection");
-        }        
+        //Connect to Photon
+        PhotonFunctions.ConnectToPhoton(PlayerNameInputField.text);
+
+        SceneLoader.Instance.LoadScene("Scene_PlayerSelection");
     }
 
     private static int CreateUniqueID()
     {
         Thread.Sleep(1);
-        System.Random autoRand = new System.Random();
-        return autoRand.Next();
+        System.Random randomNumberGenerator = new System.Random();
+        return randomNumberGenerator.Next();
     }
 
     public void OnCloseErrorButtonClicked_Create()

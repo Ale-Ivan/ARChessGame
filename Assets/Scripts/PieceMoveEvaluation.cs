@@ -96,8 +96,8 @@ public class PieceMoveEvaluation : MonoBehaviour
     };
 
 
-    public static int[,] PieceSquareTablePawnWhite = new int[8, 8] 
-    { 
+    public static int[,] PieceSquareTablePawnWhite = new int[8, 8]
+    {
         {  0,  0,  0,  0,  0,  0,  0,  0 },
         { 50, 50, 50, 50, 50, 50, 50, 50 },
         { 10, 10, 20, 30, 30, 20, 10, 10 },
@@ -280,7 +280,7 @@ public class PieceMoveEvaluation : MonoBehaviour
     private static int[,] ReverseArray(int[,] array)
     {
         int[,] reversedArray = new int[8, 8];
-        for (int i = 0; i < 8; i++) 
+        for (int i = 0; i < 8; i++)
         {
             for (int j = 0; j < 8; j++)
             {
@@ -303,14 +303,10 @@ public class PieceMoveEvaluation : MonoBehaviour
         return reversedArray;
     }
 
-    List<Tuple<Piece, double,  Vector2Int>> pieceValues = new List<Tuple<Piece, double, Vector2Int>>();
-
     public Tuple<Piece, double, Vector2Int> EvaluateBoard(Tuple<Piece, Vector2Int, GameObject[,]> boardGamePlan, bool isMax)
     {
-        //Debug.Log('a');
         double value = 0;
-        double maxValue = 0.0;
-        double minValue = 0.0;
+        double bestValue = -99999;
 
         for (int i = 0; i < 8; i++)
         {
@@ -318,100 +314,18 @@ public class PieceMoveEvaluation : MonoBehaviour
             {
                 if (boardGamePlan.Item3[i, j] != null)
                 {
-                    if (isMax)
-                    {
-                        if (boardGamePlan.Item3[i, j].tag.StartsWith("White"))
-                        {
-                            value += GetPieceValue(boardGamePlan.Item3[i, j], i, j);
-                        }
-                    }
-                    else
-                    {
-                        if (boardGamePlan.Item3[i, j].tag.StartsWith("Black"))
-                        {
-                            value += GetPieceValue(boardGamePlan.Item3[i, j], i, j);
-                        }
-                    }
+                    value += GetPieceValue(boardGamePlan.Item3[i, j], i, j);
                 }
             }
         }
 
-        //Debug.Log(boardGamePlan.Item1.gameObject.tag + " " + value + " " + boardGamePlan.Item2);
-
-        if (pieceValues.Count == 0)
+        if (value > bestValue)
         {
-            maxValue = value;
-            pieceValues.Add(new Tuple<Piece, double, Vector2Int>(boardGamePlan.Item1, value, boardGamePlan.Item2));
-            //Debug.Log("0: " + boardGamePlan.Item1.gameObject.tag + " " + value + " " + boardGamePlan.Item2);
-        }
-        else
-        {
-            if (isMax)
-            {
-                if (value > maxValue)
-                {
-                    maxValue = value;
-                    pieceValues.Add(new Tuple<Piece, double, Vector2Int>(boardGamePlan.Item1, value, boardGamePlan.Item2));
-                    //Debug.Log("max: " + maxValue + " " + boardGamePlan.Item1.gameObject.tag + " " + value + " " + boardGamePlan.Item2);
-                }
-            }
-            else
-            {
-                if (value < minValue)
-                {
-                    minValue = value;
-                    pieceValues.Add(new Tuple<Piece, double, Vector2Int>(boardGamePlan.Item1, value, boardGamePlan.Item2));
-                    //Debug.Log("min: " + boardGamePlan.Item1.gameObject.tag + " " + value + " " + boardGamePlan.Item2);
-                }
-            }
+            bestValue = value;
+            return new Tuple<Piece, double, Vector2Int>(boardGamePlan.Item1, bestValue, boardGamePlan.Item2);
         }
 
-        pieceValues.Sort((x, y) => y.Item2.CompareTo(x.Item2));
-        return pieceValues.ElementAt(0);
-
-
-        /*Tuple<Piece, double, Vector2Int> bestElement;
-        List<Tuple<Piece, double, Vector2Int>> equalValues;
-        if (isMax)
-        {
-            //pieceValues.Sort((x, y) => y.Item2.CompareTo(x.Item2));
-            Debug.Log("max: " + maxValue);
-            equalValues = pieceValues.FindAll(x => x.Item2.Equals(maxValue));
-            if (equalValues.Count > 1)
-            {
-                Random r = new Random();
-                int rInt = r.Next(0, equalValues.Count);
-                bestElement = equalValues.ElementAt(rInt);
-                Debug.Log("random: " + rInt);
-            }
-            else
-            {
-                bestElement = equalValues.ElementAt(0);
-            }
-        }
-        else
-        {
-            //pieceValues.Sort((x, y) => x.Item2.CompareTo(y.Item2));
-            Debug.Log("min: " + minValue);
-
-            equalValues = pieceValues.FindAll(x => x.Item2.Equals(minValue));
-            if (equalValues.Count > 1)
-            {
-                Random r = new Random();
-                int rInt = r.Next(0, equalValues.Count - 1);
-                bestElement = equalValues.ElementAt(rInt);
-                Debug.Log("random: " + rInt);
-            }
-            else
-            {
-                bestElement = equalValues.ElementAt(0);
-            }
-        }
-
-        //Tuple<Piece, double, Vector2Int> firstElement = pieceValues.ElementAt(0);
-        //Debug.Log(firstElement.Item1.gameObject.tag + " " + firstElement.Item2  + " " +firstElement.Item3);
-
-        return bestElement;*/
+        return null;
     }
 
     Tuple<Piece, Vector2Int, GameObject[,]> evaluateTupleMin = new Tuple<Piece, Vector2Int, GameObject[,]>(null, Vector2Int.zero, null);
@@ -421,21 +335,19 @@ public class PieceMoveEvaluation : MonoBehaviour
     {
         if (depth == 0)
         {
-            return EvaluateBoard(evaluateTupleMax, true);
+            return EvaluateBoard(evaluateTupleMin, true);
         }
 
         List<Tuple<Piece, Vector2Int, GameObject[,]>> gamePlans;
         gamePlans = ARChessGameManager.instance.FindAllPossibleMovesForPiecesOfColor(board, ARChessGameManager.colorOfOpponent);
-        //Debug.Log("max: " + gamePlans.Count);
 
         Tuple<Piece, double, Vector2Int> returnValue = new Tuple<Piece, double, Vector2Int>(null, alpha, Vector2Int.zero);
 
         foreach (Tuple<Piece, Vector2Int, GameObject[,]> tuple in gamePlans)
         {
             evaluateTupleMax = tuple;
-            //Debug.Log("max: " + tuple.Item1.gameObject.tag + " " + tuple.Item2);
-            GameObject[,] tempGamePlan = tuple.Item3;
-            Tuple<Piece, double, Vector2Int> minimaxValue = AlphaBetaMin(depth - 1, alpha, beta, tempGamePlan);
+
+            Tuple<Piece, double, Vector2Int> minimaxValue = AlphaBetaMin(depth - 1, alpha, beta, tuple.Item3);
             if (minimaxValue.Item2 >= beta)
             {
                 evaluateTupleMax = tuple;
@@ -455,22 +367,19 @@ public class PieceMoveEvaluation : MonoBehaviour
     {
         if (depth == 0)
         {
-            return EvaluateBoard(evaluateTupleMin, false);
+            return EvaluateBoard(evaluateTupleMax, false);
         }
 
         List<Tuple<Piece, Vector2Int, GameObject[,]>> gamePlans;
         gamePlans = ARChessGameManager.instance.FindAllPossibleMovesForPiecesOfColor(board, ARChessGameManager.colorOfLocalPlayer);
-        //Debug.Log("min: " + gamePlans.Count);
 
         Tuple<Piece, double, Vector2Int> returnValue = new Tuple<Piece, double, Vector2Int>(null, beta, Vector2Int.zero);
 
         foreach (Tuple<Piece, Vector2Int, GameObject[,]> tuple in gamePlans)
         {
             evaluateTupleMin = tuple;
-            //Debug.Log("min: " + tuple.Item1.gameObject.tag + " " + tuple.Item2);
 
-            GameObject[,] tempGamePlan = tuple.Item3;
-            Tuple<Piece, double, Vector2Int> minimaxValue = AlphaBetaMax(depth - 1, alpha, beta, tempGamePlan);
+            Tuple<Piece, double, Vector2Int> minimaxValue = AlphaBetaMax(depth - 1, alpha, beta, tuple.Item3);
             if (minimaxValue.Item2 <= alpha)
             {
                 evaluateTupleMin = tuple;
@@ -487,146 +396,22 @@ public class PieceMoveEvaluation : MonoBehaviour
         return returnValue;
     }
 
-    /*public Tuple<Piece, double, Vector2Int> minimax(int depth, int alpha, int beta, bool isMaximizingPlayer, GameObject[,] board)
-    {
-        if (depth == 0)
-        {
-            //Debug.Log(evaluateTuple.Item1.tag);
-            return EvaluateBoard(evaluateTuple, isMaximizingPlayer);
-        }
-
-        //Debug.Log("minimax " + isMaximizingPlayer + " " + depth);
-
-        List<Tuple<Piece, Vector2Int, GameObject[,]>> gamePlans;
-        if (isMaximizingPlayer) //white player
-        {
-            gamePlans = ARChessGameManager.instance.FindAllPossibleMovesForPiecesOfColor(board, "White");
-        }
-        else //black player
-        {
-            gamePlans = ARChessGameManager.instance.FindAllPossibleMovesForPiecesOfColor(board, "Black");
-        }
-
-        if (isMaximizingPlayer)
-        {
-            int bestMove = -99999;
-            Tuple<Piece, int, Vector2Int> returnValue = new Tuple<Piece, int, Vector2Int>(null, bestMove, Vector2Int.zero);
-            foreach (Tuple<Piece, Vector2Int, GameObject[,]> tuple in gamePlans)
-            {
-                evaluateTuple = tuple;
-                GameObject[,] tempGamePlan = tuple.Item3;
-                Tuple<Piece, int, Vector2Int> minimaxValue = minimax(depth - 1, alpha, beta, !isMaximizingPlayer, tempGamePlan);
-                if (minimaxValue.Item2 >= beta)
-                {
-                    //bestMove = minimaxValue.Item2;
-                    return new Tuple<Piece, int, Vector2Int>(tuple.Item1, beta, tuple.Item2);
-                }
-                //returnValue = new Tuple<Piece, int, Vector2Int>(tuple.Item1, bestMove, tuple.Item2);
-                //Debug.Log(returnValue);
-                if (minimaxValue.Item2 > alpha)
-                {
-                    alpha = minimaxValue.Item2;
-                }
-            }
-            return returnValue;
-        } 
-        else
-        {
-            int bestMove = 99999;
-            Tuple<Piece, int, Vector2Int> returnValue = new Tuple<Piece, int, Vector2Int>(null, bestMove, Vector2Int.zero);
-            foreach (Tuple<Piece, Vector2Int, GameObject[,]> tuple in gamePlans)
-            {
-                evaluateTuple = tuple;
-                GameObject[,] tempGamePlan = tuple.Item3;
-                Tuple<Piece, int, Vector2Int> minimaxValue = minimax(depth - 1, alpha, beta, !isMaximizingPlayer, tempGamePlan);
-                if (minimaxValue.Item2 < bestMove)
-                {
-                    bestMove = minimaxValue.Item2;
-                    returnValue = new Tuple<Piece, int, Vector2Int>(tuple.Item1, bestMove, tuple.Item2);
-                }
-                //returnValue = new Tuple<Piece, int, Vector2Int>(tuple.Item1, bestMove, tuple.Item2);
-                //Debug.Log("ret: " + returnValue);
-                beta = Math.Min(beta, bestMove);
-                if (beta <= alpha)
-                {
-                    return returnValue;
-                }
-            }
-            return returnValue;
-        }
-    }*/
-
     private double GetPieceValue(GameObject pieceGameObject, int row, int column)
     {
-        Piece piece = pieceGameObject.GetComponent<Piece>();
-        string tag = pieceGameObject.tag;
-
         double value;
 
-        switch (piece.type)
+        switch (pieceGameObject.GetComponent<Piece>().type)
         {
-            case PieceType.Pawn: value = 100 + (tag.StartsWith("White") ? PieceSquareTablePawnWhite1[row, column] : PieceSquareTablePawnBlack1[row, column]); break;
-            case PieceType.Knight: value = 300 + (tag.StartsWith("White") ? PieceSquareTableKnightWhite1[row, column] : PieceSquareTableKnightBlack1[row, column]); break;
-            case PieceType.Bishop: value = 300 + (tag.StartsWith("White") ? PieceSquareTableBishopWhite1[row, column] : PieceSquareTableBishopBlack1[row, column]); break;
-            case PieceType.Rook: value = 500 + (tag.StartsWith("White") ? PieceSquareTableRookWhite1[row, column] : PieceSquareTableRookBlack1[row, column]); break;
-            case PieceType.Queen: value = 900 + (tag.StartsWith("White") ? PieceSquareTableQueenWhite1[row, column] : PieceSquareTableQueenBlack1[row, column]); break;
-            case PieceType.King: value = 9000 + (tag.StartsWith("White") ? PieceSquareTableKingWhite1[row, column] : PieceSquareTableKingBlack1[row, column]); break;
+            case PieceType.Pawn: value = (int)PieceValues.Pawn + (tag.StartsWith("White") ? PieceSquareTablePawnWhite1[row, column] : PieceSquareTablePawnBlack1[row, column]); break;
+            case PieceType.Knight: value = (int)PieceValues.Knight + (tag.StartsWith("White") ? PieceSquareTableKnightWhite1[row, column] : PieceSquareTableKnightBlack1[row, column]); break;
+            case PieceType.Bishop: value = (int)PieceValues.Bishop + (tag.StartsWith("White") ? PieceSquareTableBishopWhite1[row, column] : PieceSquareTableBishopBlack1[row, column]); break;
+            case PieceType.Rook: value = (int)PieceValues.Rook + (tag.StartsWith("White") ? PieceSquareTableRookWhite1[row, column] : PieceSquareTableRookBlack1[row, column]); break;
+            case PieceType.Queen: value = (int)PieceValues.Queen + (tag.StartsWith("White") ? PieceSquareTableQueenWhite1[row, column] : PieceSquareTableQueenBlack1[row, column]); break;
+            case PieceType.King: value = (int)PieceValues.King + (tag.StartsWith("White") ? PieceSquareTableKingWhite1[row, column] : PieceSquareTableKingBlack1[row, column]); break;
             default: return 0;
         }
 
-        return tag.StartsWith(ARChessGameManager.colorOfOpponent) ? value : -value;
-        //Debug.Log(piece.type);
+        return pieceGameObject.tag.StartsWith(ARChessGameManager.colorOfOpponent) ? value : -value;
     }
 
-    public int Evaluate(GameObject[,] gameState)
-    {
-        return 0;
-    }
-
-    public List<GameObject[,]> GetAllPossibleMoves(GameObject[,] gameState)
-    {
-        return new List<GameObject[,]>();
-    }
-
-    public int Maxi(int depth, GameObject[,] currentGameState)
-    {
-        if (depth == 0)
-        {
-            return Evaluate(currentGameState);
-        }
-
-        int max = int.MinValue;
-        List<GameObject[,]> possibleMoves = GetAllPossibleMoves(currentGameState);
-
-        foreach (GameObject[,] possibleMove in possibleMoves)
-        {
-            int score = Mini(depth - 1, possibleMove);
-            if (score > max)
-            {
-                max = score;
-            }
-        }
-        return max;
-    }
-
-    public int Mini(int depth, GameObject[,] currentGameState)
-    {
-        if (depth == 0)
-        {
-            return Evaluate(currentGameState);
-        }
-
-        int min = int.MinValue;
-        List<GameObject[,]> possibleMoves = GetAllPossibleMoves(currentGameState);
-
-        foreach (GameObject[,] possibleMove in possibleMoves)
-        {
-            int score = Maxi(depth - 1, possibleMove);
-            if (score < min)
-            {
-                min = score;
-            }
-        }
-        return min;
-    }
 }

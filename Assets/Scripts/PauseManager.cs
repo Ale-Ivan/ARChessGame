@@ -38,7 +38,6 @@ public class PauseManager : MonoBehaviour
             // Check if Back was pressed this frame
             if (Input.GetKeyDown(KeyCode.Escape))
             {
-                TimerController.Instance.HideTimer();
                 BackButtonOptions.SetActive(true);
             }
         }
@@ -52,7 +51,7 @@ public class PauseManager : MonoBehaviour
             {
                 FileManager.instance.DeleteEntriesRelatedToLastGame();
 
-                FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+                FileManager.instance.ChangeNumericPropertyValue("NumberOfLosses", numberOfLosses + 1);
             }
             SceneLoader.Instance.LoadScene("Scene_Start");
         }
@@ -63,7 +62,7 @@ public class PauseManager : MonoBehaviour
                 userID, username
             };
 
-            FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+            FileManager.instance.ChangeNumericPropertyValue("NumberOfLosses", numberOfLosses + 1);
 
             RaiseQuitEvent(data);
 
@@ -97,7 +96,6 @@ public class PauseManager : MonoBehaviour
     {
         //create a modal for assuring this is what the user wants
         pauseCanvas.SetActive(true);
-        TimerController.Instance.stopTimer();
     }
 
     public void OnYesPauseButtonClicked()

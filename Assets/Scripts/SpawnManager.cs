@@ -82,7 +82,6 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             int numberOfRooks = 0;
             int numberOfKnights = 0;
             int numberOfBishops = 0;
-            
 
             for (int i = 0; i < 8; i++)
             {

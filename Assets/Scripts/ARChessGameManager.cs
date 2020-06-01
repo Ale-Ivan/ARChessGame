@@ -9,6 +9,7 @@ using TMPro;
 using ExitGames.Client.Photon;
 using System;
 using System.Linq;
+using System.Timers;
 
 public class ARChessGameManager : MonoBehaviourPunCallbacks
 {
@@ -51,6 +52,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public static List<GameObject> highlightedObjects;
     private static List<GameObject> tileHighlights;
 
+    public GameObject drawButton;
+    public GameObject quitButton;
+
     private List<GameObject> movedPieces;
 
     public int specialMove;
@@ -62,8 +66,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public static GameMode ChosenGameMode;
 
-    /*private string path;
-    private JSONObject userJSON;*/
     void Awake()
     {
         instance = this;
@@ -149,6 +151,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         SpawnManager.instance.SpawnSingleplayer();
     }
 
+    
+
     public void JoinRoom()
     {
         if (ChosenGameMode == GameMode.MultiplayerAtRandom)
@@ -209,6 +213,21 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         uI_InformText.text = "created room " + PhotonNetwork.CurrentRoom.Name + " " + PhotonNetwork.CurrentRoom.PlayerCount;
     }
 
+    IEnumerator NoPlayerEnteredRoom()
+    {
+        yield return new WaitForSeconds(10);
+
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            uI_InformText.text = "We could not find anyone for you to play with...";
+
+            EndGame();
+            gameOverPanel.SetActive(true);
+
+            StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 3.0f)); 
+        }
+    }
+
     public override void OnJoinedRoom()
     {
         adjustButton.SetActive(false);
@@ -217,6 +236,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
         {
             uI_InformText.text = "Joined room " + PhotonNetwork.CurrentRoom.Name + ". Waiting for other players...";
+
+            StartCoroutine(NoPlayerEnteredRoom());
         }
         else
         {
@@ -227,8 +248,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
             chatGameObject.SetActive(true);
 
-            TimerController.Instance.DisplayTimer();
-            StartCoroutine(ResetTimerAfterSeconds(0.5f));
+            drawButton.SetActive(true);
+            quitButton.SetActive(true);
         }
 
         //Debug.Log("joined " + PhotonNetwork.CurrentRoom.Name);
@@ -244,12 +265,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             opponentName = newPlayer.NickName;
             //Debug.Log(opponentName);
 
-            TimerController.Instance.DisplayTimer();
-            StartCoroutine(ResetTimerAfterSeconds(0.5f));
-        }
+            StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
+            chatGameObject.SetActive(true);
 
-        StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 2.0f));
-        chatGameObject.SetActive(true);
+            drawButton.SetActive(true);
+            quitButton.SetActive(true);
+        }
     }
 
     public override void OnLeftRoom()
@@ -274,12 +295,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         PhotonNetwork.CreateRoom(randomRoomName, roomOptions);
     }
 
-    IEnumerator ResetTimerAfterSeconds(float seconds)
-    {
-        yield return new WaitForSeconds(seconds);
-        TimerController.Instance.resetTimer(currentPlayer);
-    }
-
     IEnumerator DeactivateAfterSeconds(GameObject _gameObject, float seconds)
     {
         yield return new WaitForSeconds(seconds);
@@ -299,7 +314,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    public bool VerifyForCheck(GameObject[,] wantedPieces, bool isForTemporaryCheck, bool isForAI = false)
+    public bool VerifyForCheck(GameObject[,] wantedPieces, bool isForTemporaryCheck)
     {
         ulong squares;
         if (isForTemporaryCheck)
@@ -311,20 +326,11 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             squares = attackedSquares;
         }
         
-        Vector2Int myKingPosition;
-
-        if (isForAI)
-        {
-            myKingPosition = GetRowAndColumn(wantedPieces, colorOfOpponent + "King");
-        }
-        else
-        {
-            myKingPosition = GetRowAndColumn(wantedPieces, colorOfLocalPlayer + "King");
-        }
+        Vector2Int myKingPosition = GetRowAndColumn(wantedPieces, colorOfLocalPlayer + "King");
 
         int myKingSquare = 63 - (myKingPosition.x * 8 + myKingPosition.y);
         if ((squares & (1UL << myKingSquare)) == 0) //the bit is not set to 1
-        {
+        { 
             uI_InformPanelGameObject.SetActive(false);
             return false;
         }
@@ -334,23 +340,11 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             {
                 if (IsCheckMate())
                 {
-                    /*string path = Application.persistentDataPath + "/ARChessGameUserSave.json";
-                    if (File.Exists(path))
-                    {
-                        string jsonString = File.ReadAllText(path);
-                        JSONObject userJSON = (JSONObject)JSON.Parse(jsonString);
-                        int numberOfLosses = userJSON["NumberOfLosses"];
-                        userJSON["NumberOfLosses"] = numberOfLosses + 1;
-                        File.WriteAllText(path, userJSON.ToString()); //also closes the file after writing
-                    }*/
-
                     int numberOfLosses = FileManager.instance.ReadIntFromFile("NumberOfLosses");
-                    FileManager.instance.ChangePropertyIntValue("NumberOfLosses", numberOfLosses + 1);
+                    FileManager.instance.ChangeNumericPropertyValue("NumberOfLosses", numberOfLosses + 1);
 
                     uI_InformText.text = "Game Over! Your opponent, " + opponentName + ", wins!";
                     uI_InformPanelGameObject.SetActive(true);
-
-                    TimerController.Instance.HideTimer();
 
                     gameOverPanel.SetActive(true);
                     EndGame();
@@ -359,7 +353,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                     {
                         PhotonNetwork.LocalPlayer.NickName
                     };
-                    RaiseEvent(data);
+                    RaiseEventCheckMate(data);
 
                 }
                 else
@@ -373,7 +367,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         }
     }
 
-    private void RaiseEvent(object[] data)
+    private void RaiseEventCheckMate(object[] data)
     {
         RaiseEventOptions raiseEventOptions = new RaiseEventOptions
         {
@@ -385,9 +379,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             Reliability = true
         };
+
         PhotonNetwork.RaiseEvent((byte)RaiseEventCodes.PlayerCheckMate, data, raiseEventOptions, sendOptions);
     }
-
 
     private bool IsCheckMate()
     {
@@ -438,7 +432,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             {
                 if (wantedPieces[i, j] != null)
                 {
-                    if (wantedPieces[i, j].tag.StartsWith(colorOfOpponent))
+                    if (wantedPieces[i, j].tag.StartsWith("colorOfOpponent"))
                     {
                         Vector2Int currentPosition = new Vector2Int(i, j);
 
@@ -509,7 +503,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             {
                 if (pieces[i, j] != null)
                 {
-                    if (pieces[i, j].tag == tag)
+                    if (pieces[i, j].CompareTag(tag))
                     {
                         return pieces[i, j];
                     }
@@ -571,8 +565,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         string tempPlayer = currentPlayer;
         currentPlayer = otherPlayer;
         otherPlayer = tempPlayer;
-
-        StartCoroutine(ResetTimerAfterSeconds(0.5f));
 
         if (ChosenGameMode == GameMode.SinglePlayer)
         {
@@ -701,6 +693,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         SetPositionToObject(finalPosition.x, finalPosition.y, piece.GetGameObject());
         SetPositionToNull(initialPosition.x, initialPosition.y);
 
+        VerifyForCheck(pieces, false);
+
         ChangePlayer();
     }
 
@@ -755,7 +749,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         foreach (Vector2Int possibleMove in possibleMoves)
         {
             tempGamePlan = new GameObject[8, 8];
-            Array.Copy(gamePlan, tempGamePlan, pieces.Length);
+            Array.Copy(gamePlan, tempGamePlan, gamePlan.Length);
 
             //move piece in each possible location
             tempGamePlan[possibleMove.x, possibleMove.y] = piece.gameObject;
@@ -888,8 +882,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                         GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y - 3);
                         if (otherPiece.CompareTag("BlackRook1") && !movedPieces.Contains(otherPiece))
                         {
-                            Vector2Int grid = new Vector2Int();
-                            grid.Set(currentPosition.x, currentPosition.y - 2);
+                            Vector2Int grid = new Vector2Int(currentPosition.x, currentPosition.y - 2);
                             Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
                             GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
@@ -906,8 +899,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                         GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y + 4);
                         if (otherPiece.CompareTag("BlackRook2") && !movedPieces.Contains(otherPiece))
                         {
-                            Vector2Int grid = new Vector2Int();
-                            grid.Set(currentPosition.x, currentPosition.y + 2);
+                            Vector2Int grid = new Vector2Int(currentPosition.x, currentPosition.y + 2);
                             Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
                             GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
@@ -933,8 +925,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                         GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y - 4);
                         if (otherPiece.CompareTag("WhiteRook1") && !movedPieces.Contains(otherPiece))
                         {
-                            Vector2Int grid = new Vector2Int();
-                            grid.Set(currentPosition.x, currentPosition.y - 2);
+                            Vector2Int grid = new Vector2Int(currentPosition.x, currentPosition.y - 2);
                             Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
                             GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
@@ -951,8 +942,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
                         GameObject otherPiece = GetPieceAtPosition(pieces, currentPosition.x, currentPosition.y + 3);
                         if (otherPiece.CompareTag("WhiteRook2") && !movedPieces.Contains(otherPiece))
                         {
-                            Vector2Int grid = new Vector2Int();
-                            grid.Set(currentPosition.x, currentPosition.y + 2);
+                            Vector2Int grid = new Vector2Int(currentPosition.x, currentPosition.y + 2);
                             Vector3 anotherPossibleMove = Geometry.PointFromGrid(grid);
 
                             GameObject tileHighlight = Instantiate(tileHighlightPrefab, anotherPossibleMove + chessBoard.transform.position, Quaternion.identity);
@@ -1001,59 +991,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void OnBackToStartButtonClicked()
     {
         SceneLoader.Instance.LoadScene("Scene_Start");
-    }
-
-    public void MakeRandomMove()
-    {
-        Debug.Log("Random");
-
-        List<Tuple<Piece, Vector2Int, List<Vector2Int>>> allPossibleLocations = new List<Tuple<Piece, Vector2Int, List<Vector2Int>>>();
-        //make move and change player
-        for (int i = 0; i < 8; i++)
-        {
-            for (int j = 0; j < 8; j++)
-            {
-                if (pieces[i, j] != null)
-                {
-                    if (pieces[i, j].tag.StartsWith(currentPlayer))
-                    {
-                        //get all possible moves for each piece of certain color
-                        Piece piece = pieces[i, j].GetComponent<Piece>();
-                        Vector2Int currentPieceLocation = new Vector2Int(i, j);
-                        List<Vector2Int> pieceMoves = piece.MoveLocations(pieces, currentPieceLocation);
-
-                        allPossibleLocations.Add(new Tuple<Piece, Vector2Int, List<Vector2Int>>(piece, currentPieceLocation, pieceMoves));
-                    }
-                }
-            }
-        }
-
-        System.Random random = new System.Random();
-        int randomNumber = random.Next(0, allPossibleLocations.Count - 1);
-
-        Tuple<Piece, Vector2Int, List<Vector2Int>> randomPiece = allPossibleLocations.ElementAt(randomNumber);
-
-        int anotherRandomNumber = random.Next(0, randomPiece.Item3.Count - 1);
-        Vector2Int move = randomPiece.Item3.ElementAt(anotherRandomNumber);
-
-        Piece chosenPiece = randomPiece.Item1;
-        Vector2Int initialPosition = randomPiece.Item2;
-        Vector3 finalPosition = new Vector3(-2.1f + move.y * 0.6f, 0, -2.1f + move.x * 0.6f);
-
-        MovePiece(chosenPiece.GetGameObject(), finalPosition);
-        SetPositionToObject(move.x, move.y, chosenPiece.GetGameObject());
-        SetPositionToNull(initialPosition.x, initialPosition.y);
-
-        RefreshAttackedSquares(pieces, false);
-        VerifyForCheck(pieces, false);
-
-        ChangePlayer();
-
-        if (ChosenGameMode != GameMode.SinglePlayer)
-        {
-            chosenPiece.GetPhotonView().RPC("MovePieceForOpponent", RpcTarget.OthersBuffered, chosenPiece.gameObject.tag, move.x, move.y);
-            chosenPiece.GetPhotonView().RPC("SwitchPlayer", RpcTarget.OthersBuffered);
-        }
     }
 
     #endregion

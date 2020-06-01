@@ -46,8 +46,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToObject(0, 1, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 3);
 
-                            Vector2Int specialMove = new Vector2Int();
-                            specialMove.Set(0, 2);
+                            Vector2Int specialMove = new Vector2Int(0, 2);
                             Vector3 specialMovePosition = Geometry.PointFromGrid(specialMove);
                             ARChessGameManager.instance.MovePiece(rook1, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 2, rook1);
@@ -71,8 +70,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToObject(0, 2, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 4);
 
-                            Vector2Int specialMove = new Vector2Int();
-                            specialMove.Set(0, 2);
+                            Vector2Int specialMove = new Vector2Int(0, 3);
                             Vector3 specialMovePosition = Geometry.PointFromGrid(specialMove);
                             ARChessGameManager.instance.MovePiece(rook1, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 3, rook1);
@@ -103,8 +101,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToObject(0, 5, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 3);
 
-                            Vector2Int specialMove = new Vector2Int();
-                            specialMove.Set(0, 4);
+                            Vector2Int specialMove = new Vector2Int(0, 4);
                             Vector3 specialMovePosition = Geometry.PointFromGrid(specialMove);
                             ARChessGameManager.instance.MovePiece(rook2, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 4, rook2);
@@ -128,8 +125,7 @@ public class MoveSelector : MonoBehaviour
                             ARChessGameManager.instance.SetPositionToObject(0, 6, piece.GetGameObject());
                             ARChessGameManager.instance.SetPositionToNull(0, 4);
 
-                            Vector2Int specialMove = new Vector2Int();
-                            specialMove.Set(0, 5);
+                            Vector2Int specialMove = new Vector2Int(0, 5);
                             Vector3 specialMovePosition = Geometry.PointFromGrid(specialMove);
                             ARChessGameManager.instance.MovePiece(rook2, specialMovePosition + chessBoard.transform.position);
                             ARChessGameManager.instance.SetPositionToObject(0, 5, rook2);
