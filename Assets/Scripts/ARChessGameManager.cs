@@ -9,7 +9,7 @@ using TMPro;
 using ExitGames.Client.Photon;
 using System;
 using System.Linq;
-using System.Timers;
+using UnityEngine.UI;
 
 public class ARChessGameManager : MonoBehaviourPunCallbacks
 {
@@ -66,6 +66,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public static GameMode ChosenGameMode;
 
+    public GameObject playerTurnGameObject;
+    public Text playerTurnText;
+
     void Awake()
     {
         instance = this;
@@ -103,6 +106,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             searchForGamesButtonGameObject.SetActive(true);
             uI_InformPanelGameObject.SetActive(true);
         }
+
+        playerTurnGameObject.SetActive(true);
     }
 
     #region UI callback methods
@@ -126,6 +131,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         else
         {
             SpawnManager.instance.SpawnSingleplayer();
+            playerTurnText.text = currentPlayer + "'s turn";
         }
     }
 
@@ -140,6 +146,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         startNewGameObject.SetActive(false);
 
         SpawnManager.instance.SpawnFromFile();
+        playerTurnText.text = currentPlayer + "'s turn";
     }
 
     public void OnNoButtonClicked()
@@ -149,9 +156,10 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         startNewGameObject.SetActive(false);
 
         SpawnManager.instance.SpawnSingleplayer();
+        playerTurnText.text = currentPlayer + "'s turn";
     }
 
-    
+
 
     public void JoinRoom()
     {
@@ -250,6 +258,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
             drawButton.SetActive(true);
             quitButton.SetActive(true);
+
+            playerTurnText.text = currentPlayer + "'s turn";
         }
 
         //Debug.Log("joined " + PhotonNetwork.CurrentRoom.Name);
@@ -270,6 +280,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
             drawButton.SetActive(true);
             quitButton.SetActive(true);
+
+            playerTurnText.text = currentPlayer + "'s turn";
+            playerTurnGameObject.SetActive(true);
         }
     }
 
@@ -566,6 +579,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         currentPlayer = otherPlayer;
         otherPlayer = tempPlayer;
 
+        StartCoroutine(ChangePlayerText());
+
         if (ChosenGameMode == GameMode.SinglePlayer)
         {
             StartCoroutine(ChangePlayerWait());
@@ -576,12 +591,17 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public IEnumerator ChangePlayerWait()
     {
-        yield return new WaitForSeconds(1);
+        yield return new WaitForSeconds(2);
         if (currentPlayer == colorOfOpponent)
         {
             MovePieceAI();
         }
+    }
 
+    public IEnumerator ChangePlayerText()
+    {
+        yield return new WaitForSeconds(1);
+        playerTurnText.text = currentPlayer + "'s turn";
     }
 
     public static void IncrementNumberOfBlackQueens()
