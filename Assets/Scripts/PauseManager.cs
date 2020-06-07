@@ -11,11 +11,8 @@ public class PauseManager : MonoBehaviour
     public GameObject BackButtonOptions;
     public GameObject pauseCanvas;
 
-    private string path;
-    private JSONObject userJSON;
     private int userID;
     private string username;
-    private int numberOfWins;
     private int numberOfLosses;
 
     public static bool isGamePaused;
@@ -122,5 +119,10 @@ public class PauseManager : MonoBehaviour
     public void OnPlayOnButtonClicked()
     {
         BackButtonOptions.SetActive(false);
+    }
+
+    public void OnBackButtonClicked()
+    {
+        SceneLoader.Instance.LoadScene("Scene_GameModes");
     }
 }

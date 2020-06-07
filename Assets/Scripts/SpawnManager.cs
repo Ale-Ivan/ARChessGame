@@ -58,26 +58,17 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
             Material pieceMaterialColor = possibleMaterialColors[selectionNumber % 2];
             pieceColor = possibleColors[selectionNumber % 2];
-
-            if (pieceColor.Equals("White"))
-            {
-                ARChessGameManager.currentPlayer = "White";
-            }
-            else if (pieceColor.Equals("Black"))
-            {
-                ARChessGameManager.otherPlayer = "Black";
-            }
             
             ARChessGameManager.colorOfLocalPlayer = pieceColor;
 
             Vector3 instantiatePosition = spawnPositions[0].position;
 
-            //Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(1.05f, 0f, 0.15f);
-            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
-            //Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(1.05f, 0f, -0.15f);
-            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
-            //Vector3 change = new Vector3(0.3f, 0f, 0f);
-            Vector3 change = new Vector3(0.6f, 0f, 0f);
+            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(1.05f, 0f, 0.15f);
+            //Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(1.05f, 0f, -0.15f);
+            //Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.3f, 0f, 0f);
+            //Vector3 change = new Vector3(0.6f, 0f, 0f);
 
             int numberOfRooks = 0;
             int numberOfKnights = 0;
@@ -301,25 +292,16 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             Material pieceMaterialColor = possibleMaterialColors[selectionNumber % 2];
             pieceColor = possibleColors[selectionNumber % 2];
 
-            if (pieceColor.Equals("White"))
-            {
-                ARChessGameManager.currentPlayer = "White";
-            }
-            else if (pieceColor.Equals("Black"))
-            {
-                ARChessGameManager.otherPlayer = "Black";
-            }
-
             ARChessGameManager.colorOfLocalPlayer = pieceColor;
 
             Vector3 instantiatePosition = spawnPositions[0].position;
 
-            //Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(1.05f, 0f, 0.15f);
-            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
-            //Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(1.05f, 0f, -0.15f);
-            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
-            //Vector3 change = new Vector3(0.3f, 0f, 0f);
-            Vector3 change = new Vector3(0.6f, 0f, 0f);
+            Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(1.05f, 0f, 0.15f);
+            //Vector3 initialPositionFirstRow = instantiatePosition - new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(1.05f, 0f, -0.15f);
+            //Vector3 initialPositionSecondRow = instantiatePosition - new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.3f, 0f, 0f);
+            //Vector3 change = new Vector3(0.6f, 0f, 0f);
 
             int numberOfRooks = 0;
             int numberOfKnights = 0;
@@ -480,12 +462,12 @@ public class SpawnManager : MonoBehaviourPunCallbacks
 
             Vector3 instantiatePosition = spawnPositions[1].position;
 
-            //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
-            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
-            //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
-            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
-            //Vector3 change = new Vector3(0.3f, 0f, 0f);
-            Vector3 change = new Vector3(0.6f, 0f, 0f);
+            Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(1.05f, 0f, 0.15f);
+            //Vector3 initialPositionFirstRow = instantiatePosition + new Vector3(2.1f, 0f, 0.3f);
+            Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(1.05f, 0f, -0.15f);
+            //Vector3 initialPositionSecondRow = instantiatePosition + new Vector3(2.1f, 0f, -0.3f);
+            Vector3 change = new Vector3(0.3f, 0f, 0f);
+            //Vector3 change = new Vector3(0.6f, 0f, 0f);
 
             int numberOfRooks = 0;
             int numberOfKnights = 0;
@@ -611,6 +593,13 @@ public class SpawnManager : MonoBehaviourPunCallbacks
             whiteKnightRotation = Quaternion.Euler(-90, 0, 90);
         }
 
+        //Vector3 initialPosition = new Vector3(-2.1f, 0, -2.1f);
+        Vector3 initialPosition = new Vector3(-1.05f, 0, -1.05f);
+        //Vector3 columnChange = new Vector3(0.6f, 0, 0);
+        Vector3 columnChange = new Vector3(0.3f, 0, 0);
+        //Vector3 rowChange = new Vector3(0, 0, 0.6f);
+        Vector3 rowChange = new Vector3(0, 0, 0.3f);
+
         foreach (Tuple<string, string> blackPiece in blackPieces)
         {
             if (!blackPiece.Item2.Equals("X"))
@@ -618,37 +607,39 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 GameObject instantiatedBlackPiece;
                 int row = (int) char.GetNumericValue(blackPiece.Item2[0]);
                 int column = (int) char.GetNumericValue(blackPiece.Item2[1]);
+                Vector3 instatiatePosition = initialPosition + column * columnChange + row * rowChange;
+
                 if (blackPiece.Item1.Contains("Rook"))
                 {
-                    instantiatedBlackPiece = Instantiate(pieces[0], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedBlackPiece = Instantiate(pieces[0], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     numberOfBlackRooks++;
                     instantiatedBlackPiece.tag = blackColor + "Rook" + numberOfBlackRooks;
                 }
                 else if (blackPiece.Item1.Contains("Knight"))
                 {
-                    instantiatedBlackPiece = Instantiate(pieces[1], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), blackKnightRotation);
+                    instantiatedBlackPiece = Instantiate(pieces[1], instatiatePosition, blackKnightRotation);
                     numberOfBlackKnights++;
                     instantiatedBlackPiece.tag = blackColor + "Knight" + numberOfBlackKnights;
                 }
                 else if (blackPiece.Item1.Contains("Bishop"))
                 {
-                    instantiatedBlackPiece = Instantiate(pieces[2], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedBlackPiece = Instantiate(pieces[2], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     numberOfBlackBishops++;
                     instantiatedBlackPiece.tag = blackColor + "Bishop" + numberOfBlackBishops;
                 }
                 else if (blackPiece.Item1.Contains("King"))
                 {
-                    instantiatedBlackPiece = Instantiate(pieces[3], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedBlackPiece = Instantiate(pieces[3], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     instantiatedBlackPiece.tag = blackColor + "King";
                 }
                 else if (blackPiece.Item1.Contains("Queen"))
                 {
-                    instantiatedBlackPiece = Instantiate(pieces[4], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedBlackPiece = Instantiate(pieces[4], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     instantiatedBlackPiece.tag = blackColor + "Queen";
                 } 
                 else
                 {
-                    instantiatedBlackPiece = Instantiate(pieces[5], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedBlackPiece = Instantiate(pieces[5], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     numberOfBlackPawns++;
                     instantiatedBlackPiece.tag = blackColor + "Pawn" + numberOfBlackPawns;
                 }
@@ -665,37 +656,39 @@ public class SpawnManager : MonoBehaviourPunCallbacks
                 GameObject instantiatedWhitePiece;
                 int row = (int)char.GetNumericValue(whitePiece.Item2[0]);
                 int column = (int)char.GetNumericValue(whitePiece.Item2[1]);
+                Vector3 instatiatePosition = initialPosition + column * columnChange + row * rowChange;
+
                 if (whitePiece.Item1.Contains("Rook"))
                 {
-                    instantiatedWhitePiece = Instantiate(pieces[0], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedWhitePiece = Instantiate(pieces[0], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     numberOfWhiteRooks++;
                     instantiatedWhitePiece.tag = whiteColor + "Rook" + numberOfWhiteRooks;
                 }
                 else if (whitePiece.Item1.Contains("Knight"))
                 {
-                    instantiatedWhitePiece = Instantiate(pieces[1], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), whiteKnightRotation);
+                    instantiatedWhitePiece = Instantiate(pieces[1], instatiatePosition, whiteKnightRotation);
                     numberOfWhiteKnights++;
                     instantiatedWhitePiece.tag = whiteColor + "Knight" + numberOfWhiteKnights;
                 }
                 else if (whitePiece.Item1.Contains("Bishop"))
                 {
-                    instantiatedWhitePiece = Instantiate(pieces[2], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedWhitePiece = Instantiate(pieces[2], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     numberOfWhiteBishops++;
                     instantiatedWhitePiece.tag = whiteColor + "Bishop" + numberOfWhiteBishops;
                 }
                 else if (whitePiece.Item1.Contains("King"))
                 {
-                    instantiatedWhitePiece = Instantiate(pieces[3], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedWhitePiece = Instantiate(pieces[3], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     instantiatedWhitePiece.tag = whiteColor + "King";
                 }
                 else if (whitePiece.Item1.Contains("Queen"))
                 {
-                    instantiatedWhitePiece = Instantiate(pieces[4], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedWhitePiece = Instantiate(pieces[4], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     instantiatedWhitePiece.tag = whiteColor + "Queen";
                 }
                 else
                 {
-                    instantiatedWhitePiece = Instantiate(pieces[5], new Vector3(-2.1f + column * 0.6f, 0, -2.1f + row * 0.6f), Quaternion.Euler(-90, 0, 0));
+                    instantiatedWhitePiece = Instantiate(pieces[5], instatiatePosition, Quaternion.Euler(-90, 0, 0));
                     numberOfWhitePawns++;
                     instantiatedWhitePiece.tag = whiteColor + "Pawn" + numberOfWhitePawns;
                 }
