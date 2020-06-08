@@ -54,7 +54,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public GameObject drawButton;
     public GameObject quitButton;
-    public GameObject backButton;
 
     private List<GameObject> movedPieces;
 
@@ -69,7 +68,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public GameObject playerTurnGameObject;
     public Text playerTurnText;
-    public static string roomName;
 
     void Awake()
     {
@@ -99,10 +97,17 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         attackedSquares = 0x0000000000000000;
         tempAttackedSquares = 0x0000000000000000;
 
-        uI_InformPanelGameObject.SetActive(true);
+        if (ChosenGameMode == GameMode.SinglePlayer) //if is singleplayer, do not create a room
+        {
+            playSingleplayerButtonGameObject.SetActive(true);
+        }
+        else
+        {
+            searchForGamesButtonGameObject.SetActive(true);
+            uI_InformPanelGameObject.SetActive(true);
+        }
 
-        currentPlayer = "White";
-        otherPlayer = "Black";
+        playerTurnGameObject.SetActive(true);
     }
 
     #region UI callback methods
@@ -110,15 +115,12 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     {
         adjustButton.SetActive(false);
         raycastCenterImage.SetActive(false);
-        uI_InformPanelGameObject.SetActive(false);
 
         playSingleplayerButtonGameObject.SetActive(false);
 
         if (FileManager.instance.ExistsFile() && !FileManager.instance.ReadBoolFromFile("PlayWithoutUser"))
         {
             pauseButtonGameObject.SetActive(true);
-            backButton.SetActive(false);
-            quitButton.SetActive(true);
         }
 
         if (FileManager.instance.ReadBoolFromFile("GamePaused"))
@@ -130,7 +132,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             SpawnManager.instance.SpawnSingleplayer();
             playerTurnText.text = currentPlayer + "'s turn";
-            playerTurnGameObject.SetActive(true);
         }
     }
 
@@ -146,8 +147,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
         SpawnManager.instance.SpawnFromFile();
         playerTurnText.text = currentPlayer + "'s turn";
-        playerTurnGameObject.SetActive(true);
-        backButton.SetActive(false);
     }
 
     public void OnNoButtonClicked()
@@ -158,9 +157,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
         SpawnManager.instance.SpawnSingleplayer();
         playerTurnText.text = currentPlayer + "'s turn";
-        playerTurnGameObject.SetActive(true);
-        backButton.SetActive(false);
     }
+
+
 
     public void JoinRoom()
     {
@@ -177,6 +176,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
     public void JoinWantedRoom()
     {
         uI_InformText.text = "Searching for available rooms";
+
+        string roomName = GameModesManager.Instance.GetRoomName();
 
         RoomOptions roomOptions = new RoomOptions
         {
@@ -202,17 +203,17 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     #region Photon callback methods
 
-    public override void OnJoinRoomFailed(short returnCode, string message)
+    /*public override void OnJoinRoomFailed(short returnCode, string message)
     {
         Debug.Log("failed");
         uI_InformText.text = message;
-        CreateAndJoinRoom(roomName);
-    }
+        CreateAndJoinRoom();
+    }*/
 
     public override void OnJoinRandomFailed(short returnCode, string message)
     {
         uI_InformText.text = message;
-        CreateAndJoinRoom("");
+        CreateAndJoinRoom();
     }
 
     public override void OnCreatedRoom()
@@ -229,7 +230,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
             uI_InformText.text = "We could not find anyone for you to play with...";
 
             EndGame();
-            //PhotonNetwork.LeaveRoom();
             gameOverPanel.SetActive(true);
 
             StartCoroutine(DeactivateAfterSeconds(uI_InformPanelGameObject, 3.0f)); 
@@ -245,10 +245,7 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         {
             uI_InformText.text = "Joined room " + PhotonNetwork.CurrentRoom.Name + ". Waiting for other players...";
 
-            if (ChosenGameMode == GameMode.MultiplayerAtRandom)
-            {
-                StartCoroutine(NoPlayerEnteredRoom());
-            }
+            StartCoroutine(NoPlayerEnteredRoom());
         }
         else
         {
@@ -261,10 +258,8 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
             drawButton.SetActive(true);
             quitButton.SetActive(true);
-            backButton.SetActive(false);
 
             playerTurnText.text = currentPlayer + "'s turn";
-            playerTurnGameObject.SetActive(true);
         }
 
         //Debug.Log("joined " + PhotonNetwork.CurrentRoom.Name);
@@ -285,7 +280,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
             drawButton.SetActive(true);
             quitButton.SetActive(true);
-            backButton.SetActive(false);
 
             playerTurnText.text = currentPlayer + "'s turn";
             playerTurnGameObject.SetActive(true);
@@ -301,19 +295,10 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     #region Private methods
 
-    private void CreateAndJoinRoom(string roomName)
+    private void CreateAndJoinRoom()
     {
-        string randomRoomName;
-        if (string.IsNullOrEmpty(roomName))
-        {
-            randomRoomName = "Room " + UnityEngine.Random.Range(0, 10000);
-            uI_InformText.text = "Created room " + randomRoomName;
-        }
-        else
-        {
-            randomRoomName = roomName;
-            uI_InformText.text = "Created room " + randomRoomName;
-        }
+        string randomRoomName = "Room " + UnityEngine.Random.Range(0, 10000);
+        uI_InformText.text = "Created room " + randomRoomName;
 
         RoomOptions roomOptions = new RoomOptions
         {
@@ -321,11 +306,6 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
         };
 
         PhotonNetwork.CreateRoom(randomRoomName, roomOptions);
-    }
-
-    public override void OnCreateRoomFailed(short returnCode, string message)
-    {
-        uI_InformText.text = "Created room failed" + message;
     }
 
     IEnumerator DeactivateAfterSeconds(GameObject _gameObject, float seconds)
@@ -646,17 +626,9 @@ public class ARChessGameManager : MonoBehaviourPunCallbacks
 
     public void SelectPiece(Piece myPiece)
     {
-        if (ChosenGameMode == GameMode.MultiplayerAtRandom || ChosenGameMode == GameMode.MultiplayerWithFriend)
-        {
-            if (PhotonNetwork.CurrentRoom.PlayerCount != 2)
-            {
-                return;
-            }
-        }
-
         if (isPieceSelected)
         {
-           DeselectPiece(selectedPiece);
+            DeselectPiece(selectedPiece);
         }
 
         MeshRenderer renderer = myPiece.GetComponent<MeshRenderer>();

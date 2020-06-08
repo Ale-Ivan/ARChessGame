@@ -1223,7 +1223,6 @@ MonoBehaviour:
   PlayerName: {fileID: 637605973}
   NumberOfWins: {fileID: 1516297947}
   NumberOfLosses: {fileID: 818553131}
-  welcomeText: {fileID: 0}
   userProfileButton: {fileID: 500636095}
   userProfile: {fileID: 1932368636}
   Options: {fileID: 506112588}
@@ -1482,7 +1481,7 @@ MonoBehaviour:
     bottomLeft: {r: 1, g: 1, b: 1, a: 1}
     bottomRight: {r: 1, g: 1, b: 1, a: 1}
   m_fontColorGradientPreset: {fileID: 0}
-  m_spriteAsset: {fileID: 11400000, guid: c41005c129ba4d66911b75229fd70b45, type: 2}
+  m_spriteAsset: {fileID: 0}
   m_tintAllSprites: 0
   m_overrideHtmlColors: 0
   m_faceColor:
@@ -1875,7 +1874,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_OnCullStateChanged:
     m_PersistentCalls:

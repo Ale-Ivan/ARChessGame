@@ -40,6 +40,12 @@ public class ARPlacementAndPlaneDetectionController : MonoBehaviour
         informUiPanelText.text = "Move phone to detect planes and place the chess board.";
     }
 
+    // Update is called once per frame
+    void Update()
+    {
+
+    }
+
     public void DisableARPlacementAndPlaneDetection()
     {
         m_ARPlaneManager.enabled = false;

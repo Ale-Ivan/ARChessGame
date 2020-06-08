@@ -18,6 +18,8 @@ public class GameModesManager : Singleton<GameModesManager>
 
     public InputField RoomNameInputField;
 
+    private string RoomName;
+
     public void OnSinglePlayerButtonClicked()
     {
         ARChessGameManager.ChosenGameMode = GameMode.SinglePlayer;
@@ -39,18 +41,17 @@ public class GameModesManager : Singleton<GameModesManager>
 
     public void OnConfirmButtonClicked()
     {
-        ARChessGameManager.roomName = RoomNameInputField.text;
+        RoomName = RoomNameInputField.text;
         SceneLoader.Instance.LoadScene("Scene_Gameplay");
-    }
-
-    public void OnBackFromMultiplayerRoomNameButtonClicked()
-    {
-        OptionsToPlay.SetActive(true);
-        MultiplayerRoomName.SetActive(false);
     }
 
     public void OnBackButtonClicked()
     {
-        SceneLoader.Instance.LoadScene("Scene_PlayerSelection");
+        SceneLoader.Instance.LoadScene("Scene_Start");
+    }
+
+    public string GetRoomName()
+    {
+        return RoomName;
     }
 }

@@ -49,7 +49,7 @@ public class SignInPageManager : MonoBehaviour
             CreateBox.SetActive(false);
             CreateButton.SetActive(false);
             ErrorBox_Create.SetActive(true);
-            ErrorText_Create.text = "All fields must be filled out!";
+            ErrorText_Create.text = "All fields must be filled!";
             return;
         }
 
